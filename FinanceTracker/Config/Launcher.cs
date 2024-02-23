@@ -16,12 +16,16 @@ namespace FinanceTracker.Config
         public Launcher(MainWindow mainWindow)
         {
             MainWindow = mainWindow;
-            DatabaseConnector = new();
+            DatabaseConnector = DatabaseConnector.Instance;
             GraphTest = new(MainWindow);
         }
 
         public void Launch()
         {
+            RegisterService register = new();
+            LoginService login = new();
+            //register.Register("test", "neviem");
+            //login.Login("test", "neviem");
             Console.WriteLine("FinanceTracker is running...");
         }
     }

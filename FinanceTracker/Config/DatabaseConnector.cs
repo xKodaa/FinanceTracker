@@ -15,11 +15,12 @@ namespace FinanceTracker.Config
     {
         private string? ConnectionString { get; set; }
         private string ConnectionPath { get; set; }
-        private SQLiteConnection? Connection { get; set; }
+        public SQLiteConnection Connection { get; set; }
 
         private static DatabaseConnector? databaseConnector;
 
-        public static DatabaseConnector Instance    // Singletone pro získávání stejné instance připojení do DB
+        // Singletone pro získávání stejné instance připojení do DB
+        public static DatabaseConnector Instance    
         {
             get
             {
@@ -31,11 +32,11 @@ namespace FinanceTracker.Config
             }
         }
 
-        public DatabaseConnector()
+        private DatabaseConnector()
         {
             ConnectionString = String.Empty;
             ConnectionPath = "Connection.json";
-            Connection = null;
+            Connection = new SQLiteConnection();
             CreateDatabaseConnection();
         }
 
@@ -44,7 +45,8 @@ namespace FinanceTracker.Config
             ConnectionString = LoadDatabaseConnectionString();
             if (ConnectionString != null) 
             {
-                Connection = new SQLiteConnection(ConnectionString);
+                Connection.ConnectionString = ConnectionString;
+                Connection.Open();
             }
             else 
             {
