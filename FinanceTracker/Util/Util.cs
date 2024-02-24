@@ -60,5 +60,30 @@ namespace FinanceTracker.Util
         {
             MessageBox.Show(input, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+
+        public static void ShowInfoMessageBox(string input) 
+        {
+            MessageBox.Show(input, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public static bool ValidLoginOrRegistrationInputs(string username, string password)
+        {
+            if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(username))
+            {
+                ShowErrorMessageBox("Please fill both values!");
+                return false;
+            }
+            if (string.IsNullOrEmpty(username))
+            {
+                ShowErrorMessageBox("Please fill username!");
+                return false;
+            }
+            if (string.IsNullOrEmpty(password))
+            {
+                ShowErrorMessageBox("Please fill password!");
+                return false;
+            }
+            return true;
+        }
     }
 }

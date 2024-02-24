@@ -32,10 +32,8 @@ namespace FinanceTracker.Graphics.Windows
             RegisterService registerService = new RegisterService();
             string username = RegisterUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, RegisterPasswordBox.SecurePassword).Password;
-            bool registerValuesSet = true;
-            if (string.IsNullOrEmpty(username)) { Util.Util.ShowErrorMessageBox("Please fill username!"); registerValuesSet = false; }
-            if (string.IsNullOrEmpty(password)) { Util.Util.ShowErrorMessageBox("Please fill password!"); registerValuesSet = false; }
-            if (registerValuesSet == false)
+
+            if (!Util.Util.ValidLoginOrRegistrationInputs(username, password))
             {
                 ClearInputs();
             }
@@ -44,6 +42,7 @@ namespace FinanceTracker.Graphics.Windows
                 if (registerService.Register(username, password))
                 {
                     DialogResult = true;
+                    Util.Util.ShowInfoMessageBox("Registration successful");
                 }
                 else
                     ClearInputs();

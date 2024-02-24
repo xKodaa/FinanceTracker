@@ -32,15 +32,23 @@ namespace FinanceTracker.Graphics.Windows
             LoginService loginService = new LoginService();
             string username = LoginUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, LoginPasswordBox.SecurePassword).Password;
-            bool loggedIn = loginService.Login(username, password);
-            if (!loggedIn)
+
+            if (!Util.Util.ValidLoginOrRegistrationInputs(username, password))
             {
-                Util.Util.ShowErrorMessageBox("Login unsuccessful, please try again");
                 ClearInputs();
             }
             else 
             {
-                DialogResult = true;
+                bool loggedIn = loginService.Login(username, password);
+                if (!loggedIn)
+                {
+                    Util.Util.ShowErrorMessageBox("Login unsuccessful, please try again");
+                    ClearInputs();
+                }
+                else
+                {
+                    DialogResult = true;
+                }
             }
         }
 
