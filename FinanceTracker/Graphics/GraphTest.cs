@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace FinanceTracker.Graphics
 {
+    // Zatím jen na test zobrazování grafů v aplikaci
     public class GraphTest
     {
         public SeriesCollection SeriesCollection { get; private set; }

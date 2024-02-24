@@ -37,6 +37,7 @@ namespace FinanceTracker.Util
             }
         }
 
+        // Vyčtení, zda se uživatel již nenachází v databázi -> pro zabránění duplicitních uživatelských jmen
         public static bool UserExists(string username)
         {
             string sql = "SELECT COUNT(*) FROM Users WHERE username LIKE @username";
@@ -56,6 +57,7 @@ namespace FinanceTracker.Util
             return false;
         }
 
+        /* UTILITY pro zjednodušené volání různých typů message boxů */
         public static void ShowErrorMessageBox(string input) 
         {
             MessageBox.Show(input, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -66,21 +68,22 @@ namespace FinanceTracker.Util
             MessageBox.Show(input, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        // Kontrola uživatelských vstupů
         public static bool ValidLoginOrRegistrationInputs(string username, string password)
         {
             if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(username))
             {
-                ShowErrorMessageBox("Please fill both values!");
+                ShowErrorMessageBox("Vyplňte prosím obě hodnoty!");
                 return false;
             }
             if (string.IsNullOrEmpty(username))
             {
-                ShowErrorMessageBox("Please fill username!");
+                ShowErrorMessageBox("Vyplňte prosím uživatelské jméno!");
                 return false;
             }
             if (string.IsNullOrEmpty(password))
             {
-                ShowErrorMessageBox("Please fill password!");
+                ShowErrorMessageBox("Vyplňte prosím heslo!");
                 return false;
             }
             return true;

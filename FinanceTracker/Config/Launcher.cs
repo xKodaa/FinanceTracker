@@ -25,6 +25,7 @@ namespace FinanceTracker.Config
             HandleLoginWindow();
         }
 
+        // Zajištění přihlášení/registrace uživatele
         private void HandleLoginWindow()
         {
             LoginWindow loginWindow = new LoginWindow(MainWindow);

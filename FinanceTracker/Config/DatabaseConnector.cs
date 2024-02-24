@@ -40,6 +40,7 @@ namespace FinanceTracker.Config
             CreateDatabaseConnection();
         }
 
+        // Vytvoření spojení k SQLite databázi
         private void CreateDatabaseConnection()
         {
             ConnectionString = LoadDatabaseConnectionString();
@@ -50,7 +51,7 @@ namespace FinanceTracker.Config
             }
             else 
             {
-                Util.Util.ShowErrorMessageBox("Connection not created, shutting down...");
+                Util.Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit, ukončení aplikace...");
                 Environment.Exit(0);
             }
         }
@@ -77,13 +78,13 @@ namespace FinanceTracker.Config
                 }
                 else
                 {
-                    Util.Util.ShowErrorMessageBox("Configuration file not found in project folder.");
+                    Util.Util.ShowErrorMessageBox("Konfigurační soubor nenalezen v souborech aplikace");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                Util.Util.ShowErrorMessageBox($"Could not read a configurtaion file {ConnectionPath}: " + ex.Message);
+                Util.Util.ShowErrorMessageBox($"Nepodařilo se přečíst konfigurační soubor {ConnectionPath}: " + ex.Message);
                 return null;
             }
         }

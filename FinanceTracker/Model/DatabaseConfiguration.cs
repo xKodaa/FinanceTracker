@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinanceTracker.Model
 {
+    // Třída pro uložení objektů z konfiguračního souboru projektu
     public class DatabaseConfiguration
     {
         public string ConnectionString { get; set; }

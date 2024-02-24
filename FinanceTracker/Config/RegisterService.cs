@@ -22,11 +22,12 @@ namespace FinanceTracker.Config
             connection = connector.Connection;
         }
 
+        // Zajišťuje uživatelskou registraci do databáze
         public bool Register(string username, string password)
         {
             if (Util.Util.UserExists(username)) 
             {
-                Util.Util.ShowErrorMessageBox("This username already exists, please choose another one");
+                Util.Util.ShowErrorMessageBox("Uživatel s tímto uživatelským jménem již existuje, prosím, použijte jiné");
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);

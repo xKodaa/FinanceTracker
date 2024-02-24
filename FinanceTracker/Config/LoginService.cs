@@ -20,11 +20,12 @@ namespace FinanceTracker.Config
             connection = connector.Connection;
         }
 
+        // Zajišťuje uživatelské přihlášení do databáze
         public bool Login(string username, string password) 
         {
             if (!Util.Util.UserExists(username)) 
             {
-                Util.Util.ShowErrorMessageBox("Username doesn't exist");
+                Util.Util.ShowErrorMessageBox("Toto uživatelské jméno neexistuje");
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);

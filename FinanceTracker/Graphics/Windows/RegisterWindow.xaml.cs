@@ -27,6 +27,7 @@ namespace FinanceTracker.Graphics.Windows
             InitializeComponent();
         }
 
+        // Zpracování uživatelských hodnot po kliknutí na "registrovat se"
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             RegisterService registerService = new RegisterService();
@@ -42,13 +43,14 @@ namespace FinanceTracker.Graphics.Windows
                 if (registerService.Register(username, password))
                 {
                     DialogResult = true;
-                    Util.Util.ShowInfoMessageBox("Registration successful");
+                    Util.Util.ShowInfoMessageBox("Registrace byla úspěšná");
                 }
                 else
                     ClearInputs();
             }
         }
 
+        // Přesměrování na přihlašovací formulář přes hypertext
         private void LoginHyperlink_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
@@ -62,6 +64,7 @@ namespace FinanceTracker.Graphics.Windows
             RegisterUsernameBox.Clear();
         }
 
+        // Proti obejití "pokračování bez registrace"
         private void CloseApp(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (DialogResult == null)
