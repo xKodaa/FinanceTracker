@@ -19,10 +19,12 @@ namespace FinanceTracker
     {
         public MainWindow()
         {
-            InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             Launcher launcher = new(this);
             launcher.Launch();
+            
+            //InitializeComponent();
         }
     }
 }

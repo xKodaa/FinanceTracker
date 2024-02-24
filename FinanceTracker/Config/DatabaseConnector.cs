@@ -50,7 +50,7 @@ namespace FinanceTracker.Config
             }
             else 
             {
-                MessageBox.Show("Connection not created, shutting down...", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Util.Util.ShowErrorMessageBox("Connection not created, shutting down...");
                 Environment.Exit(0);
             }
         }
@@ -77,15 +77,13 @@ namespace FinanceTracker.Config
                 }
                 else
                 {
-                    MessageBox.Show("Configuration file not found in project folder.", "Error", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    Util.Util.ShowErrorMessageBox("Configuration file not found in project folder.");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not read a configurtaion file {ConnectionPath}: " + ex.Message, "Error", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Util.Util.ShowErrorMessageBox($"Could not read a configurtaion file {ConnectionPath}: " + ex.Message);
                 return null;
             }
         }

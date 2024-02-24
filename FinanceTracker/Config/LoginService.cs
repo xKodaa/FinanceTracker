@@ -24,7 +24,7 @@ namespace FinanceTracker.Config
         {
             if (!Util.Util.UserExists(username)) 
             {
-                MessageBox.Show("Username doesn't exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Util.Util.ShowErrorMessageBox("Username doesn't exist");
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);

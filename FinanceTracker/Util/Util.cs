@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FinanceTracker.Util
 {
@@ -53,6 +54,11 @@ namespace FinanceTracker.Util
                 }
             }
             return false;
+        }
+
+        public static void ShowErrorMessageBox(string input) 
+        {
+            MessageBox.Show(input, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

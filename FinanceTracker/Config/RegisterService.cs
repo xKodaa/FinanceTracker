@@ -26,8 +26,7 @@ namespace FinanceTracker.Config
         {
             if (Util.Util.UserExists(username)) 
             {
-                MessageBox.Show("This username already exists, please choose another one", "Error", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Util.Util.ShowErrorMessageBox("This username already exists, please choose another one");
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);
