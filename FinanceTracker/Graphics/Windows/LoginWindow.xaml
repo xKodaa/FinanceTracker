@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker.Graphics.Windows"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="300" Width="500" Closing="CloseApp">
+        Title="LoginWindow" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,18 +16,25 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Label Content="FinanceTracker" HorizontalAlignment="Center" FontSize="24" FontWeight="Bold" Margin="0,20,0,0"/>
-        <Label Content="Přihlášení" Grid.Row="1" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="#FFEEEEEE" Offset="0.0"/>
+                <GradientStop Color="#FFDDDDDD" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
 
-        <Label Content="Jméno:" Grid.Row="2" Margin="30,5,0,0"/>
-        <TextBox x:Name="LoginUsernameBox" Grid.Row="2" Margin="90,5,30,0"  HorizontalAlignment="Stretch"/>
+        <Label Content="FinanceTracker" Grid.Row="0" Style="{StaticResource MainTitleStyle}" />
+        <Label Content="Přihlášení" Grid.Row="1" Style="{StaticResource SecondaryTitleStyle}" />
 
-        <Label Content="Heslo:" Grid.Row="3" Margin="30,5,0,0"/>
-        <PasswordBox x:Name="LoginPasswordBox" Grid.Row="3" Margin="90,5,30,0"  HorizontalAlignment="Stretch"/>
+        <Label Content="Jméno:" Grid.Row="2" Style="{StaticResource LabelStyle}"/>
+        <TextBox x:Name="LoginUsernameBox" Grid.Row="2" Style="{StaticResource TextBoxStyle}"/>
 
-        <Button x:Name="LoginButton" Content="Přihlásit se" Grid.Row="4" Margin="30,10,30,0" HorizontalAlignment="Stretch" Click="LoginButton_Click"/>
+        <Label Content="Heslo:" Grid.Row="3" Style="{StaticResource LabelStyle}"/>
+        <PasswordBox x:Name="LoginPasswordBox" Grid.Row="3" Style="{StaticResource PasswordBoxStyle}"/>
 
-        <TextBlock Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,0">
+        <Button x:Name="LoginButton" Content="Přihlásit se" Grid.Row="4" Style="{StaticResource ButtonStyle}" Click="LoginButton_Click" />
+
+        <TextBlock Grid.Row="5" Style="{StaticResource TextBlockStyle}" >
             Nemáte účet? <Hyperlink Click="RegisterHyperlink_Click">Zaregistrovat se</Hyperlink>
         </TextBlock>
     </Grid>

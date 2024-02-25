@@ -23,7 +23,6 @@ namespace FinanceTracker.Graphics.Windows
         public RegisterWindow(MainWindow mainWindow)
         {
             MainWindow = mainWindow;
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
         }
 
