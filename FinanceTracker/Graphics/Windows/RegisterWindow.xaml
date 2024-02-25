@@ -27,16 +27,16 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Label Content="FinanceTracker" Grid.Row="0" Style="{StaticResource MainTitleStyle}" />
-        <Label Content="Registrace" Grid.Row="1" Style="{StaticResource SecondaryTitleStyle}" />
+        <Label Content="FinanceTracker" Grid.Row="0" Style="{StaticResource WindowsMainTitleStyle}" />
+        <Label Content="Registrace" Grid.Row="1" Style="{StaticResource WindowsSecondaryTitleStyle}" />
 
-        <Label Content="Jméno:" Grid.Row="2" Style="{StaticResource LabelStyle}"/>
-        <TextBox x:Name="RegisterUsernameBox" Grid.Row="2" Style="{StaticResource TextBoxStyle}"/>
+        <Label Content="Jméno:" Grid.Row="2" Style="{StaticResource WindowsLabelStyle}"/>
+        <TextBox x:Name="RegisterUsernameBox" Grid.Row="2" Style="{StaticResource WindowsTextBoxStyle}"/>
 
-        <Label Content="Heslo:" Grid.Row="3" Style="{StaticResource LabelStyle}"/>
-        <PasswordBox x:Name="RegisterPasswordBox" Grid.Row="3" Style="{StaticResource PasswordBoxStyle}"/>
+        <Label Content="Heslo:" Grid.Row="3" Style="{StaticResource WindowsLabelStyle}"/>
+        <PasswordBox x:Name="RegisterPasswordBox" Grid.Row="3" Style="{StaticResource WindowsPasswordBoxStyle}"/>
 
-        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="4" Style="{StaticResource ButtonStyle}" Click="RegisterButton_Click" />
+        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="4" Style="{StaticResource WindowsButtonStyle}" Click="RegisterButton_Click" />
 
         <TextBlock Grid.Row="5" Style="{StaticResource TextBlockStyle}" >
             Již máte účet? <Hyperlink Click="LoginHyperlink_Click">Přihlásit se</Hyperlink>

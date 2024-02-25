@@ -18,11 +18,11 @@
                 <Label Content="Finance Tracker" Height="50" Foreground="White" Background="#2C3E50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
                 <Separator Background="#1AFFFFFF"/>
                 <!-- Menu part-->
-                <Button Content="Profil" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Finance" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Akcie" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Kryptoměny" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Dashboard" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
+                <Button Content="Profil" Style="{StaticResource MainWindowHoverButtonStyle}"/>
+                <Button Content="Finance" Style="{StaticResource MainWindowHoverButtonStyle}"/>
+                <Button Content="Akcie" Style="{StaticResource MainWindowHoverButtonStyle}"/>
+                <Button Content="Kryptoměny" Style="{StaticResource MainWindowHoverButtonStyle}"/>
+                <Button Content="Dashboard" Style="{StaticResource MainWindowHoverButtonStyle}"/>
                 <!-- Copyright part-->
                 <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                     <Separator Background="#1AFFFFFF"/>
