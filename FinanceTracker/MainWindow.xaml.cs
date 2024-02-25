@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Config;
+using FinanceTracker.Graphics.Pages;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,11 @@ namespace FinanceTracker
             launcher.Launch();
             
             //InitializeComponent();
+        }
+
+        private void MainPageLoaded(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new ProfilePage()); 
         }
     }
 }

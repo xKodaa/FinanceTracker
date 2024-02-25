@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" Loaded="MainPageLoaded">
+    <Grid Loaded="MainPageLoaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="4*"/>
@@ -14,15 +14,23 @@
 
         <DockPanel Background="#2C3E50" Grid.Column="0">
             <StackPanel Background="#34495E">
+                <!-- Title part-->
                 <Label Content="Finance Tracker" Height="50" Foreground="White" Background="#2C3E50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
+                <Separator Background="#1AFFFFFF"/>
+                <!-- Menu part-->
                 <Button Content="Profil" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Výdaje" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Button Content="Dashboard" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
+                <Button Content="Finance" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
                 <Button Content="Akcie" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
                 <Button Content="Kryptoměny" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
-                <Label Content="@Copyright 2024" Height="50" Foreground="White" Background="#34495E" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                <Label Content="Kodytek Jakub" Height="50" Foreground="White" Background="#34495E" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                <Button Content="Dashboard" Height="50" Background="#34495E" Foreground="White" BorderBrush="{x:Null}"/>
+                <!-- Copyright part-->
+                <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+                    <Separator Background="#1AFFFFFF"/>
+                    <Label Content="© 2024 - Kodytek Jakub" Foreground="#AAAAAA" Background="#34495E" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="10"/>
+                </StackPanel>
             </StackPanel>
         </DockPanel>
+
+        <Frame x:Name="MainContentFrame" Grid.Column="1" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
