@@ -21,15 +21,16 @@ namespace FinanceTracker.Config
         }
 
         // Zajišťuje uživatelské přihlášení do databáze
-        public bool Login(string username, string password) 
+        public bool Login(string username, string password, out bool userExists) 
         {
             if (!Util.Util.UserExists(username)) 
             {
                 Util.Util.ShowErrorMessageBox("Toto uživatelské jméno neexistuje");
+                userExists = false;
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);
-            string sql = "SELECT password FROM Users WHERE username LIKe @username";
+            string sql = "SELECT password FROM Users WHERE username LIKE @username";
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@username", username);
@@ -39,9 +40,14 @@ namespace FinanceTracker.Config
                 {
                     string? passwordFromDb = result.ToString();
                     if (passwordFromDb != null && passwordFromDb.Equals(hashedPassword))
+                    {
+                        userExists = true;
                         return true;
+                    }
+        
                 }
             }
+            userExists = true;
             return false;
         }
     }

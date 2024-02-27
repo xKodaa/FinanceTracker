@@ -23,7 +23,7 @@ namespace FinanceTracker.Config
         }
 
         // Zajišťuje uživatelskou registraci do databáze
-        public bool Register(string username, string password)
+        public bool Register(string name, string surname, string username, string password)
         {
             if (Util.Util.UserExists(username)) 
             {
@@ -31,11 +31,13 @@ namespace FinanceTracker.Config
                 return false;
             }
             string hashedPassword = Util.Util.HashInput(password);
-            string sql = "INSERT INTO Users Values(null, @username, @password)";
+            string sql = "INSERT INTO Users Values(@username, @password, @name, @surname)";
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@username", username);
                 command.Parameters.AddWithValue("@password", hashedPassword);
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@surname", surname);
                 command.ExecuteNonQuery();
                 return true;
             }

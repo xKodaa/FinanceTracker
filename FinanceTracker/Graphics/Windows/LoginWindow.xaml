@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker.Graphics.Windows"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
-    <Grid>
+        Title="Přihlášení" Height="280" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
+    
+    <Grid Style="{StaticResource GradientBackgroundStyle}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -16,25 +18,20 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFEEEEEE" Offset="0.0"/>
-                <GradientStop Color="#FFDDDDDD" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Grid.Background>
-
         <Label Content="FinanceTracker" Grid.Row="0" Style="{StaticResource WindowsMainTitleStyle}" />
-        <Label Content="Přihlášení" Grid.Row="1" Style="{StaticResource WindowsSecondaryTitleStyle}" />
 
-        <Label Content="Jméno:" Grid.Row="2" Style="{StaticResource WindowsLabelStyle}"/>
+        <Label Content="Login:" Grid.Row="2" Style="{StaticResource WindowsLabelStyle}" Margin="10,0,0,0"/>
         <TextBox x:Name="LoginUsernameBox" Grid.Row="2" Style="{StaticResource WindowsTextBoxStyle}"/>
 
         <Label Content="Heslo:" Grid.Row="3" Style="{StaticResource WindowsLabelStyle}"/>
         <PasswordBox x:Name="LoginPasswordBox" Grid.Row="3" Style="{StaticResource WindowsPasswordBoxStyle}"/>
+        <TextBox x:Name="LoginPasswordTBox" Grid.Row="3" Style="{StaticResource WindowsTextBoxStyle}" Visibility="Collapsed"/>
 
-        <Button x:Name="LoginButton" Content="Přihlásit se" Grid.Row="4" Style="{StaticResource WindowsButtonStyle}" Click="LoginButton_Click" />
+        <CheckBox Content="Zobrazit heslo" Grid.Row="4" Style="{StaticResource WindowsCheckBoxStyle}" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
 
-        <TextBlock Grid.Row="5" Style="{StaticResource WindowsTextBlockStyle}" >
+        <Button x:Name="LoginButton" Content="Přihlásit se" Grid.Row="5" Style="{StaticResource WindowsButtonStyle}" Click="LoginButton_Click"/>
+
+        <TextBlock Grid.Row="6" Style="{StaticResource WindowsTextBlockStyle}" >
             Nemáte účet? <Hyperlink Click="RegisterHyperlink_Click">Zaregistrovat se</Hyperlink>
         </TextBlock>
     </Grid>

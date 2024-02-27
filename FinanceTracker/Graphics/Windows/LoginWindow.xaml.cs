@@ -33,16 +33,18 @@ namespace FinanceTracker.Graphics.Windows
             string username = LoginUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, LoginPasswordBox.SecurePassword).Password;
 
-            if (!Util.Util.ValidLoginOrRegistrationInputs(username, password))
+            if (!Util.Util.ValidLoginOrRegistrationInputs("firstName", "surname", username, password))
             {
                 ClearInputs();
             }
             else 
             {
-                bool loggedIn = loginService.Login(username, password);
+                bool userExists = false;
+                bool loggedIn = loginService.Login(username, password, out userExists);
                 if (!loggedIn)
                 {
-                    Util.Util.ShowErrorMessageBox("Přihlášení se nepodařilo, prosím, zkuste to znovu");
+                    if (userExists)
+                        Util.Util.ShowErrorMessageBox("Špatné heslo!");
                     ClearInputs();
                 }
                 else
@@ -75,6 +77,19 @@ namespace FinanceTracker.Graphics.Windows
         {
             if (DialogResult == null) 
                 Environment.Exit(0);
+        }
+
+        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            LoginPasswordTBox.Visibility = Visibility.Visible;
+            LoginPasswordBox.Visibility = Visibility.Hidden;
+            LoginPasswordTBox.Text = new NetworkCredential(string.Empty, LoginPasswordBox.SecurePassword).Password;
+        }
+
+        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            LoginPasswordBox.Visibility = Visibility.Visible;
+            LoginPasswordTBox.Visibility = Visibility.Collapsed;
         }
     }
 }

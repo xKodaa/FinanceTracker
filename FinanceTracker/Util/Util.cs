@@ -69,13 +69,23 @@ namespace FinanceTracker.Util
         }
 
         // Kontrola uživatelských vstupů
-        public static bool ValidLoginOrRegistrationInputs(string username, string password)
+        public static bool ValidLoginOrRegistrationInputs(string name, string surname, string username, string password)
         {
-            if (string.IsNullOrEmpty(password) && string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(surname) && string.IsNullOrEmpty(username) && string.IsNullOrEmpty(username))
             {
-                ShowErrorMessageBox("Vyplňte prosím obě hodnoty!");
+                ShowErrorMessageBox("Vyplňte prosím všechny hodnoty!");
                 return false;
             }
+            if (string.IsNullOrEmpty(name))
+            {
+                ShowErrorMessageBox("Vyplňte prosím křestní jméno!");
+                return false;
+            }
+            if (string.IsNullOrEmpty(surname))
+            {
+                ShowErrorMessageBox("Vyplňte prosím příjmení!");
+                return false;
+            }            
             if (string.IsNullOrEmpty(username))
             {
                 ShowErrorMessageBox("Vyplňte prosím uživatelské jméno!");

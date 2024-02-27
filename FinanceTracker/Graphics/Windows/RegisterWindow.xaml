@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker.Graphics.Windows"
         mc:Ignorable="d"
-        Title="RegisterWindow" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
-    <Window.Resources>
-        <!-- Styly zůstávají stejné jako ve vašem předchozím přihlašovacím okně -->
-    </Window.Resources>
+        Title="Registrace" Height="350" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
 
-    <Grid>
+    <Grid Style="{StaticResource GradientBackgroundStyle}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -20,25 +19,26 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFEEEEEE" Offset="0.0"/>
-                <GradientStop Color="#FFDDDDDD" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Grid.Background>
-
         <Label Content="FinanceTracker" Grid.Row="0" Style="{StaticResource WindowsMainTitleStyle}" />
-        <Label Content="Registrace" Grid.Row="1" Style="{StaticResource WindowsSecondaryTitleStyle}" />
 
-        <Label Content="Jméno:" Grid.Row="2" Style="{StaticResource WindowsLabelStyle}"/>
-        <TextBox x:Name="RegisterUsernameBox" Grid.Row="2" Style="{StaticResource WindowsTextBoxStyle}"/>
+        <Label Content="Jméno:" Grid.Row="1" Style="{StaticResource WindowsLabelStyle}"/>
+        <TextBox x:Name="FirstNameBox" Grid.Row="1" Style="{StaticResource WindowsTextBoxStyle}" />
 
-        <Label Content="Heslo:" Grid.Row="3" Style="{StaticResource WindowsLabelStyle}"/>
-        <PasswordBox x:Name="RegisterPasswordBox" Grid.Row="3" Style="{StaticResource WindowsPasswordBoxStyle}"/>
+        <Label Content="Příjmení:" Grid.Row="2" Style="{StaticResource WindowsLabelStyle}"/>
+        <TextBox x:Name="LastNameBox" Grid.Row="2" Style="{StaticResource WindowsTextBoxStyle}"/>
 
-        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="4" Style="{StaticResource WindowsButtonStyle}" Click="RegisterButton_Click" />
+        <Label Content="Login:" Grid.Row="3" Style="{StaticResource WindowsLabelStyle}"/>
+        <TextBox x:Name="RegisterUsernameBox" Grid.Row="3" Style="{StaticResource WindowsTextBoxStyle}"/>
 
-        <TextBlock Grid.Row="5" Style="{StaticResource TextBlockStyle}" >
+        <Label Content="Heslo:" Grid.Row="4" Style="{StaticResource WindowsLabelStyle}"/>
+        <PasswordBox x:Name="RegisterPasswordBox" Grid.Row="4" Style="{StaticResource WindowsPasswordBoxStyle}"/>
+        <TextBox x:Name="RegisterPasswordTBox" Grid.Row="4" Style="{StaticResource WindowsTextBoxStyle}" Visibility="Collapsed"/>
+
+        <CheckBox Content="Zobrazit heslo" Grid.Row="5" Style="{StaticResource WindowsCheckBoxStyle}" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
+
+        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="6" Style="{StaticResource WindowsButtonStyle}" Click="RegisterButton_Click"/>
+
+        <TextBlock Grid.Row="7" Style="{StaticResource WindowsTextBlockStyle}">
             Již máte účet? <Hyperlink Click="LoginHyperlink_Click">Přihlásit se</Hyperlink>
         </TextBlock>
     </Grid>

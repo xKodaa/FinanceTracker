@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 
 namespace FinanceTracker.Graphics.Windows
 {
+
     public partial class RegisterWindow : Window
     {
         private MainWindow MainWindow { get; set; }
@@ -30,19 +31,22 @@ namespace FinanceTracker.Graphics.Windows
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             RegisterService registerService = new RegisterService();
+            string name = FirstNameBox.Text;
+            string surname = LastNameBox.Text;
             string username = RegisterUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, RegisterPasswordBox.SecurePassword).Password;
 
-            if (!Util.Util.ValidLoginOrRegistrationInputs(username, password))
+            if (!Util.Util.ValidLoginOrRegistrationInputs(name, surname, username, password))
             {
                 ClearInputs();
             }
-            else 
+            else
             {
-                if (registerService.Register(username, password))
+                if (registerService.Register(name, surname, username, password))
                 {
                     DialogResult = true;
-                    Util.Util.ShowInfoMessageBox("Registrace byla úspěšná");
+                    // TODO toto místo to alertu přesunout spíše na uvodni profile page
+                    Util.Util.ShowInfoMessageBox($"Registrace byla úspěšná! \n - Vítejte {name} {surname}");
                 }
                 else
                     ClearInputs();
@@ -68,6 +72,20 @@ namespace FinanceTracker.Graphics.Windows
         {
             if (DialogResult == null)
                 Environment.Exit(0);
+        }
+
+        /* Možnost zobrazování a skrývání hesla */
+        private void ShowPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            RegisterPasswordTBox.Visibility = Visibility.Visible;
+            RegisterPasswordBox.Visibility = Visibility.Hidden;
+            RegisterPasswordTBox.Text = new NetworkCredential(string.Empty, RegisterPasswordBox.SecurePassword).Password;
+        }
+
+        private void ShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RegisterPasswordBox.Visibility = Visibility.Visible;
+            RegisterPasswordTBox.Visibility = Visibility.Collapsed;
         }
     }
 }
