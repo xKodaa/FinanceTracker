@@ -22,6 +22,7 @@ namespace FinanceTracker.Config
 
         public void Launch()
         {
+            new DatabaseContentService();
             HandleLoginWindow();
         }
 

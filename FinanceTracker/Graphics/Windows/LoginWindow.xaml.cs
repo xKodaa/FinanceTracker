@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Config;
+using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,22 +34,26 @@ namespace FinanceTracker.Graphics.Windows
             string username = LoginUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, LoginPasswordBox.SecurePassword).Password;
 
-            if (!Util.Util.ValidLoginOrRegistrationInputs("firstName", "surname", username, password))
+            if (!Util.ValidLoginOrRegistrationInputs("firstName", "surname", username, password))
             {
                 ClearInputs();
             }
             else 
             {
-                bool userExists = false;
+                bool userExists;
                 bool loggedIn = loginService.Login(username, password, out userExists);
                 if (!loggedIn)
                 {
                     if (userExists)
-                        Util.Util.ShowErrorMessageBox("Špatné heslo!");
+                    { 
+                        Logger.WriteErrorLog(this, $"Uživatel '{username}' použil špatné heslo");
+                        Util.ShowErrorMessageBox("Špatné heslo!");
+                    }
                     ClearInputs();
                 }
                 else
                 {
+                    Logger.WriteLog(this, $"Uživatel '{username}' přihlášen");
                     DialogResult = true;
                 }
             }

@@ -6,13 +6,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using FinanceTracker.Util;
+using FinanceTracker.Utility;
 
 namespace FinanceTracker.Config
 {
     public class RegisterService
     {
-
         private DatabaseConnector connector;
         private SQLiteConnection connection;
 
@@ -25,12 +24,13 @@ namespace FinanceTracker.Config
         // Zajišťuje uživatelskou registraci do databáze
         public bool Register(string name, string surname, string username, string password)
         {
-            if (Util.Util.UserExists(username)) 
+            if (Util.UserExists(username)) 
             {
-                Util.Util.ShowErrorMessageBox("Uživatel s tímto uživatelským jménem již existuje, prosím, použijte jiné");
+                Logger.WriteErrorLog(this, $"Uživatel se pokusil zaregistrovat s existujícím jménem '{username}'");
+                Util.ShowErrorMessageBox("Uživatel s tímto uživatelským jménem již existuje, prosím, použijte jiné");
                 return false;
             }
-            string hashedPassword = Util.Util.HashInput(password);
+            string hashedPassword = Util.HashInput(password);
             string sql = "INSERT INTO Users Values(@username, @password, @name, @surname)";
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {

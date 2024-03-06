@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Model;
+using FinanceTracker.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,6 @@ namespace FinanceTracker.Config
     public class DatabaseConnector
     {
         private string? ConnectionString { get; set; }
-        private string ConnectionPath { get; set; }
         public SQLiteConnection Connection { get; set; }
 
         private static DatabaseConnector? databaseConnector;
@@ -35,7 +35,6 @@ namespace FinanceTracker.Config
         private DatabaseConnector()
         {
             ConnectionString = String.Empty;
-            ConnectionPath = "Connection.json";
             Connection = new SQLiteConnection();
             CreateDatabaseConnection();
         }
@@ -47,46 +46,29 @@ namespace FinanceTracker.Config
             if (ConnectionString != null) 
             {
                 Connection.ConnectionString = ConnectionString;
-                Connection.Open();
+                try 
+                {
+                    Connection.Open();
+                } catch (Exception ex)
+                {
+                    Logger.WriteErrorLog(this, $"Připojení k databázi se nepodařilo vytvořit, {ex.Message} \n - Konec aplikace");
+                    Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit");
+                    Environment.Exit(0);
+                }
             }
             else 
             {
-                Util.Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit, ukončení aplikace...");
+                Logger.WriteErrorLog(this, "Připojení k databázi se nepodařilo vytvořit, protože ConnectionString je null, konec aplikace");
+                Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit, ukončuji aplikaci...");
                 Environment.Exit(0);
             }
         }
 
-        // 'bin/debug/net8.0-windows' je kořenová složka pro čtení ze souborů
-        // proto se zde nachází jak databázový soubor, tak konfigurační hodnoty
+        // Načtení connection stringu z AppConfig.json
         private string? LoadDatabaseConnectionString()  
         {
-            try
-            {
-                if (File.Exists(ConnectionPath))
-                {
-                    string json = File.ReadAllText(ConnectionPath);
-                    DatabaseConfiguration? config = JsonConvert.DeserializeObject<DatabaseConfiguration>(json);
-                    if (config != null)
-                    {
-                        string connString = config.ConnectionString;
-                        if (connString != null)
-                        {
-                            return connString;
-                        }
-                    }
-                    return null;
-                }
-                else
-                {
-                    Util.Util.ShowErrorMessageBox("Konfigurační soubor nenalezen v souborech aplikace");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Util.Util.ShowErrorMessageBox($"Nepodařilo se přečíst konfigurační soubor {ConnectionPath}: " + ex.Message);
-                return null;
-            }
+            AppConfig config = Util.ReadAppConfig();
+            return config.ConnectionString;
         }
     }
 }

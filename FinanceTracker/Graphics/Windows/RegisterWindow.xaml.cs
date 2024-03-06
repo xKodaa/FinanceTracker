@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Config;
+using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace FinanceTracker.Graphics.Windows
             string username = RegisterUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, RegisterPasswordBox.SecurePassword).Password;
 
-            if (!Util.Util.ValidLoginOrRegistrationInputs(name, surname, username, password))
+            if (!Util.ValidLoginOrRegistrationInputs(name, surname, username, password))
             {
                 ClearInputs();
             }
@@ -44,9 +45,10 @@ namespace FinanceTracker.Graphics.Windows
             {
                 if (registerService.Register(name, surname, username, password))
                 {
+                    Logger.WriteLog(this, $"Uživatel '{username}' zaregistrován");
                     DialogResult = true;
                     // TODO toto místo to alertu přesunout spíše na uvodni profile page
-                    Util.Util.ShowInfoMessageBox($"Registrace byla úspěšná! \n - Vítejte {name} {surname}");
+                    Util.ShowInfoMessageBox($"Registrace byla úspěšná! \n - Vítejte {name} {surname}");
                 }
                 else
                     ClearInputs();

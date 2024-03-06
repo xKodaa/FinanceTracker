@@ -1,24 +1,70 @@
 ﻿using FinanceTracker.Config;
+using FinanceTracker.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace FinanceTracker.Util
+namespace FinanceTracker.Utility
 {
     public class Util
     {
         private static SQLiteConnection? connection;
+        private static AppConfig AppConfig { get; set; }
+        private static string AppConfigPath;
 
         static Util() 
         {
+            AppConfigPath = "AppConfig.json";
+            AppConfig = ReadAppConfig();
             DatabaseConnector connector = DatabaseConnector.Instance;
             connection = connector.Connection;
+        }
+
+        // Přečtení konfiguračního souboru
+        // 'bin/debug/net8.0-windows' je kořenová složka pro čtení ze souborů
+        // proto se zde nachází jak databázový soubor, tak konfigurační hodnoty
+        public static AppConfig ReadAppConfig()
+        {
+            if (AppConfig == null) 
+            {
+                if (!File.Exists(AppConfigPath))
+                {
+                    ShowErrorMessageBox("Konfigurační soubor nenalezen");
+                    Logger.WriteErrorLog(nameof(Util), $"Konfigurační soubor {AppConfigPath} nenalezen ve složce /bin/debug/net8.0-windows/");
+                    Environment.Exit(0);
+                }
+
+                AppConfig = new AppConfig();
+                try 
+                {
+                    string content = File.ReadAllText(AppConfigPath);
+                    AppConfig? config = JsonConvert.DeserializeObject<AppConfig>(content);
+                    if (config != null && config.IsInitialized())
+                    {
+                        AppConfig.ConnectionString = config.ConnectionString;
+                        AppConfig.StocksRefreshRate = config.StocksRefreshRate;
+                        AppConfig.CryptoRefreshRate = config.CryptoRefreshRate;
+                    }
+                    Logger.WriteErrorLog(nameof(Util), $"ConnectionString = {config?.ConnectionString}, " +
+                        $"StocksRefreshRate = {config?.StocksRefreshRate}, CryptoRefreshRate = {config?.CryptoRefreshRate}");
+                    return AppConfig;
+                } catch (Exception ex)
+                {
+                    ShowErrorMessageBox($"Nepodařilo se načíst konfigurační soubor {AppConfigPath}!");
+                    Logger.WriteErrorLog(nameof(Util), $"Konfigurační soubor {AppConfigPath} se nepodařilo načíst, chyba: {ex.Message} \n - Konec aplikace");
+                    Environment.Exit(0);
+                }
+            }
+            Logger.WriteErrorLog(nameof(Util), $"Konfigurační soubor {AppConfigPath} nebyl správně načten");
+            return AppConfig;
         }
 
         // SHA256 hashování řetěžce
@@ -28,7 +74,7 @@ namespace FinanceTracker.Util
             {
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-                StringBuilder builder = new StringBuilder();
+                StringBuilder builder = new();
                 for (int i = 0; i < bytes.Length; i++)
                 {
                     builder.Append(bytes[i].ToString("x2"));
