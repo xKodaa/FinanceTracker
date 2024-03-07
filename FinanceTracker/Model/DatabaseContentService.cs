@@ -1,4 +1,5 @@
-﻿using FinanceTracker.Utility;
+﻿using FinanceTracker.Config;
+using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceTracker.Config
+namespace FinanceTracker.Model
 {
     public class DatabaseContentService
     {
@@ -14,7 +15,7 @@ namespace FinanceTracker.Config
         private SQLiteConnection connection;
         private List<string> TablesToCheck;
 
-        public DatabaseContentService() 
+        public DatabaseContentService()
         {
             connector = DatabaseConnector.Instance;
             connection = connector.Connection;
@@ -56,9 +57,9 @@ namespace FinanceTracker.Config
                 case "UserStocks":
                     sql = "CREATE TABLE UserStocks (username TEXT, stockName TEXT, amount INTEGER, dateOfBuy DATETIME, FOREIGN KEY(username) REFERENCES Users(username))";
                     break;
-                case "UserCryptos": 
+                case "UserCryptos":
                     sql = "CREATE TABLE UserCryptos (username TEXT, cryptoName TEXT, amount INTEGER, dateOfBuy DATETIME, FOREIGN KEY(username) REFERENCES Users(username))";
-                    break;  
+                    break;
                 default:
                     sql = "";
                     break;
