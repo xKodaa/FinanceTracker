@@ -1,5 +1,6 @@
 ﻿using FinanceTracker.Graphics;
 using FinanceTracker.Graphics.Windows;
+using FinanceTracker.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

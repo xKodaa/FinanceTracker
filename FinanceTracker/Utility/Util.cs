@@ -145,5 +145,34 @@ namespace FinanceTracker.Utility
             }
             return true;
         }
+
+        private void GetTickersFromCsv()
+        {
+            string sourceFilePath = "tickers_full.csv";
+            string destinationFilePath = "tickers.csv";
+            try
+            {
+                using (StreamReader reader = new StreamReader(sourceFilePath))
+                using (StreamWriter writer = new StreamWriter(destinationFilePath))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string? line = reader.ReadLine();
+                        if (line != null)
+                        {
+                            string[] values = line.Split(',');
+                            string row = values[0] + ";" + values[1];
+                            writer.WriteLine(row);
+                        }
+                    }
+                }
+                Logger.WriteLog(nameof(Util), "Tickers byly úspěšně přepsány");
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteErrorLog(nameof(Util), $"Chyba při príci se soubroy Tickers: {ex.Message}");
+                ShowErrorMessageBox("Chyba při práci se soubory Tickers");
+            }
+        }
     }
 }

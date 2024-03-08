@@ -84,6 +84,7 @@ namespace FinanceTracker.Graphics.Windows
                 Environment.Exit(0);
         }
 
+        /* Možnost zobrazování a skrývání hesla */
         private void ShowPassword_Checked(object sender, RoutedEventArgs e)
         {
             LoginPasswordTBox.Visibility = Visibility.Visible;
