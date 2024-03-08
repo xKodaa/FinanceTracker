@@ -22,7 +22,7 @@ namespace FinanceTracker.Utility
 
         static Util() 
         {
-            AppConfigPath = "AppConfig.json";
+            AppConfigPath = "Data/app_config.json";
             AppConfig = ReadAppConfig();
             DatabaseConnector connector = DatabaseConnector.Instance;
             connection = connector.Connection;
@@ -31,7 +31,6 @@ namespace FinanceTracker.Utility
         // Přečtení konfiguračního souboru
         // 'bin/debug/net8.0-windows' je kořenová složka pro čtení ze souborů
         // proto se zde nachází jak databázový soubor, tak konfigurační hodnoty
-        // tm-fb2e32a1-6465-4218-8e40-be1e9507de67
         public static AppConfig ReadAppConfig()
         {
             if (AppConfig == null) 
@@ -148,8 +147,8 @@ namespace FinanceTracker.Utility
 
         private void GetTickersFromCsv()
         {
-            string sourceFilePath = "tickers_full.csv";
-            string destinationFilePath = "tickers.csv";
+            string sourceFilePath = "Data/tickers_full.csv";
+            string destinationFilePath = "Data/tickers.csv";
             try
             {
                 using (StreamReader reader = new StreamReader(sourceFilePath))

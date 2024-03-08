@@ -1,5 +1,0 @@
-{
-  "ConnectionString" : "Data source=./financetracker.sqlite",
-  "StocksRefreshRate" : "20",
-  "CryptoRefreshRate" : "20"
-}
