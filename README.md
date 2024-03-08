@@ -13,8 +13,16 @@ TODO
 - [ ] Vytvořit layout Dashboard page
 - [ ] Implementovat logiku na pozadí jednotlivých pages
 
+NOTES
+POKUD BUDU NAKONEC ŘEŠIT AKCIE
+- Nasadit vyhledávání ticker symbolu do Akcie Page, podle toho se budou provádět dotazy na Stocks API
+- Nějakým způsobem profiltrovat Tickers...
+OBECNÉ
+- Možnost konverze mezi USDT = CZK
+
 LINKS
 - Tickers: https://www.nasdaq.com/market-activity/stocks/screener
 - Crypto API: https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
-- Stocks API: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to
-- Free APIs (useful): https://rapidapi.com/collection/list-of-free-apis
+- Stocks API: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to, https://www.alphavantage.co/documentation/
+- Currency convertor library: https://github.com/everapihq/freecurrencyapi-dotnet
+- Free APIs (useful): https://rapidapi.com/hub
