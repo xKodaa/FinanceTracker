@@ -50,22 +50,61 @@ namespace FinanceTracker.Utility
                     if (config != null && config.IsInitialized())
                     {
                         AppConfig.ConnectionString = config.ConnectionString;
-                        AppConfig.StocksRefreshRate = config.StocksRefreshRate;
+                        AppConfig.DefaultCurrency = config.DefaultCurrency;
                         AppConfig.CryptoRefreshRate = config.CryptoRefreshRate;
                     }
-                    Logger.WriteErrorLog(nameof(Util), $"ConnectionString = {config?.ConnectionString}, " +
-                        $"StocksRefreshRate = {config?.StocksRefreshRate}, CryptoRefreshRate = {config?.CryptoRefreshRate}");
+                    Logger.WriteLog(nameof(Util), AppConfig.ToString());
                     return AppConfig;
                 } catch (Exception ex)
                 {
                     ShowErrorMessageBox($"Nepodařilo se načíst konfigurační soubor {AppConfigPath}!");
+                    Logger.WriteErrorLog(nameof(Util), AppConfig.ToString());
                     Logger.WriteErrorLog(nameof(Util), $"Konfigurační soubor {AppConfigPath} se nepodařilo načíst, chyba: {ex.Message} \n - Konec aplikace");
                     Environment.Exit(0);
                 }
             }
-            Logger.WriteErrorLog(nameof(Util), $"Konfigurační soubor {AppConfigPath} nebyl správně načten");
             return AppConfig;
         }
+
+        public static void EditAppConfig(string key, string value)
+        {
+            if (AppConfig == null)
+            {
+                AppConfig = ReadAppConfig();
+            }
+            try
+            {
+                if (key.Equals("ConnectionString"))
+                {
+                    AppConfig.ConnectionString = value;
+                }
+                else if (key.Equals("DefaultCurrency"))
+                {
+                    AppConfig.DefaultCurrency = value;
+                }
+                else if (key.Equals("CryptoRefreshRate"))
+                {
+                    if (int.TryParse(value, out int rate))
+                    {
+                        AppConfig.CryptoRefreshRate = rate;
+                    }
+                    else
+                    {
+                        ShowErrorMessageBox("Zadejte prosím číslo");
+                        Logger.WriteErrorLog(nameof(Util), $"Chyba při editaci app_config.json souboru: key={key}, value={value}");
+                        return;
+                    }
+                }
+                string json = JsonConvert.SerializeObject(AppConfig, Formatting.Indented);
+                File.WriteAllText(AppConfigPath, json);
+                Logger.WriteLog(nameof(Util), "Konfigurační soubor byl úspěšně upraven");
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessageBox("Nepodařilo se upravit konfigurační soubor");
+                Logger.WriteErrorLog(nameof(Util), $"Nepodařilo se upravit konfigurační soubor {AppConfigPath}, chyba: {ex.Message}");
+            }
+        }   
 
         // SHA256 hashování řetěžce
         public static String HashInput(string input) 

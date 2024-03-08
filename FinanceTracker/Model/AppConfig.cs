@@ -11,14 +11,19 @@ namespace FinanceTracker.Model
     public class AppConfig
     {
         public string? ConnectionString { get; set; }
-        public int? StocksRefreshRate { get; set; }
         public int? CryptoRefreshRate { get; set; }
+        public string? DefaultCurrency { get; set; }
 
         public AppConfig() { }
 
         public bool IsInitialized() 
         {
-            return ConnectionString != null && StocksRefreshRate != null && CryptoRefreshRate != null;  
+            return ConnectionString != null && DefaultCurrency != null && CryptoRefreshRate != null;  
+        }
+
+        public override string ToString()
+        {
+            return $"ConnectionString = {ConnectionString}, DefaultCurrency = {DefaultCurrency}, CryptoRefreshRate = {CryptoRefreshRate}";
         }
     }
 }

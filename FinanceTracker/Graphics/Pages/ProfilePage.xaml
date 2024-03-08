@@ -8,7 +8,5 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProfilePage">
 
-    <Grid>
-        <TextBox x:Name="apiContent" HorizontalAlignment="Center" Margin="0,139,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="780" Height="32"/>
-    </Grid>
+    <Grid/>
 </Page>

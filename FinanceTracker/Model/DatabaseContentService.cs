@@ -19,7 +19,7 @@ namespace FinanceTracker.Model
         {
             connector = DatabaseConnector.Instance;
             connection = connector.Connection;
-            TablesToCheck = ["Users", "UserStocks", "UserCryptos"];
+            TablesToCheck = ["Users", "UserCryptos"];
             CheckDatabaseContent();
         }
 

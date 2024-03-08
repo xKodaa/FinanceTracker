@@ -10,11 +10,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using RestSharp;
 using FinanceTracker.Utility;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
+using FinanceTracker.Model;
 
 
 namespace FinanceTracker
@@ -25,8 +25,14 @@ namespace FinanceTracker
         public MainWindow()
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            Launcher launcher = new(this);
-            launcher.Launch();
+            /*CurrencyApiService currencyConvertorService = new CurrencyApiService();
+            CryptoApiService cryptoApiService = new CryptoApiService();
+
+            currencyConvertorService.ConvertCurrencyAsync("USD", "EUR");
+            cryptoApiService.RetrieveCryptoInfoAsync();*/
+            Util.EditAppConfig("DefaultCurrency", "USD");    
+            //Launcher launcher = new(this);
+            //launcher.Launch();
             
             //InitializeComponent();
         }
