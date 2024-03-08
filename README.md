@@ -24,5 +24,5 @@ LINKS
 - Tickers: https://www.nasdaq.com/market-activity/stocks/screener
 - Crypto API: https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
 - Stocks API: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to, https://www.alphavantage.co/documentation/
-- Currency convertor library: https://github.com/everapihq/freecurrencyapi-dotnet
+- Currency convertor API: https://www.frankfurter.app/docs/
 - Free APIs (useful): https://rapidapi.com/hub
