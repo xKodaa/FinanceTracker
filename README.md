@@ -1,6 +1,6 @@
 # FinanceTracker
 
-TODO
+## TODO
 - [x] Implementovat register
 - [x] Implementovat login
 - [x] Rozvrhnout layout aplikce
@@ -13,14 +13,19 @@ TODO
 - [ ] Vytvořit layout Dashboard page
 - [ ] Implementovat logiku na pozadí jednotlivých pages
 
-NOTES
-POKUD BUDU NAKONEC ŘEŠIT AKCIE
+## NOTES
+
+### POKUD BUDU NAKONEC ŘEŠIT AKCIE
 - Nasadit vyhledávání ticker symbolu do Akcie Page, podle toho se budou provádět dotazy na Stocks API
 - Nějakým způsobem profiltrovat Tickers...
-OBECNÉ
+  
+### OBECNÉ
 - Možnost konverze mezi USDT = CZK
+- Při registraci požádat o vyplnění uživatele o jeho preferované měně, pár oblíbených kryptoměn/akcií
+- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) 
+- Možná přidat sekci konvertor? Nacpat zde všechny dostupné měny z API a možnost mezi nimi libovolně konvertovat.
 
-LINKS
+## LINKS
 - Tickers: https://www.nasdaq.com/market-activity/stocks/screener
 - Crypto API: https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
 - Stocks API: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to, https://www.alphavantage.co/documentation/
