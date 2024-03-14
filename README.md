@@ -7,7 +7,7 @@
 - [x] Přidat možnost vytvoření struktury databáze při spuštění aplikace
 - [x] Přidat rychlost vyčítání dat z API do konfiguračního souboru
 - [ ] Vytvořit layout Profile page
-- [ ] Vytvořit layout Převodník page
+- [x] Vytvořit layout Převodník page
 - [x] Vytvořit layout Finance page
 - [ ] Vytvořit layout Kryptoměny page
 - [ ] Vytvořit layout Dashboard page
