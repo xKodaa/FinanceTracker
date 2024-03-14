@@ -217,6 +217,7 @@ namespace FinanceTracker.Utility
         public static void SetUser(string username)
         {
             Connector.LoggedUser = new User(username);
+            Logger.WriteLog(nameof(Util), $"Uživatel '{username}' byl úspěšně nastaven");
         }
 
         public static User GetUser()

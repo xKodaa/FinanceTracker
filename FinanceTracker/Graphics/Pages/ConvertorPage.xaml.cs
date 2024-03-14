@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FinanceTracker.Graphics.Windows
+namespace FinanceTracker.Graphics.Pages
 {
     /// <summary>
-    /// Interakční logika pro FinanceGraphWindow.xaml
+    /// Interakční logika pro ConvertorPage.xaml
     /// </summary>
-    public partial class FinanceGraphWindow : Window
+    public partial class ConvertorPage : Page
     {
-        public FinanceGraphWindow()
+        public ConvertorPage()
         {
             InitializeComponent();
         }
