@@ -19,7 +19,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Kategorie:" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0"/>
-                <Button Content="+" Style="{StaticResource WindowsButtonStyle}" Width="30" Grid.Column="1" HorizontalAlignment="Right" Margin="15,5"/>
+                <Button x:Name="FinancesBtnAddCategory" Content="+" Style="{StaticResource WindowsButtonStyle}" Width="30" Grid.Column="1" HorizontalAlignment="Right" Margin="15,5" Click="FinancesBtnAddCategory_Click"/>
             </Grid>
             <ComboBox x:Name="FinancesComboBox" Style="{StaticResource PagesComboBoxStyle}" HorizontalAlignment="Left"/>
 

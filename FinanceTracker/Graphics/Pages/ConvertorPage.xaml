@@ -8,7 +8,34 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ConvertorPage">
 
-    <Grid>
-        
+    <Grid Style="{StaticResource GradientBackgroundStyle}">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="280">
+
+            <!-- Zdrojová měna -->
+            <Label Content="Zdrojová měna:" Style="{StaticResource WindowsLabelStyle}"/>
+            <ComboBox x:Name="SourceCurrencyComboBox" Style="{StaticResource PagesComboBoxStyle}" HorizontalAlignment="Left"/>
+
+            <!-- Částka -->
+            <Label Content="Počet:" Style="{StaticResource WindowsLabelStyle}"/>
+            <TextBox x:Name="AmountTextBox" Style="{StaticResource WindowsTextBoxStyle}" HorizontalAlignment="Left"/>
+
+            <!-- Cílová měna -->
+            <Label Content="Cílová měna:" Style="{StaticResource WindowsLabelStyle}"/>
+            <ComboBox x:Name="TargetCurrencyComboBox" Style="{StaticResource PagesComboBoxStyle}" HorizontalAlignment="Left"/>
+
+            <Button x:Name="ConvertorBtnSubmit" Content="Převést" Style="{StaticResource WindowsButtonStyle}" HorizontalAlignment="Left" Click="ConvertorBtnSubmit_Click"/>
+
+            <!-- Výsledek a tlačítko kopírování -->
+            <Grid x:Name="ConvertorResultGrid" HorizontalAlignment="Left" Width="280" Visibility="Hidden">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="ConversionSourceLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0"/>
+                <Label x:Name="ConversionResultLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0" Margin="65,0"/>
+                <Button x:Name="ConvertorBtnCopy" Content="Kopírovat" Style="{StaticResource WindowsButtonStyle}" Width="80" Grid.Column="1" Margin="15,0" Click="ConvertorBtnCopy_Click"/>
+            </Grid>
+
+        </StackPanel>
     </Grid>
 </Page>

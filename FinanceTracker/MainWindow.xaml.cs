@@ -40,6 +40,11 @@ namespace FinanceTracker
             MainContentFrame.Navigate(new FinancesPage(this));
         }
 
+        private void ConvertorButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new ConvertorPage(this));
+        }
+
         private void ProfileButton_Click(object sender, RoutedEventArgs e)
         {
             MainContentFrame.Navigate(new ProfilePage(this));

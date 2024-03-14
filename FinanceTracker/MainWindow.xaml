@@ -20,7 +20,7 @@
                 <!-- Menu part-->
                 <Button Content="Profil" Style="{StaticResource MainWindowHoverButtonStyle}" Click="ProfileButton_Click"/>
                 <Button Content="Finance" Style="{StaticResource MainWindowHoverButtonStyle}" Click="FinanceButton_Click"/>
-                <!-- <Button Content="Akcie" Style="{StaticResource MainWindowHoverButtonStyle}" Click="StocksButton_Click"/> -->
+                <Button Content="Převodník" Style="{StaticResource MainWindowHoverButtonStyle}" Click="ConvertorButton_Click"/>
                 <Button Content="Kryptoměny" Style="{StaticResource MainWindowHoverButtonStyle}" Click="CryptoButton_Click"/>
                 <Button Content="Dashboard" Style="{StaticResource MainWindowHoverButtonStyle}" Click="DashboardButton_Click"/>
                 <!-- Copyright part-->

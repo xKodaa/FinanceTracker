@@ -36,5 +36,10 @@ namespace FinanceTracker.Graphics.Pages
         {
             Frame.Navigate(new DashboardPage(MainWindow));
         }
+
+        private void FinancesBtnAddCategory_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

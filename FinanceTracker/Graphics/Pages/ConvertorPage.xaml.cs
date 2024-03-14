@@ -20,9 +20,30 @@ namespace FinanceTracker.Graphics.Pages
     /// </summary>
     public partial class ConvertorPage : Page
     {
-        public ConvertorPage()
+        public ConvertorPage(MainWindow mainWindow)
         {
             InitializeComponent();
+            HideResultGrid();
+        }
+
+        private void ConvertorBtnCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ConversionResultLabel.Content.ToString());
+        }
+
+        private void ConvertorBtnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+            ShowResultGrid();
+        }
+
+        private void HideResultGrid()
+        {
+            ConvertorResultGrid.Visibility = Visibility.Hidden;
+        }
+
+        private void ShowResultGrid()
+        {
+            ConvertorResultGrid.Visibility = Visibility.Visible;
         }
     }
 }
