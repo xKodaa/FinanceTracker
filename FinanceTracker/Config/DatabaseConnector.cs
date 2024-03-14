@@ -18,6 +18,8 @@ namespace FinanceTracker.Config
         public SQLiteConnection Connection { get; set; }
 
         private static DatabaseConnector? databaseConnector;
+        
+        public User LoggedUser { get; set;}
 
         // Singletone pro získávání stejné instance připojení do DB
         public static DatabaseConnector Instance    
@@ -36,6 +38,7 @@ namespace FinanceTracker.Config
         {
             ConnectionString = String.Empty;
             Connection = new SQLiteConnection();
+            LoggedUser = new User("default");
             CreateDatabaseConnection();
         }
 

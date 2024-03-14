@@ -20,7 +20,7 @@ namespace FinanceTracker.Graphics.Pages
     /// </summary>
     public partial class ProfilePage : Page
     {
-        public ProfilePage()
+        public ProfilePage(MainWindow mainWindow)
         {
             InitializeComponent();
         }

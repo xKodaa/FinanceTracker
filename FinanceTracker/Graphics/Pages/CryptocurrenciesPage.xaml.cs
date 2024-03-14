@@ -20,7 +20,7 @@ namespace FinanceTracker.Graphics.Pages
     /// </summary>
     public partial class CryptocurrenciesPage : Page
     {
-        public CryptocurrenciesPage()
+        public CryptocurrenciesPage(MainWindow mainWindow)
         {
             InitializeComponent();
         }

@@ -19,13 +19,14 @@ namespace FinanceTracker.Utility
         private static SQLiteConnection? connection;
         private static AppConfig AppConfig { get; set; }
         private static string AppConfigPath;
+        private static DatabaseConnector Connector;
 
         static Util() 
         {
             AppConfigPath = "Data/app_config.json";
             AppConfig = ReadAppConfig();
-            DatabaseConnector connector = DatabaseConnector.Instance;
-            connection = connector.Connection;
+            Connector = DatabaseConnector.Instance;
+            connection = Connector.Connection;
         }
 
         // Přečtení konfiguračního souboru
@@ -211,6 +212,16 @@ namespace FinanceTracker.Utility
                 Logger.WriteErrorLog(nameof(Util), $"Chyba při príci se soubroy Tickers: {ex.Message}");
                 ShowErrorMessageBox("Chyba při práci se soubory Tickers");
             }
+        }
+
+        public static void SetUser(string username)
+        {
+            Connector.LoggedUser = new User(username);
+        }
+
+        public static User GetUser()
+        {
+            return Connector.LoggedUser;
         }
     }
 }

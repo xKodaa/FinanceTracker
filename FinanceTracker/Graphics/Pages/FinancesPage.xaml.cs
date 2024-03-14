@@ -15,14 +15,26 @@ using System.Windows.Shapes;
 
 namespace FinanceTracker.Graphics.Pages
 {
-    /// <summary>
-    /// Interakční logika pro FinancesPage.xaml
-    /// </summary>
     public partial class FinancesPage : Page
     {
-        public FinancesPage()
+        private Frame Frame { get; set; }
+        private MainWindow MainWindow { get; set; }
+
+        public FinancesPage(MainWindow mainWindow)
         {
+            MainWindow = mainWindow;
+            Frame = MainWindow.MainContentFrame;  
             InitializeComponent();
+        }
+
+        private void FinancesBtnSubmit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DashboardsHyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(new DashboardPage(MainWindow));
         }
     }
 }

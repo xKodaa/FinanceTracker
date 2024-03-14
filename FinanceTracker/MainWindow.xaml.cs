@@ -16,7 +16,6 @@ using System.Net.Http.Headers;
 using System.IO;
 using FinanceTracker.Model;
 
-
 namespace FinanceTracker
 {
     public partial class MainWindow : Window
@@ -25,21 +24,42 @@ namespace FinanceTracker
         public MainWindow()
         {
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            /*CurrencyApiService currencyConvertorService = new CurrencyApiService();
-            CryptoApiService cryptoApiService = new CryptoApiService();
-
-            currencyConvertorService.ConvertCurrencyAsync("USD", "EUR");
-            cryptoApiService.RetrieveCryptoInfoAsync();*/
-            Util.EditAppConfig("DefaultCurrency", "USD");    
-            //Launcher launcher = new(this);
-            //launcher.Launch();
-            
-            //InitializeComponent();
+            Launcher launcher = new(this);
+            launcher.Launch();
+            InitializeComponent();
+            UpdateMainTitle();
         }
 
         private void MainPageLoaded(object sender, RoutedEventArgs e)
         {
-            MainContentFrame.Navigate(new ProfilePage()); 
+            MainContentFrame.Navigate(new ProfilePage(this)); 
+        }
+
+        private void FinanceButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new FinancesPage(this));
+        }
+
+        private void ProfileButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new ProfilePage(this));
+        }
+
+        private void CryptoButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new CryptocurrenciesPage(this));
+
+        }
+
+        private void DashboardButton_Click(object sender, RoutedEventArgs e)
+        {
+            MainContentFrame.Navigate(new DashboardPage(this));
+
+        }
+
+        private void UpdateMainTitle()
+        {
+            Title = $"Finance Tracker | {Util.GetUser()}";
         }
     }
 }
