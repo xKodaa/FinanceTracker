@@ -7,23 +7,19 @@
 - [x] Přidat možnost vytvoření struktury databáze při spuštění aplikace
 - [x] Přidat rychlost vyčítání dat z API do konfiguračního souboru
 - [ ] Vytvořit layout Profile page
-- [ ] Vytvořit layout Finance page
-- [ ] Vytvořit layout Akcie page
+- [ ] Vytvořit layout Převodník page
+- [x] Vytvořit layout Finance page
 - [ ] Vytvořit layout Kryptoměny page
 - [ ] Vytvořit layout Dashboard page
 - [ ] Implementovat logiku na pozadí jednotlivých pages
 
 ## NOTES
-
-### POKUD BUDU NAKONEC ŘEŠIT AKCIE
-- Nasadit vyhledávání ticker symbolu do Akcie Page, podle toho se budou provádět dotazy na Stocks API
-- Nějakým způsobem profiltrovat Tickers...
   
 ### OBECNÉ
-- Možnost konverze mezi USDT = CZK
-- Při registraci požádat o vyplnění uživatele o jeho preferované měně, pár oblíbených kryptoměn/akcií
-- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) 
-- Možná přidat sekci konvertor? Nacpat zde všechny dostupné měny z API a možnost mezi nimi libovolně konvertovat.
+- Možnost konverze mezi USDT = CZK - převodník page
+- Při registraci požádat o vyplnění uživatele o jeho preferované měně, pár oblíbených kryptoměn/akcií - register window
+- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) - využít stejné metody jako konvertor
+- Do dashboards dát comboboxy na měsíce a roky a udělat dotazy do databáze na tyto parametry, dle toho vyplňovat grafy
 
 ## LINKS
 - Tickers: https://www.nasdaq.com/market-activity/stocks/screener
