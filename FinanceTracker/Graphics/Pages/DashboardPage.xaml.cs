@@ -2,6 +2,7 @@
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,19 @@ namespace FinanceTracker.Graphics.Pages
             InitValues();
             mainWindow.DataContext = this;
             InitializeComponent();
+            InitializeComboBoxes();
+        }
+
+        private void InitializeComboBoxes()
+        {
+            DashboardYearComboBox.Items.Add("2024");
+            var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+            for (int i = 0; i < 12; i++)
+            {
+                DashboardMonthComboBox.Items.Add(monthNames[i]);
+            }
+            DashboardYearComboBox.SelectedIndex = 0;
+            DashboardMonthComboBox.SelectedIndex = 0;
         }
 
         private void InitValues()
@@ -52,6 +66,11 @@ namespace FinanceTracker.Graphics.Pages
 
             // pridani hodnoty do ColumnSeries dodatečně - ručně, konkretně do druheho sloupce
             SeriesCollection[1].Values.Add(48d);
+        }
+
+        private void DashboardShowGraphButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
