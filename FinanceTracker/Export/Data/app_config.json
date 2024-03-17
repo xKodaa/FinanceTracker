@@ -1,11 +1,11 @@
 {
   "ConnectionString": "Data source=./Data/finance_tracker.sqlite",
-  "CryptoRefreshRate": "20",
+  "CryptoRefreshRate": 20,
   "DefaultCurrency": "CZK",
   "FinanceCategories": [
     "Potraviny",
     "Bydlení",
-    "Zdravotní péče", 
+    "Zdravotní péče",
     "Doprava",
     "Vzdělání",
     "Zábava a volný čas",
