@@ -10,12 +10,12 @@
 - [x] Vytvořit layout Převodník page
 - [x] Vytvořit layout Finance page
 - [ ] Vytvořit layout Kryptoměny page
-- [ ] Vytvořit layout Dashboard page
+- [x] Vytvořit layout Dashboard page
 - [ ] Implementovat logiku na pozadí jednotlivých pages
 - [ ] Implementovat tabulky v DB kam se budou vkládat jednotlivé výdaje
 - [ ] Implementovat tabulky v DB kam se budou dávat jednotlivé kryptoměny 
 - [ ] Implementovat zobrazování grafů
-- [ ] 
+      
 ## NOTES
   
 ### OBECNÉ
