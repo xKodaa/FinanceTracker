@@ -26,13 +26,12 @@
             <Button x:Name="ConvertorBtnSubmit" Content="Převést" Style="{StaticResource WindowsButtonStyle}" HorizontalAlignment="Left" Click="ConvertorBtnSubmit_Click"/>
 
             <!-- Výsledek a tlačítko kopírování -->
-            <Grid x:Name="ConvertorResultGrid" HorizontalAlignment="Left" Width="280" Visibility="Hidden">
+            <Grid x:Name="ConvertorResultGrid" HorizontalAlignment="Left" Width="280" Visibility="Visible">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label x:Name="ConversionSourceLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0"/>
-                <Label x:Name="ConversionResultLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0" Margin="65,0"/>
+                <Label x:Name="ConversionResultLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0"/>
                 <Button x:Name="ConvertorBtnCopy" Content="Kopírovat" Style="{StaticResource WindowsButtonStyle}" Width="80" Grid.Column="1" Margin="15,0" Click="ConvertorBtnCopy_Click"/>
             </Grid>
 
