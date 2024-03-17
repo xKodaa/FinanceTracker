@@ -12,18 +12,19 @@
 - [ ] Vytvořit layout Kryptoměny page
 - [ ] Vytvořit layout Dashboard page
 - [ ] Implementovat logiku na pozadí jednotlivých pages
-
+- [ ] Implementovat tabulky v DB kam se budou vkládat jednotlivé výdaje
+- [ ] Implementovat tabulky v DB kam se budou dávat jednotlivé kryptoměny 
+- [ ] Implementovat zobrazování grafů
+- [ ] 
 ## NOTES
   
 ### OBECNÉ
-- Možnost konverze mezi USDT = CZK - převodník page
-- Při registraci požádat o vyplnění uživatele o jeho preferované měně, pár oblíbených kryptoměn/akcií - register window
-- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) - využít stejné metody jako konvertor
-- Do dashboards dát comboboxy na měsíce a roky a udělat dotazy do databáze na tyto parametry, dle toho vyplňovat grafy
+- Vymyslet implementaci profilu, asi jim vypsat jejich preference (last login / info z db...)
+- Při registraci požádat o vyplnění uživatele o jeho preferované měně, pár oblíbených kryptoměn/akcií - register window (MOŽNÁ)
+- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) - využít stejné metody jako konvertor (MOŽNÁ)
+- Dashboards combobox na roky dát dynamicky dle nejstarších dat v DB
+- Do Financí po odeslání financí z těch dat udělat objekt, který se následně dobrazuje do grafu
 
 ## LINKS
-- Tickers: https://www.nasdaq.com/market-activity/stocks/screener
 - Crypto API: https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
-- Stocks API: https://polygon.io/docs/stocks/get_v2_aggs_ticker__stocksticker__range__multiplier___timespan___from___to, https://www.alphavantage.co/documentation/
 - Currency convertor API: https://www.frankfurter.app/docs/
-- Free APIs (useful): https://rapidapi.com/hub
