@@ -30,9 +30,9 @@ namespace FinanceTracker
 
             currencyConvertorService.ConvertCurrencyAsync("USD", "EUR");
             cryptoApiService.RetrieveCryptoInfoAsync();*/
-            Util.EditAppConfig("DefaultCurrency", "USD");    
+            Util.EditAppConfig("DefaultCurrency", "USD");
             //Launcher launcher = new(this);
-            //launcher.Launch();
+            //launcher.Launch();         
             
             //InitializeComponent();
         }
