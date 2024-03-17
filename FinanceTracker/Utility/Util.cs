@@ -53,6 +53,7 @@ namespace FinanceTracker.Utility
                         AppConfig.ConnectionString = config.ConnectionString;
                         AppConfig.DefaultCurrency = config.DefaultCurrency;
                         AppConfig.CryptoRefreshRate = config.CryptoRefreshRate;
+                        AppConfig.FinanceCategories = config.FinanceCategories;
                     }
                     Logger.WriteLog(nameof(Util), AppConfig.ToString());
                     return AppConfig;
@@ -67,7 +68,7 @@ namespace FinanceTracker.Utility
             return AppConfig;
         }
 
-        public static void EditAppConfig(string key, string value)
+        public static void EditAppConfig(string key, object value)
         {
             if (AppConfig == null)
             {
@@ -75,27 +76,32 @@ namespace FinanceTracker.Utility
             }
             try
             {
-                if (key.Equals("ConnectionString"))
+                switch (key)
                 {
-                    AppConfig.ConnectionString = value;
-                }
-                else if (key.Equals("DefaultCurrency"))
-                {
-                    AppConfig.DefaultCurrency = value;
-                }
-                else if (key.Equals("CryptoRefreshRate"))
-                {
-                    if (int.TryParse(value, out int rate))
-                    {
-                        AppConfig.CryptoRefreshRate = rate;
-                    }
-                    else
-                    {
-                        ShowErrorMessageBox("Zadejte prosím číslo");
-                        Logger.WriteErrorLog(nameof(Util), $"Chyba při editaci app_config.json souboru: key={key}, value={value}");
-                        return;
-                    }
-                }
+                    case "ConnectionString":
+                        AppConfig.ConnectionString = value.ToString();
+                        break;
+                    case "DefaultCurrency":
+                        AppConfig.DefaultCurrency = value.ToString();
+                        break;
+                    case "CryptoRefreshRate":
+                        if (int.TryParse(value.ToString(), out int rate))
+                        {
+                            AppConfig.CryptoRefreshRate = rate;
+                        }
+                        else
+                        {
+                            ShowErrorMessageBox("Zadejte prosím číslo");
+                            Logger.WriteErrorLog(nameof(Util), $"Chyba při editaci app_config.json souboru: key={key}, value={value}");
+                            return;
+                        }
+                        break;
+                    case "FinanceCategories":
+                        List<string> categories = (List<string>)value;
+                        AppConfig.FinanceCategories = categories;
+                        break;
+
+                }   
                 string json = JsonConvert.SerializeObject(AppConfig, Formatting.Indented);
                 File.WriteAllText(AppConfigPath, json);
                 Logger.WriteLog(nameof(Util), "Konfigurační soubor byl úspěšně upraven");
