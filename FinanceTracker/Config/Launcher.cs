@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.Graphics;
 using FinanceTracker.Graphics.Windows;
 using FinanceTracker.Model;
+using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace FinanceTracker.Config
     {
         private DatabaseConnector DatabaseConnector { get; set; }
         private MainWindow MainWindow { get; set; }
+
 
         public Launcher(MainWindow mainWindow)
         {
@@ -30,12 +32,11 @@ namespace FinanceTracker.Config
         // Zajištění přihlášení/registrace uživatele
         private void HandleLoginWindow()
         {
-            LoginWindow loginWindow = new LoginWindow(MainWindow);
+            LoginWindow loginWindow = new(MainWindow);
             if (loginWindow.ShowDialog() == true)
             {
                 loginWindow.Close();
             }
-            GraphTest graphTest = new GraphTest(MainWindow);
         }
     }
 }

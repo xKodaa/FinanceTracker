@@ -54,6 +54,7 @@ namespace FinanceTracker.Graphics.Windows
                 else
                 {
                     Logger.WriteLog(this, $"Uživatel '{username}' přihlášen");
+                    Util.SetUser(username);
                     DialogResult = true;
                 }
             }

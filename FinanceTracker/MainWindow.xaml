@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" Loaded="MainPageLoaded">
+        Title="FinanceTracker" Height="450" Width="800" WindowStartupLocation="CenterScreen" Loaded="MainPageLoaded">
     <Grid Loaded="MainPageLoaded">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -18,11 +18,11 @@
                 <Label Content="Finance Tracker" Height="50" Foreground="White" Background="#2C3E50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="16" FontWeight="Bold"/>
                 <Separator Background="#1AFFFFFF"/>
                 <!-- Menu part-->
-                <Button Content="Profil" Style="{StaticResource MainWindowHoverButtonStyle}"/>
-                <Button Content="Finance" Style="{StaticResource MainWindowHoverButtonStyle}"/>
-                <Button Content="Akcie" Style="{StaticResource MainWindowHoverButtonStyle}"/>
-                <Button Content="Kryptoměny" Style="{StaticResource MainWindowHoverButtonStyle}"/>
-                <Button Content="Dashboard" Style="{StaticResource MainWindowHoverButtonStyle}"/>
+                <Button Content="Profil" Style="{StaticResource MainWindowHoverButtonStyle}" Click="ProfileButton_Click"/>
+                <Button Content="Finance" Style="{StaticResource MainWindowHoverButtonStyle}" Click="FinanceButton_Click"/>
+                <Button Content="Převodník" Style="{StaticResource MainWindowHoverButtonStyle}" Click="ConvertorButton_Click"/>
+                <Button Content="Kryptoměny" Style="{StaticResource MainWindowHoverButtonStyle}" Click="CryptoButton_Click"/>
+                <Button Content="Dashboard" Style="{StaticResource MainWindowHoverButtonStyle}" Click="DashboardButton_Click"/>
                 <!-- Copyright part-->
                 <StackPanel VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
                     <Separator Background="#1AFFFFFF"/>
@@ -31,6 +31,9 @@
             </StackPanel>
         </DockPanel>
 
-        <Frame x:Name="MainContentFrame" Grid.Column="1" NavigationUIVisibility="Hidden"/>
+        <Border Grid.Column="1" Background="#FFDADADA">
+            <Frame x:Name="MainContentFrame" NavigationUIVisibility="Hidden"/>
+        </Border>
+
     </Grid>
 </Window>
