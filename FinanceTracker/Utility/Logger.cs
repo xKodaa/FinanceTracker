@@ -24,7 +24,9 @@ namespace FinanceTracker.Utility
         private static void MarkStartOfApp()
         {
             WriteLog(nameof(Logger), START_MARK);
+            WriteLog(nameof(Logger), "Finance Tracker started!");
             WriteErrorLog(nameof(Logger), START_MARK);
+            WriteErrorLog(nameof(Logger), "Finance Tracker started!");
         }
 
         private static void CheckIfLogFolderExists()

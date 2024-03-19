@@ -53,6 +53,12 @@ namespace FinanceTracker.Graphics.Pages
 
         private async void ConvertorBtnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            if (SourceCurrencyComboBox.SelectedItem == null || TargetCurrencyComboBox.SelectedItem == null)
+            {
+                Util.ShowErrorMessageBox("Vyberte měnu");
+                Logger.WriteErrorLog(this, "Uživatel nevybral měnu v převodníku");
+                return;
+            }
             string value = AmountTextBox.Text;
             if (int.TryParse(value.ToString(), out int amount))
             {
