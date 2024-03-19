@@ -6,9 +6,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
 
-namespace FinanceTracker.Config
+namespace FinanceTracker.Model.Services
 {
     public class RegisterService
     {
@@ -24,7 +25,7 @@ namespace FinanceTracker.Config
         // Zajišťuje uživatelskou registraci do databáze
         public bool Register(string name, string surname, string username, string password)
         {
-            if (Util.UserExists(username)) 
+            if (Util.UserExists(username))
             {
                 Logger.WriteErrorLog(this, $"Uživatel se pokusil zaregistrovat s existujícím jménem '{username}'");
                 Util.ShowErrorMessageBox("Uživatel s tímto uživatelským jménem již existuje, prosím, použijte jiné");

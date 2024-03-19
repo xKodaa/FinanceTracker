@@ -1,4 +1,4 @@
-﻿using FinanceTracker.Config;
+﻿using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceTracker.Model
+namespace FinanceTracker.Model.Services
 {
     public class DatabaseContentService
     {
-        private DatabaseConnector connector;
-        private SQLiteConnection connection;
-        private List<string> TablesToCheck;
+        private readonly DatabaseConnector connector;
+        private readonly SQLiteConnection connection;
+        private readonly List<string> TablesToCheck;
 
         public DatabaseContentService()
         {

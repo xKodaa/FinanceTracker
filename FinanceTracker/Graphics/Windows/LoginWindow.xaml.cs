@@ -1,4 +1,4 @@
-﻿using FinanceTracker.Config;
+﻿using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;

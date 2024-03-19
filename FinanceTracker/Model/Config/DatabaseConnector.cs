@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace FinanceTracker.Config
+namespace FinanceTracker.Model.Config
 {
     public class DatabaseConnector
     {
@@ -18,11 +18,11 @@ namespace FinanceTracker.Config
         public SQLiteConnection Connection { get; set; }
 
         private static DatabaseConnector? databaseConnector;
-        
-        public User LoggedUser { get; set;}
+
+        public User LoggedUser { get; set; }
 
         // Singletone pro získávání stejné instance připojení do DB
-        public static DatabaseConnector Instance    
+        public static DatabaseConnector Instance
         {
             get
             {
@@ -36,7 +36,7 @@ namespace FinanceTracker.Config
 
         private DatabaseConnector()
         {
-            ConnectionString = String.Empty;
+            ConnectionString = string.Empty;
             Connection = new SQLiteConnection();
             LoggedUser = new User("default");
             CreateDatabaseConnection();
@@ -46,20 +46,21 @@ namespace FinanceTracker.Config
         private void CreateDatabaseConnection()
         {
             ConnectionString = LoadDatabaseConnectionString();
-            if (ConnectionString != null) 
+            if (ConnectionString != null)
             {
                 Connection.ConnectionString = ConnectionString;
-                try 
+                try
                 {
                     Connection.Open();
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Logger.WriteErrorLog(this, $"Připojení k databázi se nepodařilo vytvořit, {ex.Message} \n - Konec aplikace");
                     Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit");
                     Environment.Exit(0);
                 }
             }
-            else 
+            else
             {
                 Logger.WriteErrorLog(this, "Připojení k databázi se nepodařilo vytvořit, protože ConnectionString je null, konec aplikace");
                 Util.ShowErrorMessageBox("Připojení k databázi se nepodařilo vytvořit, ukončuji aplikaci...");
@@ -68,7 +69,7 @@ namespace FinanceTracker.Config
         }
 
         // Načtení connection stringu z AppConfig.json
-        private string? LoadDatabaseConnectionString()  
+        private string? LoadDatabaseConnectionString()
         {
             AppConfig config = Util.ReadAppConfig();
             return config.ConnectionString;

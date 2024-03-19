@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
 
-namespace FinanceTracker.Model
+namespace FinanceTracker.Model.Services
 {
     public class CryptoApiService
     {
@@ -30,7 +30,7 @@ namespace FinanceTracker.Model
                 Logger.WriteLog(this, $"Poslána žádost na {API_HOST}: získání informací o kryptoměnách");
                 Util.ShowInfoMessageBox(responseBody);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Logger.WriteErrorLog(this, $"Chyba při dotazu na {API_HOST}: {ex.Message}");
 

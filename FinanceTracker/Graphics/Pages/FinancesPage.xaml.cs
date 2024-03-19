@@ -1,9 +1,13 @@
 ﻿using FinanceTracker.Graphics.Dialogs;
 using FinanceTracker.Model;
+using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -23,15 +28,17 @@ namespace FinanceTracker.Graphics.Pages
         private Frame Frame { get; set; }
         private MainWindow MainWindow { get; set; }
         private AppConfig AppConfig { get; set; }
+        private readonly DatabaseConnector Connector;
 
         public FinancesPage(MainWindow mainWindow)
         {
+            Connector = DatabaseConnector.Instance;
             MainWindow = mainWindow;
             Frame = MainWindow.MainContentFrame;
             AppConfig = Util.ReadAppConfig();
             InitializeComponent();
             InitCategoryComboBox();
-            FinancesDatePicker.SelectedDate = DateTime.Now;
+            ClearPage();
         }
 
         private void InitCategoryComboBox()
@@ -42,13 +49,64 @@ namespace FinanceTracker.Graphics.Pages
                 Logger.WriteErrorLog(nameof(FinancesPage), "FinanceCategories nenačteny");
                 Environment.Exit(0);
             }
-            AppConfig.FinanceCategories.ForEach(category => FinancesComboBox.Items.Add(category));
-            FinancesComboBox.SelectedIndex = 0;
+            AppConfig.FinanceCategories.ForEach(category => FinancesCategoryComboBox.Items.Add(category));
+            FinancesCategoryComboBox.SelectedIndex = 0;
         }
 
         private void FinancesBtnSubmit_Click(object sender, RoutedEventArgs e)
         {
+            if (FinancesSpentTextBox.Text == "" || FinancesCategoryComboBox.SelectedItem == null || FinancesDatePicker.Text == null)
+            {
+                Util.ShowErrorMessageBox("Vyplňte prosím všechny údaje");
+                Logger.WriteErrorLog(nameof(FinancesPage), "Uživatel nevyplnil všechny údaje");
+                return;
+            }
+            string price = FinancesSpentTextBox.Text;
+            if (int.TryParse(price.ToString(), out int amount))
+            {
+                string category = (string)FinancesCategoryComboBox.SelectedItem;
+                string dateString = FinancesDatePicker.Text;
+                if (DateTime.TryParse(dateString, out DateTime date))
+                {
+                    UserExpenses userExpenses = new UserExpenses(amount, category, date);
+                    SaveExpenseIntoDatabase(userExpenses);
+                    ClearPage();
+                    Util.ShowInfoMessageBox("Výdaj byl úspěšně uložen");
+                }
+                else
+                {
+                    Util.ShowErrorMessageBox("Zadejte prosím datum ve správném formátu");
+                    Logger.WriteErrorLog(nameof(FinancesPage), "Uživatel zadal datum v nesprávném formátu");
+                }
+            }
+            else 
+            {
+                Util.ShowErrorMessageBox("Zadejte prosím číslo");
+                Logger.WriteErrorLog(nameof(FinancesPage), "Uživatel do částky nezadal číslo");
+            }
+        }
 
+        private void SaveExpenseIntoDatabase(UserExpenses userExpenses)
+        {
+            try
+            {
+                string sql = "INSERT INTO UserFinances VALUES (@username, @category, @date, @price)";
+                using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+                {
+                    User user = Connector.LoggedUser;
+                    string dateString = userExpenses.Date.ToString("yyyy-MM-dd HH:mm:ss");
+                    command.Parameters.AddWithValue("@username", user.Username);
+                    command.Parameters.AddWithValue("@category", userExpenses.Category);
+                    command.Parameters.AddWithValue("@date", dateString);
+                    command.Parameters.AddWithValue("@price", userExpenses.Price);
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex) 
+            {
+                Util.ShowErrorMessageBox("Nepodařilo se uložit výdaj do databáze");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se uložit výdaj do databáze, {ex.Message}");
+            }
         }
 
         private void DashboardsHyperlink_Click(object sender, RoutedEventArgs e)
@@ -66,7 +124,7 @@ namespace FinanceTracker.Graphics.Pages
                 {
                     AppConfig.FinanceCategories.Add(categoryName);
                     Util.EditAppConfig("FinanceCategories", AppConfig.FinanceCategories);
-                    FinancesComboBox.Items.Add(categoryName);
+                    FinancesCategoryComboBox.Items.Add(categoryName);
                 }
             }
         }
@@ -74,15 +132,21 @@ namespace FinanceTracker.Graphics.Pages
         // Odebere aktuálně vybraný item z ComboBoxu a odebere ho i z konfiguračního souboru
         private void FinancesBtnRemoveCategory_Click(object sender, RoutedEventArgs e)
         {
-            object item = FinancesComboBox.SelectedItem;
-            int index = FinancesComboBox.SelectedIndex;
+            object item = FinancesCategoryComboBox.SelectedItem;
+            int index = FinancesCategoryComboBox.SelectedIndex;
             if (item != null && AppConfig.FinanceCategories != null)
             {
-                FinancesComboBox.Items.RemoveAt(index);
-                FinancesComboBox.SelectedIndex = 0;
+                FinancesCategoryComboBox.Items.RemoveAt(index);
+                FinancesCategoryComboBox.SelectedIndex = 0;
                 AppConfig.FinanceCategories.Remove(item.ToString());
                 Util.EditAppConfig("FinanceCategories", AppConfig.FinanceCategories);
             }
+        }
+        private void ClearPage()
+        {
+            FinancesCategoryComboBox.SelectedIndex = 0;
+            FinancesDatePicker.SelectedDate = DateTime.Now;
+            FinancesSpentTextBox.Clear();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.Graphics;
 using FinanceTracker.Graphics.Windows;
 using FinanceTracker.Model;
+using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace FinanceTracker.Config
+namespace FinanceTracker.Model.Config
 {
     public class Launcher
     {

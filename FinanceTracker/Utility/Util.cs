@@ -1,5 +1,5 @@
-﻿using FinanceTracker.Config;
-using FinanceTracker.Model;
+﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Config;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace FinanceTracker.Utility
     {
         private static SQLiteConnection? connection;
         private static AppConfig AppConfig { get; set; }
-        private static string AppConfigPath;
+        private static readonly string AppConfigPath;
         private static DatabaseConnector Connector;
 
         static Util() 
@@ -222,6 +222,7 @@ namespace FinanceTracker.Utility
 
         public static void SetUser(string username)
         {
+            Connector = DatabaseConnector.Instance;
             Connector.LoggedUser = new User(username);
             Logger.WriteLog(nameof(Util), $"Uživatel '{username}' byl úspěšně nastaven");
         }

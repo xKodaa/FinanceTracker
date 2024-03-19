@@ -1,5 +1,4 @@
-﻿using FinanceTracker.Config;
-using FinanceTracker.Graphics.Pages;
+﻿using FinanceTracker.Graphics.Pages;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using FinanceTracker.Model;
+using FinanceTracker.Model.Config;
 
 namespace FinanceTracker
 {

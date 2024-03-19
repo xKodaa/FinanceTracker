@@ -13,14 +13,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 
-namespace FinanceTracker.Model
+namespace FinanceTracker.Model.Services
 {
     public class CurrencyApiService
     {
         private readonly string API_HOST = "https://api.frankfurter.app";
         private readonly HttpClient client;
 
-        public CurrencyApiService() 
+        public CurrencyApiService()
         {
             client = new()
             {
@@ -32,7 +32,7 @@ namespace FinanceTracker.Model
 
         public async Task<string> ConvertCurrencyAsync(string fromCurrency, string toCurrency, int amount)
         {
-            try 
+            try
             {
                 string request = $"/latest?amount={amount}&from={fromCurrency}&to={toCurrency}";
                 HttpResponseMessage response = await client.GetAsync(request);
@@ -46,16 +46,17 @@ namespace FinanceTracker.Model
 
                 Logger.WriteLog(this, $"({API_HOST}): Poslána žádost na konverzi měn '{fromCurrency}->{toCurrency}'");
                 return result;
-            } catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 Logger.WriteErrorLog(this, $"({API_HOST}): Chyba při dotazu konverze '{fromCurrency}->{toCurrency}': {ex.Message}");
             }
             return "";
-        }     
-        
+        }
+
         public async Task<List<Currency>> GetAvailableCurrenciesAsync()
         {
-            try 
+            try
             {
                 string request = "/currencies";
                 HttpResponseMessage response = await client.GetAsync(request);
@@ -75,7 +76,7 @@ namespace FinanceTracker.Model
                 }
                 return currencies;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Logger.WriteErrorLog(this, $"Chyba při získávání dostupných měn při dotazu na {API_HOST}: {ex.Message}");
             }

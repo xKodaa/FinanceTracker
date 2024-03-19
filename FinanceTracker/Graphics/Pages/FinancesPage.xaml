@@ -22,7 +22,7 @@
                 <Button x:Name="FinancesBtnAddCategory" Content="-" Style="{StaticResource WindowsButtonStyle}" Width="30" Grid.Column="1" HorizontalAlignment="Right" Margin="15,5" Click="FinancesBtnRemoveCategory_Click"/>
                 <Button x:Name="FinancesBtnRemoveCategory" Content="+" Style="{StaticResource WindowsButtonStyle}" Width="30" Grid.Column="1" HorizontalAlignment="Left" Margin="108,5,0,5" Click="FinancesBtnAddCategory_Click"/>
             </Grid>
-            <ComboBox x:Name="FinancesComboBox" Style="{StaticResource PagesComboBoxStyle}" HorizontalAlignment="Left"/>
+            <ComboBox x:Name="FinancesCategoryComboBox" Style="{StaticResource PagesComboBoxStyle}" HorizontalAlignment="Left"/>
 
 
             <Label Content="Datum:" Style="{StaticResource WindowsLabelStyle}"/>
