@@ -97,6 +97,7 @@ namespace FinanceTracker.Graphics.Windows
         {
             LoginPasswordBox.Visibility = Visibility.Visible;
             LoginPasswordTBox.Visibility = Visibility.Collapsed;
+            LoginPasswordBox.Password = LoginPasswordTBox.Text;
         }
     }
 }

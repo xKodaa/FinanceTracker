@@ -41,6 +41,7 @@ namespace FinanceTracker.Graphics.Pages
             ClearPage();
         }
 
+        // Naplnění comboboxů hodnotami z konfiguračního souboru
         private void InitCategoryComboBox()
         {
             if (AppConfig == null || AppConfig.FinanceCategories == null)
@@ -53,6 +54,7 @@ namespace FinanceTracker.Graphics.Pages
             FinancesCategoryComboBox.SelectedIndex = 0;
         }
 
+        // Handler na tlačítko "Potvrdit"
         private void FinancesBtnSubmit_Click(object sender, RoutedEventArgs e)
         {
             if (FinancesSpentTextBox.Text == "" || FinancesCategoryComboBox.SelectedItem == null || FinancesDatePicker.Text == null)
@@ -86,6 +88,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Uložení výdaje do databáze
         private void SaveExpenseIntoDatabase(UserExpenses userExpenses)
         {
             try
@@ -109,11 +112,13 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Převod na stránku s kryptoměnami
         private void DashboardsHyperlink_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(new DashboardPage(MainWindow));
         }
 
+        // Přidá novou kategorii do ComboBoxu a do konfiguračního souboru a v comboboxu ji vybere
         private void FinancesBtnAddCategory_Click(object sender, RoutedEventArgs e)
         {
             AddCategoryDialog addCategoryDialog = new AddCategoryDialog();
@@ -125,6 +130,7 @@ namespace FinanceTracker.Graphics.Pages
                     AppConfig.FinanceCategories.Add(categoryName);
                     Util.EditAppConfig("FinanceCategories", AppConfig.FinanceCategories);
                     FinancesCategoryComboBox.Items.Add(categoryName);
+                    FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
                 }
             }
         }
