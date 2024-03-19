@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Services;
 
 namespace FinanceTracker
 {

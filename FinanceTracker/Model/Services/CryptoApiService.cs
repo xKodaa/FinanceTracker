@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
+using System.Text.Json;
 
 namespace FinanceTracker.Model.Services
 {
@@ -17,8 +18,9 @@ namespace FinanceTracker.Model.Services
 
         public CryptoApiService() { }
 
-        public async void RetrieveCryptoInfoAsync()
+        public async Task<List<CryptoCurrency>> RetrieveCryptoInfoAsync()
         {
+            List<CryptoCurrency> cryptoCurrencies = new List<CryptoCurrency>();
             try
             {
                 client.BaseAddress = new Uri(API_HOST);
@@ -28,13 +30,19 @@ namespace FinanceTracker.Model.Services
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 Logger.WriteLog(this, $"Poslána žádost na {API_HOST}: získání informací o kryptoměnách");
-                Util.ShowInfoMessageBox(responseBody);
+                CryptoData? cryptoData = JsonSerializer.Deserialize<CryptoData>(responseBody);
+
+                if (cryptoData?.Data != null)
+                {
+                    return cryptoData.Data;
+                }
+
             }
             catch (Exception ex)
             {
                 Logger.WriteErrorLog(this, $"Chyba při dotazu na {API_HOST}: {ex.Message}");
-
             }
+            return [];
         }
     }
 }
