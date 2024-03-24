@@ -9,6 +9,41 @@
       Title="CryptocurrenciesPage">
 
     <Grid>
-        
+        <TabControl>
+            <TabItem Header="Obecné">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="CryptoFilterBox" Style="{StaticResource WindowsTextBoxStyle}" Width="200" Margin="0,10,5,5" Grid.Row="0" HorizontalAlignment="Right" TextChanged="FilterCryptoData"/>
+                    <Button x:Name="CryptoRefreshButton" Style="{StaticResource WindowsButtonStyle}" Content="Obnovit" Width="120" HorizontalAlignment="Left" Grid.Row="0" Margin="5,5,0,5" Click="CryptoRefreshButton_Click"/>
+                    <Label Style="{StaticResource WindowsLabelStyle}" Content="Filter" Margin="0,10,210,0" VerticalAlignment="Top" Grid.Row="0" HorizontalAlignment="Right" Width="40"/>
+
+                    <DataGrid x:Name="CryptoDataGrid" Grid.Row="1" Margin="5" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Rank}" />
+                            <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" />
+                            <DataGridTextColumn Header="Název" Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="Nabídka" Binding="{Binding Supply, StringFormat=F2}" />
+                            <DataGridTextColumn Header="Maximální nabídka" Binding="{Binding MaxSupply, StringFormat=F2}" />
+                            <DataGridTextColumn Header="Tržní kapitalizace (USD)" Binding="{Binding MarketCapUsd, StringFormat=F2}" />
+                            <DataGridTextColumn Header="Objem (24h USD)" Binding="{Binding VolumeUsd24Hr, StringFormat=F2}" />
+                            <DataGridTextColumn Header="Cena USD" Binding="{Binding PriceUsd, StringFormat=F2}" />
+                            <DataGridTextColumn Header="Změna (%) 24h" Binding="{Binding ChangePercent24Hr, StringFormat=F2}" />
+                            <!-- vWap24Hr a Id jsou vynechány -->
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </Grid>
+            </TabItem>
+
+
+            <TabItem Header="Osobní">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
     </Grid>
 </Page>

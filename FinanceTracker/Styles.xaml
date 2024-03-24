@@ -63,9 +63,9 @@
 		<Setter Property="Margin" Value="15,5,0,5"/>
 		<Setter Property="Padding" Value="5"/>
         <Setter Property="Width" Value="250"/>
-        <Setter Property="Background" Value="#FF337AB7"/>
+        <Setter Property="Background" Value="#34495E"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="#FF2E6DA4"/>
+        <Setter Property="BorderBrush" Value="#34495E"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Bold"/>
