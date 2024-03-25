@@ -33,8 +33,8 @@ namespace FinanceTracker.Model.Services
             {
                 HttpResponseMessage response = await client.GetAsync("/v2/assets");
                 response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
                 Logger.WriteLog(this, $"Poslána žádost na {API_HOST}: získání informací o kryptoměnách");
+                string responseBody = await response.Content.ReadAsStringAsync();
                 CryptoData? cryptoData = JsonSerializer.Deserialize<CryptoData>(responseBody);
 
                 if (cryptoData?.Data != null)
