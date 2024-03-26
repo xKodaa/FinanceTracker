@@ -10,8 +10,8 @@
       Title="CryptocurrenciesPage">
 
     <Grid>
-        <TabControl>
-            <TabItem Header="Obecné">
+        <TabControl Margin="1,0,-1,0">
+            <TabItem Header="Obecné" Margin="-2,-2,-2,0">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -38,10 +38,51 @@
                 </Grid>
             </TabItem>
 
+            <TabItem Header="Osobní" Margin="-2,-2,-2,0">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-            <TabItem Header="Osobní">
-                <Grid Background="#FFE5E5E5"/>
+                    <Label Content="Kryptoměna:" Grid.Row="0" Grid.Column="0" Margin="10"/>
+                    <ComboBox Style="{StaticResource PagesComboBoxStyle}" x:Name="AllCryptoComboBox" Grid.Row="0" Grid.Column="1" Margin="0,10,10,10" Width="574" HorizontalAlignment="Right"/>
+
+                    <Label Content="Datum nákupu:" Grid.Row="1" Grid.Column="0" Margin="10"/>
+                    <DatePicker Style="{StaticResource PagesDatePickerStyle}" x:Name="PurchaseDatePicker" Grid.Row="1" Grid.Column="1" Margin="0,10,10,10" Width="574" HorizontalAlignment="Right"/>
+
+                    <Label Content="Množství:" Grid.Row="2" Grid.Column="0" Margin="10"/>
+                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="0,10,10,10" Width="574" HorizontalAlignment="Right"/>
+
+                    <Label Content="Cena nákupu (za jednotku):" Grid.Row="3" Grid.Column="0" Margin="10"/>
+                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="PurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="0,10,10,10" Width="574" HorizontalAlignment="Right"/>
+
+                    <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>
+                    <Button x:Name="CryptoButtonDelete" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Smazat" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Click="CryptoButtonDelete_Click"/>
+
+                    <ComboBox x:Name="UserCryptoComboBox" Style="{StaticResource PagesComboBoxStyle}" Grid.Row="4" VerticalAlignment="Top" Width="180" Height="31" Margin="0,10,0,0"/>
+
+                    <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Kryptoměna" Binding="{Binding Symbol}"/>
+                            <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy}"/>
+                            <DataGridTextColumn Header="Množství" Binding="{Binding Amount}"/>
+                            <DataGridTextColumn Header="Cena za jednotku" Binding="{Binding PricePerAmount}"/>
+                            <DataGridTextColumn Header="Rozdíl (%)" Binding="{Binding Difference}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+
             </TabItem>
+
         </TabControl>
 
     </Grid>
