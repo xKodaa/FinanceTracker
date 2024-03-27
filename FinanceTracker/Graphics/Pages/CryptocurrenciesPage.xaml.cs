@@ -50,7 +50,10 @@ namespace FinanceTracker.Graphics.Pages
             foreach (UserCryptoCurrency userCryptoCurrency in userCryptoCurrencies)
             {
                 if (userCryptoCurrency.FindCryptoFromList(cryptoCurrencies))
+                { 
                     UserCryptoDataGrid.Items.Add(userCryptoCurrency);
+                    // TODO: obarvit je dle difference
+                }
             }
         }
 

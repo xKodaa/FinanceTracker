@@ -9,7 +9,7 @@
       Title="ConvertorPage">
 
     <Grid Style="{StaticResource GradientBackgroundStyle}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="280">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
             <!-- Zdrojová měna -->
             <Label Content="Zdrojová měna:" Style="{StaticResource WindowsLabelStyle}"/>
@@ -26,13 +26,13 @@
             <Button x:Name="ConvertorBtnSubmit" Content="Převést" Style="{StaticResource WindowsButtonStyle}" HorizontalAlignment="Left" Click="ConvertorBtnSubmit_Click"/>
 
             <!-- Výsledek a tlačítko kopírování -->
-            <Grid x:Name="ConvertorResultGrid" HorizontalAlignment="Left" Width="280" Visibility="Visible">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <Label x:Name="ConversionResultLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Column="0"/>
-                <Button x:Name="ConvertorBtnCopy" Content="Kopírovat" Style="{StaticResource WindowsButtonStyle}" Width="80" Grid.Column="1" Margin="15,0" Click="ConvertorBtnCopy_Click"/>
+            <Grid x:Name="ConvertorResultGrid" HorizontalAlignment="Left" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="ConversionResultLabel" Content="" Style="{StaticResource WindowsLabelStyle}" Grid.Row="0"/>
+                <Button x:Name="ConvertorBtnCopy" Content="Kopírovat" Style="{StaticResource WindowsButtonStyle}" Grid.Row="1" Click="ConvertorBtnCopy_Click"/>
             </Grid>
 
         </StackPanel>
