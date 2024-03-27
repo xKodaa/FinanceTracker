@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.SQLite;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace FinanceTracker.Graphics.Pages
             LoadCryptoCurrencies();
         }
 
-        private void InitPersonalComboBoxes()
+        private void InitCryptoComponents()
         {
             // Všechny kryptoměny
             foreach (CryptoCurrency currency in cryptoCurrencies)
@@ -45,12 +46,12 @@ namespace FinanceTracker.Graphics.Pages
 
 
             // Uživatelské kryptoměny
-            List<string> userCryptoCurrencies = LoadUserCryptosFromDatabase();
-            foreach (string userCryptoCurrency in userCryptoCurrencies)
+            List<UserCryptoCurrency> userCryptoCurrencies = LoadUserCryptosFromDatabase();
+            foreach (UserCryptoCurrency userCryptoCurrency in userCryptoCurrencies)
             {
-                UserCryptoComboBox.Items.Add(userCryptoCurrency);
+                if (userCryptoCurrency.FindCryptoFromList(cryptoCurrencies))
+                    UserCryptoDataGrid.Items.Add(userCryptoCurrency);
             }
-            UserCryptoComboBox.SelectedIndex = 0;
         }
 
 
@@ -61,7 +62,7 @@ namespace FinanceTracker.Graphics.Pages
             Dispatcher.Invoke(() =>
             {
                 CryptoDataGrid.ItemsSource = cryptoCurrencies;
-                InitPersonalComboBoxes();
+                InitCryptoComponents();
             });
         }
 
@@ -80,10 +81,6 @@ namespace FinanceTracker.Graphics.Pages
             CryptoDataGrid.ItemsSource = filteredData;
         }
 
-        private void CryptoRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            LoadCryptoCurrencies();
-        }
 
         private void OnCryptoDataGridLoadingRow(object sender, DataGridRowEventArgs e)
         {
@@ -121,7 +118,6 @@ namespace FinanceTracker.Graphics.Pages
                 MessageBox.Show("Neplatná cena");
                 return;
             }
-
             if (cryptoName == null)
             {
                 MessageBox.Show("Vyplňte prosím všechny údaje");
@@ -129,11 +125,10 @@ namespace FinanceTracker.Graphics.Pages
             }
 
             UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
-            
+            // Přidání userCryptoCurrency do databáze
             try
             {
                 string sql = "INSERT INTO UserCryptos (username, cryptoName, amount, dateOfBuy, price) VALUES (@username, @cryptoName, @amount, @dateOfBuy, @price)";
-
                 using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
                 {
                     string username = connector.LoggedUser.Username;
@@ -147,33 +142,33 @@ namespace FinanceTracker.Graphics.Pages
 
                     if (!(result > 0))
                     {
-                        MessageBox.Show("Vložení dat se nezdařilo.");
+                        Util.ShowErrorMessageBox("Uložení dat se nezdařilo.");
                     }
-                    UserCryptoComboBox.Items.Add(cryptoName);
-                    UserCryptoComboBox.SelectedIndex = 0;
-                    AddUserCryptoIntoDataGrid(userCryptoCurrency);
+                    else 
+                    {
+                        AddUserCryptoCurrency(userCryptoCurrency);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Nastala chyba při vkládání dat: {ex.Message}");
+                Util.ShowErrorMessageBox("Nastala chyba při vkládání dat");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nastala chyba při vkládání dat, {ex.Message}");
             }
         }
 
-        private void AddUserCryptoIntoDataGrid(UserCryptoCurrency userCryptoCurrency)
+        // Přidání uživatelské kryptoměny do ComboBoxu a do DataGridu
+        private void AddUserCryptoCurrency(UserCryptoCurrency userCrypto)
         {
-            UserCryptoDataGrid.Items.Add(userCryptoCurrency);
+            if (userCrypto.FindCryptoFromList(cryptoCurrencies)) 
+            {
+                UserCryptoDataGrid.Items.Add(userCrypto);
+            }
         }
 
         private void CryptoButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (UserCryptoComboBox.SelectedItem == null)
-            {
-                return;
-            }
-            UserCryptoComboBox.Items.Remove(UserCryptoComboBox.SelectedItem);
-            string? userSelectedCrypto = UserCryptoComboBox.SelectedItem.ToString();
-            if (userSelectedCrypto != null) { RemoveCryptoFromDatabase(userSelectedCrypto); }
+            // TODO: smazat nakliknutý item v tabulce
         }
 
         private void RemoveCryptoFromDatabase(string userSelectedCrypto)
@@ -196,22 +191,33 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
-        private List<string> LoadUserCryptosFromDatabase()
+        private List<UserCryptoCurrency> LoadUserCryptosFromDatabase()
         {
             try
             {
-                string sql = $"SELECT cryptoName FROM UserCryptos WHERE username=@username";
+                string sql = $"SELECT cryptoName, amount, dateOfBuy, price FROM UserCryptos WHERE username=@username";
                 using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
                 {
                     string username = connector.LoggedUser.Username;
                     command.Parameters.AddWithValue("@username", username);
-                    List<string> results = [];
+                    List<UserCryptoCurrency> results = [];
                     using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             string cryptoName = reader.GetString(0);
-                            results.Add(cryptoName);
+                            decimal amount = reader.GetDecimal(1);
+                            DateTime dateOfBuy = reader.GetDateTime(2);
+                            decimal price = reader.GetDecimal(3);
+                            if (cryptoName != null && amount != 0 && price != 0)
+                            {
+                                UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
+                                results.Add(userCryptoCurrency);
+                                Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserCryptos: {userCryptoCurrency}");
+                            } else 
+                            {
+                                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserCryptos: {cryptoName}, {amount}, {dateOfBuy}, {price}");
+                            }
                         }
                         return results;
                     }
@@ -219,12 +225,16 @@ namespace FinanceTracker.Graphics.Pages
             }
             catch (Exception ex)
             {
-                Util.ShowErrorMessageBox("Nepodařilo se uložit kryptoměnu do databáze");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se uložit kryptoměnu do databáze, {ex.Message}");
+                Util.ShowErrorMessageBox("Nepodařilo se načíst kryptoměnu z databáze");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst kryptoměnu z databáze, {ex.Message}");
             }
             return [];
         }
 
-  
+        private void CryptoRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            LoadCryptoCurrencies();
+        }
+
     }
 }

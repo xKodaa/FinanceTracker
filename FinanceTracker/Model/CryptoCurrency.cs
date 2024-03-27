@@ -26,6 +26,7 @@ namespace FinanceTracker.Model
                 }
                 return 0;
             }
+            set { }
         }
 
         [JsonPropertyName("symbol")]
@@ -41,6 +42,7 @@ namespace FinanceTracker.Model
                 }
                 return 0; 
             }
+            set { }
         }
 
         [JsonPropertyName("name")]
@@ -59,6 +61,7 @@ namespace FinanceTracker.Model
                 }
                 return 0;
             }
+            set { }
         }
 
         [JsonPropertyName("maxSupply")]
@@ -74,6 +77,7 @@ namespace FinanceTracker.Model
                 }
                 return 0;
             }
+            set { }
         }
 
         [JsonPropertyName("marketCapUsd")]
@@ -89,6 +93,7 @@ namespace FinanceTracker.Model
                 }
                 return 0;
             }
+            set { }
         }
 
         [JsonPropertyName("volumeUsd24Hr")]
@@ -103,7 +108,8 @@ namespace FinanceTracker.Model
                     return decimal.Round(result, 2);
                 }
                 return 0;
-            }
+            } 
+            set { }
         }
 
         [JsonPropertyName("priceUsd")]
@@ -118,7 +124,8 @@ namespace FinanceTracker.Model
                     return decimal.Round(result, 4);
                 }
                 return 0;
-            }
+            } 
+            set { }   
         }
 
         [JsonPropertyName("changePercent24Hr")]
@@ -133,7 +140,8 @@ namespace FinanceTracker.Model
                     return decimal.Round(result, 2);
                 }
                 return 0;
-            }
+            } 
+            set { }
         }
 
         [JsonPropertyName("vwap24Hr")]
@@ -149,6 +157,7 @@ namespace FinanceTracker.Model
                 }
                 return 0;
             }
+            set { }
         }
 
         [JsonPropertyName("explorer")]
