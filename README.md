@@ -16,6 +16,7 @@
 - [x] Implementovat tabulky v DB kam se budou dávat jednotlivé kryptoměny 
 - [x] Implementovat zobrazování grafů
 - [ ] Code cleaning
+- [ ] Code comments
       
 ## NOTES
   
