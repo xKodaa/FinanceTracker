@@ -62,7 +62,7 @@
                     <Label Content="Množství:" Grid.Row="2" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
-                    <Label Content="Nákupní cena tokenu:" Grid.Row="3" Grid.Column="0" Margin="10"/>
+                    <Label Content="Nákupní cena tokenů:" Grid.Row="3" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="PurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>
@@ -71,7 +71,7 @@
                     <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Kryptoměna" Binding="{Binding Symbol}"/>
-                            <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy}"/>
+                            <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy, StringFormat=dd.MM.yyyy}"/>
                             <DataGridTextColumn Header="Množství" Binding="{Binding Amount}"/>
                             <DataGridTextColumn Header="Celková nákupní cena (USD)" Binding="{Binding PricePerAmountRounded}"/>
                             <DataGridTextColumn Header="Nákupní cena 1ks (USD)" Binding="{Binding PricePerKsRounded}"/>

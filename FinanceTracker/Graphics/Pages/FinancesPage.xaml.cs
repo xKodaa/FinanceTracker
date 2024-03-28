@@ -73,7 +73,6 @@ namespace FinanceTracker.Graphics.Pages
                     UserExpenses userExpenses = new UserExpenses(amount, category, date);
                     SaveExpenseIntoDatabase(userExpenses);
                     ClearPage();
-                    Util.ShowInfoMessageBox("Výdaj byl úspěšně uložen");
                 }
                 else
                 {
@@ -97,7 +96,7 @@ namespace FinanceTracker.Graphics.Pages
                 using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
                 {
                     User user = Connector.LoggedUser;
-                    string dateString = userExpenses.Date.ToString("yyyy-MM-dd HH:mm:ss");
+                    string dateString = userExpenses.Date.ToString("yyyy-MM-dd");
                     command.Parameters.AddWithValue("@username", user.Username);
                     command.Parameters.AddWithValue("@category", userExpenses.Category);
                     command.Parameters.AddWithValue("@date", dateString);
@@ -151,7 +150,6 @@ namespace FinanceTracker.Graphics.Pages
         private void ClearPage()
         {
             FinancesCategoryComboBox.SelectedIndex = 0;
-            FinancesDatePicker.SelectedDate = DateTime.Now;
             FinancesSpentTextBox.Clear();
         }
     }

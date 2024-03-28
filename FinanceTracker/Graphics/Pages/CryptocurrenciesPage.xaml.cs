@@ -40,7 +40,7 @@ namespace FinanceTracker.Graphics.Pages
             // Všechny kryptoměny
             foreach (CryptoCurrency currency in cryptoCurrencies)
             {
-                AllCryptoComboBox.Items.Add(currency.Symbol);
+                AllCryptoComboBox.Items.Add(currency);
             }
             AllCryptoComboBox.SelectedIndex = 0;
 
@@ -120,7 +120,8 @@ namespace FinanceTracker.Graphics.Pages
         }
         private void CryptoButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            string? cryptoName = AllCryptoComboBox.SelectedItem.ToString();
+            UserCryptoCurrency userCrypto = (UserCryptoCurrency) AllCryptoComboBox.SelectedItem;
+            string cryptoName = userCrypto.Symbol; 
             string dateString = PurchaseDatePicker.Text;
             if (!DateTime.TryParse(dateString, out DateTime dateOfBuy))
             {

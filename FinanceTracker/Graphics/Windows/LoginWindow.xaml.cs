@@ -1,4 +1,6 @@
-﻿using FinanceTracker.Model.Services;
+﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
@@ -20,9 +22,11 @@ namespace FinanceTracker.Graphics.Windows
     public partial class LoginWindow : Window
     {
         private MainWindow MainWindow { get; set; }
+        private DatabaseConnector Connector { get; set; }
 
         public LoginWindow(MainWindow mainWindow)
         {
+            Connector = DatabaseConnector.Instance;
             MainWindow = mainWindow;
             InitializeComponent();
         }
@@ -40,8 +44,7 @@ namespace FinanceTracker.Graphics.Windows
             }
             else 
             {
-                bool userExists;
-                bool loggedIn = loginService.Login(username, password, out userExists);
+                bool loggedIn = loginService.Login(username, password, out bool userExists);
                 if (!loggedIn)
                 {
                     if (userExists)
@@ -53,8 +56,10 @@ namespace FinanceTracker.Graphics.Windows
                 }
                 else
                 {
-                    Logger.WriteLog(this, $"Uživatel '{username}' přihlášen");
-                    Util.SetUser(username);
+                    Util.SetUser(new User(username));
+                    User user = Util.LoadUser();
+                    Logger.WriteLog(this, $"Uživatel přihlášen: '{user}'");
+                    Util.SetUser(user);
                     DialogResult = true;
                 }
             }

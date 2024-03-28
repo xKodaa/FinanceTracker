@@ -53,7 +53,7 @@ namespace FinanceTracker.Model.Services
             switch (table)
             {
                 case "Users":
-                    sql = "CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, name TEXT, surname TEXT)";
+                    sql = "CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, name TEXT, surname TEXT, lastLogin DATETIME)";
                     break;
                 case "UserCryptos":
                     sql = "CREATE TABLE UserCryptos (username TEXT, cryptoName TEXT, amount INTEGER, dateOfBuy DATETIME, price INT, FOREIGN KEY(username) REFERENCES Users(username))";

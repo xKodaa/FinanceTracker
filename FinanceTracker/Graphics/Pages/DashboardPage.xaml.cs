@@ -1,9 +1,16 @@
-﻿using LiveCharts;
+﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Config;
+using FinanceTracker.Utility;
+using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.Entity.Core.Mapping;
+using System.Data.SQLite;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,24 +27,62 @@ namespace FinanceTracker.Graphics.Pages
 {
     public partial class DashboardPage : Page
     {
-        public SeriesCollection SeriesCollection { get; private set; }
-        public string[] Labels { get; set; }
+        public SeriesCollection SeriesCollection { get; set; }
+        public List<string> Labels { get; set; }
         public Func<double, string> Formatter { get; set; }
+        private List<(string Category, double Total)> FinancesPerCategory;
+        private DatabaseConnector Connector { get; set; }
+        private User LoggedUser { get; set; }
 
         public DashboardPage(MainWindow mainWindow)
         {
-            SeriesCollection = new();
-            Labels = ["Maria", "Susan", "Charles", "Frida"];
-            Formatter = value => value.ToString("N");
-            InitValues();
-            mainWindow.DataContext = this;
             InitializeComponent();
+            Connector = DatabaseConnector.Instance;
+            LoggedUser = Util.GetUser();
+            SeriesCollection = [];
+            Labels = [];
+            FinancesPerCategory = [];
+            Formatter = value => value.ToString("N");
+            DateTime now = DateTime.Now;
+            RefreshGraph(now.Year, now.Month);  // Zobrazení grafu pro aktuální měsíc
             InitializeComboBoxes();
+            mainWindow.DataContext = this;
+        }
+
+        private void RefreshGraph(int year, int month)
+        {
+            FinancesPerCategory = LoadFinanceDataByCategory(LoggedUser.Username, year, month);
+            DisplayFinanceData();
+        }   
+
+        private void DisplayFinanceData()
+        {
+            SeriesCollection.Clear();
+            ColumnSeries series = new ColumnSeries
+            {
+                Title = "Kategorie",
+                Values = new ChartValues<double>()
+            };
+
+
+            foreach (var (Category, Total) in FinancesPerCategory)
+            {
+                series.Values.Add(Total);
+                Labels.Add(Category); 
+            }
+            SeriesCollection.Add(series);
         }
 
         private void InitializeComboBoxes()
         {
-            DashboardYearComboBox.Items.Add("2024");
+            // Roky
+            List<int> years = LoadFinanceYearsForUser();
+            foreach (int year in years)
+            {
+                DashboardYearComboBox.Items.Add(year.ToString());
+            }
+
+            // Měsíce
             var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
             for (int i = 0; i < 12; i++)
             {
@@ -47,30 +92,58 @@ namespace FinanceTracker.Graphics.Pages
             DashboardMonthComboBox.SelectedIndex = 0;
         }
 
-        private void InitValues()
+        private List<int> LoadFinanceYearsForUser()
         {
-            SeriesCollection =
-            [
-                new ColumnSeries
-                {
-                    Title = "2015",
-                    Values = new ChartValues<double> { 10, 50, 39, 50 }
-                },
-                //adding series will update and animate the chart automatically
-                new ColumnSeries
-                {
-                    Title = "2016",
-                    Values = new ChartValues<double> { 11, 56, 42 }
-                },
-            ];
+            List<int> years = [];
 
-            // pridani hodnoty do ColumnSeries dodatečně - ručně, konkretně do druheho sloupce
-            SeriesCollection[1].Values.Add(48d);
+            string sql = @"SELECT DISTINCT strftime('%Y', date) AS Year FROM UserFinances WHERE username = @username ORDER BY Year DESC";
+            using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+            {
+                command.Parameters.AddWithValue("@username", LoggedUser.Username);
+
+                using SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string? yearString = reader["Year"].ToString();
+                    if (int.TryParse(yearString, out int year))
+                    {
+                        years.Add(year);
+                    }
+                }
+            }
+            return years;
+        }
+
+        public List<(string Category, double Total)> LoadFinanceDataByCategory(string username, int year, int month)
+        {
+            List<(string Category, double Total)> data = [];
+
+            string sql = @"SELECT category, SUM(price) as TotalPrice 
+                   FROM UserFinances 
+                   WHERE username = @username AND strftime('%Y', date) = @year AND strftime('%m', date) = @month
+                   GROUP BY category"; 
+            using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+            {
+                command.Parameters.AddWithValue("@username", username); 
+                command.Parameters.AddWithValue("@year", year.ToString());
+                command.Parameters.AddWithValue("@month", month.ToString("D2"));
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string? category = reader["category"].ToString();
+                    double? total = Convert.ToDouble(reader["TotalPrice"]);
+                    if (category != null && total != null)
+                        data.Add(((string Category, double Total))(Category: category, Total: total));
+                }
+            }
+            return data;
         }
 
         private void DashboardShowGraphButton_Click(object sender, RoutedEventArgs e)
         {
-
+            int selectedMonth = DashboardMonthComboBox.SelectedIndex + 1;
+            int selectedYear = Convert.ToInt32(DashboardYearComboBox.SelectedItem);
+            RefreshGraph(selectedYear, selectedMonth);
         }
     }
 }

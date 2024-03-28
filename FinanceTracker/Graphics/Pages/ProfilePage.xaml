@@ -8,5 +8,36 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProfilePage">
 
-    <Grid/>
+    <Grid Style="{StaticResource GradientBackgroundStyle}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="Jméno:" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="NameLabel" Grid.Row="0" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Příjmení:" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="SurnameLabel" Grid.Row="1" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Username:" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="UsernameLabel" Grid.Row="2" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Naposledy přihlášen:" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="LastLoginLabel" Grid.Row="3" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Počet vlastněných kryptoměn:" FontWeight="Bold" Grid.Row="4" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="CryptoCountLabel" Grid.Row="4" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Naposledy evidované finance:" FontWeight="Bold" Grid.Row="5" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="LastFinanceRecordLabel" Grid.Row="5" Grid.Column="1" Margin="10"/>
+    </Grid>
 </Page>

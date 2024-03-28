@@ -65,7 +65,7 @@ namespace FinanceTracker
 
         private void UpdateMainTitle()
         {
-            Title = $"Finance Tracker | {Util.GetUser()}";
+            Title = $"Finance Tracker | {Util.GetUser().Username}";
         }
     }
 }

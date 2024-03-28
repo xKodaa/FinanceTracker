@@ -180,6 +180,11 @@ namespace FinanceTracker.Model
             Vwap24Hr = vwap24Hr;
             Explorer = explorer;
         }
+
+        public override string ToString()
+        {
+            return $"{Symbol} ({Name})";
+        }
     }
 
     public class CryptoData

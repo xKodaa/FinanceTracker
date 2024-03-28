@@ -191,45 +191,39 @@ namespace FinanceTracker.Utility
             return true;
         }
 
-        private void GetTickersFromCsv()
-        {
-            string sourceFilePath = "Data/tickers_full.csv";
-            string destinationFilePath = "Data/tickers.csv";
-            try
-            {
-                using (StreamReader reader = new StreamReader(sourceFilePath))
-                using (StreamWriter writer = new StreamWriter(destinationFilePath))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        string? line = reader.ReadLine();
-                        if (line != null)
-                        {
-                            string[] values = line.Split(',');
-                            string row = values[0] + ";" + values[1];
-                            writer.WriteLine(row);
-                        }
-                    }
-                }
-                Logger.WriteLog(nameof(Util), "Tickers byly úspěšně přepsány");
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteErrorLog(nameof(Util), $"Chyba při príci se soubroy Tickers: {ex.Message}");
-                ShowErrorMessageBox("Chyba při práci se soubory Tickers");
-            }
-        }
-
-        public static void SetUser(string username)
+        public static void SetUser(User user)
         {
             Connector = DatabaseConnector.Instance;
-            Connector.LoggedUser = new User(username);
-            Logger.WriteLog(nameof(Util), $"Uživatel '{username}' byl úspěšně nastaven");
+            Connector.LoggedUser = user;
+            Logger.WriteLog(nameof(Util), $"Uživatel byl úspěšně nastaven '{user}'");
         }
 
         public static User GetUser()
         {
             return Connector.LoggedUser;
+        }
+
+        public static User LoadUser()
+        {
+            string username = GetUser().Username;
+            string sql = "SELECT name, surname, lastLogin FROM Users WHERE username LIKE @username";
+            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@username", username);
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new User(username)
+                        {
+                            Name = reader["name"].ToString(),
+                            Surname = reader["surname"].ToString(),
+                            LastLogin = DateTime.Parse(reader["lastLogin"].ToString())
+                        };
+                    }
+                }
+            }
+            return new User(username);
         }
     }
 }

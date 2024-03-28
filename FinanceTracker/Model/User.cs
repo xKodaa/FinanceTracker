@@ -11,6 +11,7 @@ namespace FinanceTracker.Model
         public string Username { get; set; }
         public string? Name { get; set; }
         public string? Surname { get; set; }
+        public DateTime? LastLogin { get; set; }
 
         
         public User(string username)
@@ -22,7 +23,7 @@ namespace FinanceTracker.Model
         {
             if (Name != null && Surname != null)
             {
-                return $"{Name} {Surname}";
+                return $"{Name} {Surname} ({Username}) - Naposledy přihlášen: {LastLogin}";
             }   
             return Username;
         }
