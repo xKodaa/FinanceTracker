@@ -44,8 +44,8 @@ namespace FinanceTracker.Graphics.Pages
             FinancesPerCategory = [];
             Formatter = value => value.ToString("N");
             DateTime now = DateTime.Now;
-            RefreshGraph(now.Year, now.Month);  // Zobrazení grafu pro aktuální měsíc
             InitializeComboBoxes();
+            RefreshGraph(now.Year, now.Month);  // Zobrazení grafu pro aktuální měsíc
             mainWindow.DataContext = this;
         }
 
@@ -57,6 +57,7 @@ namespace FinanceTracker.Graphics.Pages
 
         private void DisplayFinanceData()
         {
+            //if (DashboardGraphTypeComboBox.SelectedItem)
             SeriesCollection.Clear();
             ColumnSeries series = new ColumnSeries
             {
@@ -90,6 +91,11 @@ namespace FinanceTracker.Graphics.Pages
             }
             DashboardYearComboBox.SelectedIndex = 0;
             DashboardMonthComboBox.SelectedIndex = 0;
+
+            // Typ grafu
+            DashboardGraphTypeComboBox.Items.Add("Sloupcový");
+            DashboardGraphTypeComboBox.Items.Add("Koláčový");
+            DashboardGraphTypeComboBox.SelectedIndex = 0;
         }
 
         private List<int> LoadFinanceYearsForUser()
