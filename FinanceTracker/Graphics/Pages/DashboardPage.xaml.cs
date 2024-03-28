@@ -27,51 +27,94 @@ namespace FinanceTracker.Graphics.Pages
 {
     public partial class DashboardPage : Page
     {
-        public SeriesCollection SeriesCollection { get; set; }
+        private MainWindow MainWindow { get; set; }
+        public SeriesCollection PieSeriesCollection { get; set; }
+        public SeriesCollection CartSeriesCollection { get; set; }
         public List<string> Labels { get; set; }
         public Func<double, string> Formatter { get; set; }
         private List<(string Category, double Total)> FinancesPerCategory;
         private DatabaseConnector Connector { get; set; }
         private User LoggedUser { get; set; }
+        private readonly string GRAPH_TYPE_CARTESIAN = "Sloupcový";
+        private readonly string GRAPH_TYPE_PIE = "Koláčový";
 
         public DashboardPage(MainWindow mainWindow)
         {
+            MainWindow = mainWindow;
             InitializeComponent();
             Connector = DatabaseConnector.Instance;
             LoggedUser = Util.GetUser();
-            SeriesCollection = [];
+            PieSeriesCollection = [];
+            CartSeriesCollection = [];
             Labels = [];
             FinancesPerCategory = [];
             Formatter = value => value.ToString("N");
             DateTime now = DateTime.Now;
             InitializeComboBoxes();
             RefreshGraph(now.Year, now.Month);  // Zobrazení grafu pro aktuální měsíc
-            mainWindow.DataContext = this;
         }
 
         private void RefreshGraph(int year, int month)
         {
             FinancesPerCategory = LoadFinanceDataByCategory(LoggedUser.Username, year, month);
             DisplayFinanceData();
-        }   
+            MainWindow.DataContext = this;
+        }
 
         private void DisplayFinanceData()
         {
-            //if (DashboardGraphTypeComboBox.SelectedItem)
-            SeriesCollection.Clear();
-            ColumnSeries series = new ColumnSeries
+            string? selectedGraphType = DashboardGraphTypeComboBox.SelectedItem.ToString();
+            if (selectedGraphType == null)
             {
-                Title = "Kategorie",
-                Values = new ChartValues<double>()
-            };
-
-
-            foreach (var (Category, Total) in FinancesPerCategory)
-            {
-                series.Values.Add(Total);
-                Labels.Add(Category); 
+                return;
             }
-            SeriesCollection.Add(series);
+
+
+            if (selectedGraphType.Equals(GRAPH_TYPE_CARTESIAN))
+            {
+                CartSeriesCollection.Clear();
+                ShowCartesianGraph();
+           
+                foreach (var (Category, Total) in FinancesPerCategory)
+                {
+                    ColumnSeries series = new ColumnSeries
+                    {
+                        Title = Category,
+                        Values = new ChartValues<double>()
+                    };
+                    series.Values.Add(Total);
+                    CartSeriesCollection.Add(series);
+                }
+            } 
+            else if (selectedGraphType.Equals(GRAPH_TYPE_PIE))
+            {
+                PieSeriesCollection.Clear();
+                ShowPieGraph();
+                foreach (var (Category, Total) in FinancesPerCategory)
+                {
+                    PieSeries series = new PieSeries
+                    {
+                        Title = Category,
+                        Values = new ChartValues<double>()
+                    };
+                    series.Values.Add(Total);
+                    PieSeriesCollection.Add(series);
+                }
+            }
+        }
+
+        private void ShowCartesianGraph()
+        {
+            cartChart.Visibility = Visibility.Visible;
+            pieChart.Visibility = Visibility.Hidden;
+            cartChart.Series = CartSeriesCollection;
+        }
+
+        private void ShowPieGraph()
+        {
+            pieChart.Visibility = Visibility.Visible;
+            cartChart.Visibility = Visibility.Hidden;
+            pieChart.Series = PieSeriesCollection;
         }
 
         private void InitializeComboBoxes()
@@ -85,17 +128,18 @@ namespace FinanceTracker.Graphics.Pages
 
             // Měsíce
             var monthNames = CultureInfo.CurrentCulture.DateTimeFormat.MonthNames;
+            int currentMonth = DateTime.Now.Month;
             for (int i = 0; i < 12; i++)
             {
                 DashboardMonthComboBox.Items.Add(monthNames[i]);
             }
             DashboardYearComboBox.SelectedIndex = 0;
-            DashboardMonthComboBox.SelectedIndex = 0;
+            DashboardMonthComboBox.SelectedIndex = currentMonth - 1;
 
             // Typ grafu
-            DashboardGraphTypeComboBox.Items.Add("Sloupcový");
-            DashboardGraphTypeComboBox.Items.Add("Koláčový");
-            DashboardGraphTypeComboBox.SelectedIndex = 0;
+            DashboardGraphTypeComboBox.Items.Add(GRAPH_TYPE_CARTESIAN);
+            DashboardGraphTypeComboBox.Items.Add(GRAPH_TYPE_PIE);
+            DashboardGraphTypeComboBox.SelectedIndex = 1;
         }
 
         private List<int> LoadFinanceYearsForUser()
