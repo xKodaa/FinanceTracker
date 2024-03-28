@@ -87,6 +87,7 @@ namespace FinanceTracker.Graphics.Pages
 
         private void OnCryptoDataGridLoadingRow(object sender, DataGridRowEventArgs e)
         {
+            // Všechny kryptoměny v tabulce
             CryptoCurrency? currency = e.Row.DataContext as CryptoCurrency;
             if (currency != null)
             {
@@ -99,7 +100,22 @@ namespace FinanceTracker.Graphics.Pages
                 {
                     e.Row.Foreground = new SolidColorBrush(Colors.Red);
                 }
-      
+                return;
+            }
+
+            // Uživatelské kryptoměny v tabulce
+            UserCryptoCurrency? userCurrency = e.Row.DataContext as UserCryptoCurrency;
+            if (userCurrency != null) 
+            {
+                decimal difference = userCurrency.Difference;
+                if (difference > 0)
+                {
+                    e.Row.Foreground = new SolidColorBrush(Colors.LimeGreen);
+                }
+                else
+                {
+                    e.Row.Foreground = new SolidColorBrush(Colors.Red);
+                }
             }
         }
         private void CryptoButtonAdd_Click(object sender, RoutedEventArgs e)
@@ -171,19 +187,28 @@ namespace FinanceTracker.Graphics.Pages
 
         private void CryptoButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: smazat nakliknutý item v tabulce
+            if (UserCryptoDataGrid.SelectedItem == null)
+            {
+                return;
+            }
+            UserCryptoCurrency userSelectedCrypto = (UserCryptoCurrency)UserCryptoDataGrid.SelectedItem;
+            RemoveCryptoFromDatabase(userSelectedCrypto);
+            UserCryptoDataGrid.Items.Remove(userSelectedCrypto);    
         }
 
-        private void RemoveCryptoFromDatabase(string userSelectedCrypto)
+        private void RemoveCryptoFromDatabase(UserCryptoCurrency userSelectedCrypto)
         {
             try
             {
-                string sql = $"DELETE FROM UserCryptos WHERE username=@username & cryptoName=@cryptoName";
+                string sql = $"DELETE FROM UserCryptos WHERE username=@username AND cryptoName=@cryptoName AND amount=@amount AND dateOfBuy=@dateOfBuy AND price=@price";
                 using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
                 {
                     string username = connector.LoggedUser.Username;
                     command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@cryptoName", userSelectedCrypto);
+                    command.Parameters.AddWithValue("@cryptoName", userSelectedCrypto.Symbol);
+                    command.Parameters.AddWithValue("@amount", userSelectedCrypto.Amount);
+                    command.Parameters.AddWithValue("@dateOfBuy", userSelectedCrypto.DateOfBuy);
+                    command.Parameters.AddWithValue("@price", userSelectedCrypto.PricePerAmount);
                     command.ExecuteNonQuery();
                 }
             }

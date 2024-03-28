@@ -68,7 +68,7 @@
                     <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>
                     <Button x:Name="CryptoButtonDelete" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Smazat" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Click="CryptoButtonDelete_Click"/>
 
-                    <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False">
+                    <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Kryptoměna" Binding="{Binding Symbol}"/>
                             <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy}"/>
