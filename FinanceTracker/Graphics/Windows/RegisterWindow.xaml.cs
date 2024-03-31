@@ -1,4 +1,5 @@
-﻿using FinanceTracker.Model.Services;
+﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System;
 using System.Collections.Generic;
@@ -46,9 +47,14 @@ namespace FinanceTracker.Graphics.Windows
                 if (registerService.Register(name, surname, username, password))
                 {
                     Logger.WriteLog(this, $"Uživatel '{username}' zaregistrován");
+                    User user = new(username)
+                    {
+                        Name = name,
+                        Surname = surname,
+                        LastLogin = DateTime.Now
+                    };
+                    Util.SetUser(user);
                     DialogResult = true;
-                    // TODO toto místo to alertu přesunout spíše na uvodni profile page
-                    Util.ShowInfoMessageBox($"Registrace byla úspěšná! \n - Vítejte {name} {surname}");
                 }
                 else
                     ClearInputs();

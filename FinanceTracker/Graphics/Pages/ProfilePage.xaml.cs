@@ -63,11 +63,14 @@ namespace FinanceTracker.Graphics.Pages
                     }
                     else
                     {
-                        if (count == 0) 
+                        if (count == 0)
                         {
                             CryptoCountLabel.Text = "Žádné záznamy";
                         }
-                        CryptoCountLabel.Text = count.ToString();
+                        else 
+                        {
+                            CryptoCountLabel.Text = count.ToString();
+                        }
                     }
                 }
                 catch (Exception e)
@@ -84,11 +87,6 @@ namespace FinanceTracker.Graphics.Pages
             {
                 command.Parameters.AddWithValue("@username", LoggedUser.Username);
                 object result = command.ExecuteScalar();
-                if (result == null) 
-                {
-                    LastFinanceRecordLabel.Text = "Žádné záznamy";
-                    return;
-                }
                 try 
                 {
                     DateTime date = Convert.ToDateTime(result);
@@ -96,6 +94,7 @@ namespace FinanceTracker.Graphics.Pages
                 } 
                 catch (Exception e)
                 {
+                    LastFinanceRecordLabel.Text = "Žádné záznamy";
                     Logger.WriteErrorLog(this, $"Chyba při načítání posledního záznamu financí: {e}");
                 }
             }

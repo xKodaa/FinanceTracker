@@ -120,7 +120,7 @@ namespace FinanceTracker.Graphics.Pages
         }
         private void CryptoButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            UserCryptoCurrency userCrypto = (UserCryptoCurrency) AllCryptoComboBox.SelectedItem;
+            CryptoCurrency userCrypto = (CryptoCurrency) AllCryptoComboBox.SelectedItem;
             string cryptoName = userCrypto.Symbol; 
             string dateString = PurchaseDatePicker.Text;
             if (!DateTime.TryParse(dateString, out DateTime dateOfBuy))
