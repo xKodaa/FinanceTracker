@@ -79,6 +79,7 @@ namespace FinanceTracker.Graphics.Pages
                     }
                     UserExpenses userExpenses = new UserExpenses(amount, category, date);
                     SaveExpenseIntoDatabase(userExpenses);
+                    FinancesDataGrid.Items.Add(userExpenses);
                     ClearPage();
                 }
                 else
@@ -205,6 +206,28 @@ namespace FinanceTracker.Graphics.Pages
             FinancesDataGrid.Items.Remove(userExpenses);
         }
 
+        private void FinancesButtonDeleteAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string sql = $"DELETE FROM UserFinances";
+
+                using SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection);
+                int rowsAffected = command.ExecuteNonQuery();
+                FinancesDataGrid.Items.Clear();
+
+                if (!(rowsAffected > 0))
+                {
+                    Util.ShowInfoMessageBox("Není co mazat.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.ShowErrorMessageBox("Nepodařilo se smazat všechny záznamy");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat všechny záznamy finnancí z databáze, {ex.Message}");
+            }
+        }
+
         private void DeleteUserExpenseFromDatabase(UserExpenses userExpenses)
         {
             try
@@ -216,19 +239,23 @@ namespace FinanceTracker.Graphics.Pages
                 command.Parameters.AddWithValue("@username", username);
                 command.Parameters.AddWithValue("@category", userExpenses.Category);
                 command.Parameters.AddWithValue("@price", userExpenses.Price);
-                command.Parameters.AddWithValue("@date", userExpenses.Date);
-                command.ExecuteNonQuery();
+                command.Parameters.AddWithValue("@date", userExpenses.Date.ToString("yyyy-MM-dd"));
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Util.ShowInfoMessageBox("Záznam byl úspěšně smazán.");
+                }
+                else
+                {
+                    Util.ShowInfoMessageBox("Žádný záznam nebyl smazán. Zkontrolujte, zda záznam existuje.");
+                }
             }
             catch (Exception ex)
             {
                 Util.ShowErrorMessageBox("Nepodařilo se smazat záznam");
                 Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat záznam finance z databáze, {ex.Message}");
             }
-        }
-
-        private void FinancesDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-        {
-
         }
     }
 }

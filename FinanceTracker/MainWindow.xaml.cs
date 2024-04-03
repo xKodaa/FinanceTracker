@@ -38,7 +38,7 @@ namespace FinanceTracker
 
         private void FinanceButton_Click(object sender, RoutedEventArgs e)
         {
-            MainContentFrame.Navigate(new FinancesPage(this));
+            NavigateToFinances();
         }
 
         private void ConvertorButton_Click(object sender, RoutedEventArgs e)
@@ -54,13 +54,17 @@ namespace FinanceTracker
         private void CryptoButton_Click(object sender, RoutedEventArgs e)
         {
             MainContentFrame.Navigate(new CryptocurrenciesPage(this));
-
         }
 
         private void DashboardButton_Click(object sender, RoutedEventArgs e)
         {
             MainContentFrame.Navigate(new DashboardPage(this));
 
+        }
+
+        public void NavigateToFinances()
+        {
+            MainContentFrame.Navigate(new FinancesPage(this));
         }
 
         private void UpdateMainTitle()

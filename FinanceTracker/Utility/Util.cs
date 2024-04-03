@@ -230,5 +230,17 @@ namespace FinanceTracker.Utility
             }
             return new User(username);
         }
+
+        public static List<Quart> GetQuarts()
+        {
+            int year = DateTime.Now.Year;
+
+            Quart quart1 = new(1, new DateTime(year, 1, 1), new DateTime(year, 3, 31));
+            Quart quart2 = new(2, new DateTime(year, 4, 1), new DateTime(year, 6, 30));
+            Quart quart3 = new(3, new DateTime(year, 7, 1), new DateTime(year, 9, 30));
+            Quart quart4 = new(4, new DateTime(year, 10, 1), new DateTime(year, 12, 31));
+
+            return new List<Quart> { quart1, quart2, quart3, quart4 };
+        }
     }
 }

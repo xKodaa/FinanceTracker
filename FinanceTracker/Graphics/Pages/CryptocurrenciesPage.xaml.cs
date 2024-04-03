@@ -56,7 +56,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
-
+        // Asynchronně načte kryptoměny z API a vloží je do tabulky
         private async void LoadCryptoCurrencies()
         {
             CryptoApiService CryptoApiService = new();
@@ -68,6 +68,7 @@ namespace FinanceTracker.Graphics.Pages
             });
         }
 
+        // Filtruje kryptoměny podle zadaného textu
         private void FilterCryptoData(object sender, TextChangedEventArgs e)
         {
             if (cryptoCurrencies == null)
@@ -83,7 +84,7 @@ namespace FinanceTracker.Graphics.Pages
             CryptoDataGrid.ItemsSource = filteredData;
         }
 
-
+        // Obarví řádky tabulky podle změny ceny
         private void OnCryptoDataGridLoadingRow(object sender, DataGridRowEventArgs e)
         {
             // Všechny kryptoměny v tabulce
@@ -117,6 +118,8 @@ namespace FinanceTracker.Graphics.Pages
                 }
             }
         }
+
+        // Přidání kryptoměny do databáze a do tabulky
         private void CryptoButtonAdd_Click(object sender, RoutedEventArgs e)
         {
             CryptoCurrency userCrypto = (CryptoCurrency) AllCryptoComboBox.SelectedItem;
@@ -144,8 +147,8 @@ namespace FinanceTracker.Graphics.Pages
                 return;
             }
 
-            UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
             // Přidání userCryptoCurrency do databáze
+            UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
             try
             {
                 string sql = "INSERT INTO UserCryptos (username, cryptoName, amount, dateOfBuy, price) VALUES (@username, @cryptoName, @amount, @dateOfBuy, @price)";
@@ -185,7 +188,7 @@ namespace FinanceTracker.Graphics.Pages
             CryptoPurchasePriceTextBox.Text = "";
         }
 
-        // Přidání uživatelské kryptoměny do ComboBoxu a do DataGridu
+        // Přidání uživatelské kryptoměny do tabulky
         private void AddUserCryptoCurrency(UserCryptoCurrency userCrypto)
         {
             if (userCrypto.FindCryptoFromList(cryptoCurrencies)) 
@@ -194,6 +197,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Smazání uživatelské kryptoměny z tabulky a databáze
         private void CryptoButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             if (UserCryptoDataGrid.SelectedItem == null) return;
@@ -225,6 +229,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Načtení uživatelských kryptoměn z databáze
         private List<UserCryptoCurrency> LoadUserCryptosFromDatabase()
         {
             try
@@ -269,6 +274,5 @@ namespace FinanceTracker.Graphics.Pages
         {
             LoadCryptoCurrencies();
         }
-
     }
 }

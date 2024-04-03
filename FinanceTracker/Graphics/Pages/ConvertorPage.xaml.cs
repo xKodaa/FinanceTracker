@@ -54,11 +54,13 @@ namespace FinanceTracker.Graphics.Pages
             });
         }
 
+        // Kopírování výsledku do schránky
         private void ConvertorBtnCopy_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(ConversionResultLabel.Content.ToString());
         }
 
+        // Asynchronně provede konverzi měn a zobrazí výsledek
         private async void ConvertorBtnSubmit_Click(object sender, RoutedEventArgs e)
         {
             if (SourceCurrencyComboBox.SelectedItem == null || TargetCurrencyComboBox.SelectedItem == null)
@@ -92,6 +94,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Handler pro zobrazení výsledku a kopírování výsledku
         private void HideResultGrid()
         {
             ConvertorResultGrid.Visibility = Visibility.Hidden;

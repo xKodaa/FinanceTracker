@@ -9,32 +9,99 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DashboardPage">
 
-    <Grid Style="{StaticResource GradientBackgroundStyle}">
+    <TabControl x:Name="DashboardTabControl">
 
-        <lvc:CartesianChart x:Name="cartChart" Series="{Binding CartSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Hidden">
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Title="Kategorie" Labels="{Binding Labels}"></lvc:Axis>
-            </lvc:CartesianChart.AxisX>
+        <TabItem Header="Měsíční přehled">
+            <Grid Style="{StaticResource GradientBackgroundStyle}">
 
-            <lvc:CartesianChart.AxisY>
-                <lvc:Axis Title="Cena (Kč)" LabelFormatter="{Binding Formatter}"></lvc:Axis>
-            </lvc:CartesianChart.AxisY>
-        </lvc:CartesianChart>
+                <lvc:CartesianChart x:Name="MonthlyCartChart" Series="{Binding MonthlyCartSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Hidden">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Kategorie" Labels="{Binding Labels}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
 
-        <lvc:PieChart x:Name="pieChart" Series="{Binding PieSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Visible">
-        </lvc:PieChart>
-        
-        <Grid VerticalAlignment="Bottom" Height="40">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <ComboBox x:Name="DashboardYearComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="0" Margin="5"/>
-            <ComboBox x:Name="DashboardMonthComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="1" Margin="5"/>
-            <ComboBox x:Name="DashboardGraphTypeComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="2" Margin="5"/>
-            <Button x:Name="DashboardShowGraphButton" Style="{StaticResource WindowsButtonStyle}" Content="Zobraz" Grid.Column="3" Width="80" HorizontalAlignment="Left" Click="DashboardShowGraphButton_Click"/>
-        </Grid>
-    </Grid>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Cena" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+
+                <lvc:PieChart x:Name="MonthlyPieChart" Series="{Binding MonthlyPieSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Visible">
+                </lvc:PieChart>
+
+                <Grid VerticalAlignment="Bottom" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="DashboardMonthlyYearComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="0" Margin="5"/>
+                    <ComboBox x:Name="DashboardMonthlyMonthComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="1" Margin="5"/>
+                    <ComboBox x:Name="DashboardMonthlyGraphTypeComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="2" Margin="5"/>
+                    <Button x:Name="DashboardShowGraphButton" Style="{StaticResource WindowsButtonStyle}" Content="Zobraz" Grid.Column="3" Width="80" HorizontalAlignment="Left" Click="DashboardShowGraphButton_Click"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Kvartální přehled">
+            <Grid Style="{StaticResource GradientBackgroundStyle}">
+
+                <lvc:CartesianChart x:Name="QuartCartChart" Series="{Binding QuartCartSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Hidden">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Kategorie" Labels="{Binding Labels}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Cena" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+
+                <lvc:PieChart x:Name="QuartPieChart" Series="{Binding QuartPieSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Visible">
+                </lvc:PieChart>
+
+                <Grid VerticalAlignment="Bottom" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="DashboardQuartYearComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="0" Margin="5"/>
+                    <ComboBox x:Name="DashboardQuartComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="200" Grid.Column="1" Margin="0,5,0,5"/>
+                    <ComboBox x:Name="DashboardQuartGraphTypeComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="2" Margin="5"/>
+                    <Button x:Name="DashboardQuartShowGraphButton" Style="{StaticResource WindowsButtonStyle}" Content="Zobraz" Grid.Column="3" Width="80" HorizontalAlignment="Center" Click="DashboardShowGraphButton_Click"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem Header="Roční přehled">
+            <Grid Style="{StaticResource GradientBackgroundStyle}">
+
+                <lvc:CartesianChart x:Name="YearlyCartChart" Series="{Binding YearlyCartSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Hidden">
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Kategorie" Labels="{Binding Labels}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Cena" LabelFormatter="{Binding Formatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+
+                <lvc:PieChart x:Name="YearlyPieChart" Series="{Binding YearlyPieSeriesCollection}" LegendLocation="Right" Margin="0,0,0,45" Visibility="Visible">
+                </lvc:PieChart>
+
+                <Grid VerticalAlignment="Bottom" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="DashboardYearlyYearComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="0" Margin="5"/>
+                    <ComboBox x:Name="DashboardYearlyGraphTypeComboBox" Style="{StaticResource PagesComboBoxStyle}" Width="120" Grid.Column="1" Margin="5"/>
+                    <Button x:Name="DashboardYearlyShowGraphButton" Style="{StaticResource WindowsButtonStyle}" Content="Zobraz" Grid.Column="2" Width="80" HorizontalAlignment="Left" Click="DashboardShowGraphButton_Click"/>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+
+    </TabControl>
 </Page>
