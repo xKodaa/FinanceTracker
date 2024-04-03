@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FinanceTracker.Model
+﻿namespace FinanceTracker.Model
 {
     // Třída pro uložení objektů z konfiguračního souboru projektu
     public class AppConfig
@@ -27,7 +21,7 @@ namespace FinanceTracker.Model
 
         public override string ToString()
         {
-            return $"ConnectionString = {ConnectionString}, CryptoRefreshRate = {CryptoRefreshRate}, FinanceCategories = {FinanceCategories}";
+            return $"ConnectionString = {ConnectionString}, CryptoRefreshRate = {CryptoRefreshRate}, FinanceCategories...";
         }
     }
 }

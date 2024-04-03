@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+
 
 namespace FinanceTracker.Graphics.Dialogs
 {
@@ -18,10 +7,11 @@ namespace FinanceTracker.Graphics.Dialogs
     {
         public string? CategoryName { get; private set; }
 
-        public AddCategoryDialog()
+        public AddCategoryDialog(MainWindow mainWindow)
         {
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
             InitializeComponent();
+            this.Icon = mainWindow.Icon;
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)

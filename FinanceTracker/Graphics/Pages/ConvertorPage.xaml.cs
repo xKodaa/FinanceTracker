@@ -1,20 +1,9 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -94,7 +83,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
-        // Handler pro zobrazení výsledku a kopírování výsledku
+        // Handlery pro zobrazení výsledku a kopírování výsledku
         private void HideResultGrid()
         {
             ConvertorResultGrid.Visibility = Visibility.Hidden;

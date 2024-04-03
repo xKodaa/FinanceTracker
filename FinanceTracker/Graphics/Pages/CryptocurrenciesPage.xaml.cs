@@ -42,6 +42,7 @@ namespace FinanceTracker.Graphics.Pages
             LoadCryptoCurrencies();
         }
 
+        // Spustí časovače
         private void RunTimers()
         {
             AppConfig appConfig = Util.ReadAppConfig();
@@ -56,6 +57,7 @@ namespace FinanceTracker.Graphics.Pages
             updateLabelTimer.Start();
         }
 
+        // Každou vteřinu aktualizuje label s časem do další aktualizace dat z API
         private void UpdateLabelTimer_Tick(object sender, EventArgs e)
         {
             TimeSpan remainingTime = nextTickTime - DateTime.Now;
@@ -65,6 +67,7 @@ namespace FinanceTracker.Graphics.Pages
             });
         }
 
+        // Jednou za časový interval získaný z konfiguračního souboru načte kryptoměny z API
         private void MainTimer_Tick(object sender, EventArgs e)
         {
             LoadCryptoCurrencies();

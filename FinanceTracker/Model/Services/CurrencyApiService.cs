@@ -1,17 +1,7 @@
 ﻿using FinanceTracker.Utility;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.IO.Packaging;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection.Metadata;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace FinanceTracker.Model.Services
 {
@@ -30,6 +20,7 @@ namespace FinanceTracker.Model.Services
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        // Konverze měn z API
         public async Task<string> ConvertCurrencyAsync(string fromCurrency, string toCurrency, int amount)
         {
             try
@@ -54,6 +45,7 @@ namespace FinanceTracker.Model.Services
             return "";
         }
 
+        // Získání všech dostupných měn z API
         public async Task<List<Currency>> GetAvailableCurrenciesAsync()
         {
             try

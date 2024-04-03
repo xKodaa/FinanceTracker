@@ -1,11 +1,6 @@
 ﻿using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceTracker.Model.Services
 {
@@ -23,6 +18,7 @@ namespace FinanceTracker.Model.Services
             CheckDatabaseContent();
         }
 
+        // Kontrola obsahu uživatelské sqlite databáze
         private void CheckDatabaseContent()
         {
             Logger.WriteLog(this, "Kontrola obsahu databáze...");
@@ -47,6 +43,7 @@ namespace FinanceTracker.Model.Services
             }
         }
 
+        // Vytvoření tabulky, pokud neexistuje
         private void CreateNonExistingTable(string table)
         {
             string sql;

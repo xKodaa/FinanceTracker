@@ -1,15 +1,10 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FinanceTracker.Utility
@@ -67,6 +62,7 @@ namespace FinanceTracker.Utility
             return AppConfig;
         }
 
+        // Editace konfiguračního souboru
         public static void EditAppConfig(string key, object value)
         {
             if (AppConfig == null)
@@ -187,11 +183,13 @@ namespace FinanceTracker.Utility
             return true;
         }
 
+        // Kontrola, zda je datum v minulosti
         public static bool NonFutureDateTime(DateTime dateTime)
         {
             return dateTime <= DateTime.Now;
         }
 
+        // Nastavení uživatele singleton connectoru
         public static void SetUser(User user)
         {
             Connector = DatabaseConnector.Instance;
@@ -204,6 +202,7 @@ namespace FinanceTracker.Utility
             return Connector.LoggedUser;
         }
 
+        // Načtení uživatele z databáze
         public static User LoadUser()
         {
             string username = GetUser().Username;
@@ -227,6 +226,7 @@ namespace FinanceTracker.Utility
             return new User(username);
         }
 
+        // Získání kvartálů pro aktuální rok
         public static List<Quart> GetQuarts()
         {
             int year = DateTime.Now.Year;
@@ -236,7 +236,7 @@ namespace FinanceTracker.Utility
             Quart quart3 = new(3, new DateTime(year, 7, 1), new DateTime(year, 9, 30));
             Quart quart4 = new(4, new DateTime(year, 10, 1), new DateTime(year, 12, 31));
 
-            return new List<Quart> { quart1, quart2, quart3, quart4 };
+            return [quart1, quart2, quart3, quart4];
         }
     }
 }

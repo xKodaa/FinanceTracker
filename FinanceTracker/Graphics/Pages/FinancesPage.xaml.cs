@@ -2,24 +2,10 @@
 using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
+
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -128,7 +114,7 @@ namespace FinanceTracker.Graphics.Pages
         // Přidá novou kategorii do ComboBoxu a do konfiguračního souboru a v comboboxu ji vybere
         private void FinancesBtnAddCategory_Click(object sender, RoutedEventArgs e)
         {
-            AddCategoryDialog addCategoryDialog = new AddCategoryDialog();
+            AddCategoryDialog addCategoryDialog = new AddCategoryDialog(MainWindow);
             if (addCategoryDialog.ShowDialog() == true)
             {
                 string? categoryName = addCategoryDialog.CategoryName;
@@ -197,6 +183,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Smaže vybraný záznam z tabulky a z databáze
         private void FinancesButtonDelete_Click(object sender, RoutedEventArgs e)
         {
             if (FinancesDataGrid.SelectedItem == null) return;
@@ -206,6 +193,7 @@ namespace FinanceTracker.Graphics.Pages
             FinancesDataGrid.Items.Remove(userExpenses);
         }
 
+        // Smaže všechny uživatelem vložené záznamy
         private void FinancesButtonDeleteAll_Click(object sender, RoutedEventArgs e)
         {
             try

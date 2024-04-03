@@ -1,12 +1,6 @@
 ﻿using FinanceTracker.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection.Metadata;
 using System.Text.Json;
 
 namespace FinanceTracker.Model.Services
@@ -26,6 +20,7 @@ namespace FinanceTracker.Model.Services
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        // Získání informací o dostupních kryptoměnách z API
         public async Task<List<CryptoCurrency>> RetrieveCryptoInfoAsync()
         {
             List<CryptoCurrency> cryptoCurrencies = new();

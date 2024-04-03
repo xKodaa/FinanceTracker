@@ -1,23 +1,8 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
 using FinanceTracker.Utility;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -40,6 +25,8 @@ namespace FinanceTracker.Graphics.Pages
             SetUserCryptoCount();
             SetUserFinancesDate();
         }
+
+        // Nastavení základních uživatelských údajů
         private void SetBasicUserData()
         {
             UsernameLabel.Text = LoggedUser.Username;
@@ -47,6 +34,8 @@ namespace FinanceTracker.Graphics.Pages
             SurnameLabel.Text = LoggedUser.Surname;
             LastLoginLabel.Text = LoggedUser.LastLogin?.ToString("dd.MM.yyyy");
         }
+
+        // Nastavení počtu kryptoměn uživatele
         private void SetUserCryptoCount()
         {
             string sql = "SELECT COUNT(cryptoName) FROM UserCryptos WHERE username=@username";
@@ -80,6 +69,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Nastavení data posledního záznamu financí uživatele
         private void SetUserFinancesDate()
         {
             string sql = "SELECT MAX(date) FROM UserFinances WHERE username=@username";

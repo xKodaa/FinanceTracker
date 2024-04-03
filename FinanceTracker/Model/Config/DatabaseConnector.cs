@@ -1,14 +1,5 @@
-﻿using FinanceTracker.Model;
-using FinanceTracker.Utility;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using FinanceTracker.Utility;
 using System.Data.SQLite;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace FinanceTracker.Model.Config
 {
@@ -38,7 +29,13 @@ namespace FinanceTracker.Model.Config
         {
             ConnectionString = string.Empty;
             Connection = new SQLiteConnection();
-            LoggedUser = new User("default");
+            LoggedUser = new User("default")
+            {
+                Name = "default",
+                Surname = "default",
+                LastLogin = DateTime.Now
+            };
+
             CreateDatabaseConnection();
         }
 

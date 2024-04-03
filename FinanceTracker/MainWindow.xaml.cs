@@ -1,21 +1,8 @@
 ﻿using FinanceTracker.Graphics.Pages;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using FinanceTracker.Utility;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.IO;
-using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
-using FinanceTracker.Model.Services;
+using System.Windows.Media.Imaging;
 
 namespace FinanceTracker
 {
@@ -24,13 +11,27 @@ namespace FinanceTracker
 
         public MainWindow()
         {
+            InitializeComponent();
+            SetIcon();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Launcher launcher = new(this);
             launcher.Launch();
-            InitializeComponent();
             UpdateMainTitle();
         }
 
+        private void SetIcon()
+        {
+            Uri iconUri = new("Data/icon.ico", UriKind.Relative);
+            this.Icon = BitmapFrame.Create(iconUri);
+        }
+
+        // Přidá k názvu aplikace username uživatele
+        private void UpdateMainTitle()
+        {
+            Title = $"Finance Tracker | {Util.GetUser().Username}";
+        }
+
+        /* Menu item handlers */
         private void MainPageLoaded(object sender, RoutedEventArgs e)
         {
             MainContentFrame.Navigate(new ProfilePage(this)); 
@@ -38,7 +39,7 @@ namespace FinanceTracker
 
         private void FinanceButton_Click(object sender, RoutedEventArgs e)
         {
-            NavigateToFinances();
+            MainContentFrame.Navigate(new FinancesPage(this));
         }
 
         private void ConvertorButton_Click(object sender, RoutedEventArgs e)
@@ -60,16 +61,6 @@ namespace FinanceTracker
         {
             MainContentFrame.Navigate(new DashboardPage(this));
 
-        }
-
-        public void NavigateToFinances()
-        {
-            MainContentFrame.Navigate(new FinancesPage(this));
-        }
-
-        private void UpdateMainTitle()
-        {
-            Title = $"Finance Tracker | {Util.GetUser().Username}";
         }
     }
 }
