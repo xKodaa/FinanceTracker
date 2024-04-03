@@ -18,12 +18,6 @@
 - [ ] Code cleaning
 - [ ] Code comments
       
-## NOTES
-  
-### OBECNÉ
-- Ke kryptu dát možnost konvertovat měny (aby se hodnoty kryptoměn zobrazovaly v jinych měnach) - využít stejné metody jako konvertor (MOŽNÁ)
-- Přidat sekci na mazání výdajů (MOŽNÁ)
-
 ## APIS
 - **Crypto API:** https://docs.coincap.io/#89deffa0-ab03-4e0a-8d92-637a857d2c91
 - **Currency convertor API:** https://www.frankfurter.app/docs/
