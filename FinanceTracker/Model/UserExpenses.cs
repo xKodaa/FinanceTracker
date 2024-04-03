@@ -8,11 +8,11 @@ namespace FinanceTracker.Model
 {
     public class UserExpenses
     {
-        public int Price { get; set; }
+        public decimal Price { get; set; }
         public string Category { get; set; }
         public DateTime Date { get; set; }
 
-        public UserExpenses(int price, string category, DateTime date)
+        public UserExpenses(decimal price, string category, DateTime date)
         {
             Price = price;
             Category = category;

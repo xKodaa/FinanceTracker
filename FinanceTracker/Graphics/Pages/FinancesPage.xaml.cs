@@ -64,7 +64,7 @@ namespace FinanceTracker.Graphics.Pages
                 return;
             }
             string price = FinancesSpentTextBox.Text;
-            if (int.TryParse(price.ToString(), out int amount))
+            if (decimal.TryParse(price.ToString(), out decimal amount))
             {
                 string category = (string)FinancesCategoryComboBox.SelectedItem;
                 string dateString = FinancesDatePicker.Text;
