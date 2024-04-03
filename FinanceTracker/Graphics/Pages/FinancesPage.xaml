@@ -9,7 +9,8 @@
       Title="FinancesPage">
 
     <Grid Style="{StaticResource GradientBackgroundStyle}">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="280">
+
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  Width="280">
             <Label Content="Utracená částka:" Style="{StaticResource WindowsLabelStyle}"/>
             <TextBox x:Name="FinancesSpentTextBox" Style="{StaticResource WindowsTextBoxStyle}" HorizontalAlignment="Left"/>
 

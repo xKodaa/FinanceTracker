@@ -21,7 +21,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <TextBlock Text="Jméno:" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Margin="10"/>
         <TextBlock x:Name="NameLabel" Grid.Row="0" Grid.Column="1" Margin="10"/>
 

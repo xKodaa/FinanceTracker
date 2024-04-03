@@ -191,6 +191,11 @@ namespace FinanceTracker.Utility
             return true;
         }
 
+        public static bool NonFutureDateTime(DateTime dateTime)
+        {
+            return dateTime <= DateTime.Now;
+        }
+
         public static void SetUser(User user)
         {
             Connector = DatabaseConnector.Instance;

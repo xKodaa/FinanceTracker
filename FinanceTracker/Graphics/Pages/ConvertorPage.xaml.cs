@@ -34,6 +34,13 @@ namespace FinanceTracker.Graphics.Pages
         private async void LoadAvailableCurrencies()
         {
             List<Currency> availableCurrencies = await CurrencyApiService.GetAvailableCurrenciesAsync();
+            if (availableCurrencies.Count == 0) 
+            { 
+                Util.ShowErrorMessageBox("Měny se nenačetly z API, zkontrolujte připojení k internetu.");
+                ConvertorBtnSubmit.IsEnabled = false;
+                return;
+            }
+            ConvertorBtnSubmit.IsEnabled = true;
 
             Dispatcher.Invoke(() =>
             {
@@ -66,6 +73,12 @@ namespace FinanceTracker.Graphics.Pages
                 Currency source = (Currency)SourceCurrencyComboBox.SelectedItem;
                 Currency target = (Currency)TargetCurrencyComboBox.SelectedItem;
                 string result = await CurrencyApiService.ConvertCurrencyAsync(source.Code, target.Code, amount);
+                if (result == "") 
+                {
+                    Util.ShowErrorMessageBox("Nepovedlo se získat data, zkontrolujte připojení k internetu.");
+                    Logger.WriteErrorLog(this, "Nepovedlo se získat data z API v převodníku");
+                    return;
+                }
                 Dispatcher.Invoke(() =>
                 {
                     ConversionResultLabel.Content = $"{amount} {source.Code} = {result}"; ;

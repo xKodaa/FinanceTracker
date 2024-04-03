@@ -70,6 +70,11 @@ namespace FinanceTracker.Graphics.Pages
                 string dateString = FinancesDatePicker.Text;
                 if (DateTime.TryParse(dateString, out DateTime date))
                 {
+                    if (!Util.NonFutureDateTime(date))
+                    {
+                        Util.ShowErrorMessageBox("Nelze zadat budoucí datum");
+                        return;
+                    }
                     UserExpenses userExpenses = new UserExpenses(amount, category, date);
                     SaveExpenseIntoDatabase(userExpenses);
                     ClearPage();

@@ -144,6 +144,12 @@ namespace FinanceTracker.Graphics.Pages
                 return;
             }
 
+            if (!Util.NonFutureDateTime(dateOfBuy))
+            {
+                Util.ShowErrorMessageBox("Nelze zadat budoucí datum");
+                return;
+            }
+
             UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
             // Přidání userCryptoCurrency do databáze
             try
