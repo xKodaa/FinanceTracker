@@ -51,7 +51,6 @@ namespace FinanceTracker.Utility
                     if (config != null && config.IsInitialized())
                     {
                         AppConfig.ConnectionString = config.ConnectionString;
-                        AppConfig.DefaultCurrency = config.DefaultCurrency;
                         AppConfig.CryptoRefreshRate = config.CryptoRefreshRate;
                         AppConfig.FinanceCategories = config.FinanceCategories;
                     }
@@ -80,9 +79,6 @@ namespace FinanceTracker.Utility
                 {
                     case "ConnectionString":
                         AppConfig.ConnectionString = value.ToString();
-                        break;
-                    case "DefaultCurrency":
-                        AppConfig.DefaultCurrency = value.ToString();
                         break;
                     case "CryptoRefreshRate":
                         if (int.TryParse(value.ToString(), out int rate))

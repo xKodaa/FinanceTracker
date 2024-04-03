@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -26,13 +27,48 @@ namespace FinanceTracker.Graphics.Pages
     {
         private List<CryptoCurrency> cryptoCurrencies;
         private readonly DatabaseConnector connector;
+        private DispatcherTimer mainTimer;
+        private DispatcherTimer updateLabelTimer;
+        private DateTime nextTickTime;
 
         public CryptocurrenciesPage(MainWindow mainWindow)
         {
+            InitializeComponent();
+            mainTimer = new();
+            updateLabelTimer = new();
+            RunTimers();
             cryptoCurrencies = [];
             connector = DatabaseConnector.Instance;
-            InitializeComponent();
             LoadCryptoCurrencies();
+        }
+
+        private void RunTimers()
+        {
+            AppConfig appConfig = Util.ReadAppConfig();
+            mainTimer.Interval = TimeSpan.FromSeconds(appConfig.CryptoRefreshRate);
+            LabelCountdown.Content = $"Příští aktualizace za: {appConfig.CryptoRefreshRate}s";
+            mainTimer.Tick += MainTimer_Tick;
+            mainTimer.Start();
+            nextTickTime = DateTime.Now.Add(mainTimer.Interval);
+
+            updateLabelTimer.Interval = TimeSpan.FromSeconds(1);
+            updateLabelTimer.Tick += UpdateLabelTimer_Tick;
+            updateLabelTimer.Start();
+        }
+
+        private void UpdateLabelTimer_Tick(object sender, EventArgs e)
+        {
+            TimeSpan remainingTime = nextTickTime - DateTime.Now;
+            Dispatcher.Invoke(() =>
+            {
+                LabelCountdown.Content = $"Příští aktualizace za: {remainingTime.Seconds}s";
+            });
+        }
+
+        private void MainTimer_Tick(object sender, EventArgs e)
+        {
+            LoadCryptoCurrencies();
+            nextTickTime = DateTime.Now.Add(mainTimer.Interval + TimeSpan.FromSeconds(1));
         }
 
         private void InitCryptoComponents()

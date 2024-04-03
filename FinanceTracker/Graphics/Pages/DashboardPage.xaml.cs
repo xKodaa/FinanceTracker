@@ -69,7 +69,7 @@ namespace FinanceTracker.Graphics.Pages
                 RefreshGraph(now.Year, now.Month, GRAPH_TYPE_PIE, TAB_ITEM_MONTHLY_OVERVIEW);  // Zobrazení grafu pro aktuální měsíc
         }
 
-        // Obnovení grafu pro zvolený rok a měsíc
+        // Obnovení grafu pro zvolený rok a měsíc a zvolený typ grafu
         private void RefreshGraph(int year, int month, string selectedGraphType, string selectedTabItem)
         {
             FinancesPerCategory = LoadFinanceDataByCategory(LoggedUser.Username, year, month, selectedTabItem);
@@ -79,7 +79,7 @@ namespace FinanceTracker.Graphics.Pages
             MainWindow.DataContext = this;
         }
 
-        // Zobrazení načtených dat z databáze na základě zvoleného typu grafu
+        // Zobrazení načtených dat z databáze na základě zvoleného typu grafu a záložky
         private void DisplayFinanceData(string selectedGraphType, string selectedTabItem)
         {
             if (selectedGraphType == null) return;
@@ -131,6 +131,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Načtení dat pro sloupcový graf
         private void LoadColumnSeries(SeriesCollection collection) 
         {
             foreach (var (Category, Total) in FinancesPerCategory)
@@ -145,6 +146,7 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
+        // Načtení dat pro koláčový graf
         private void LoadPieSeries(SeriesCollection collection)
         {
             foreach (var (Category, Total) in FinancesPerCategory)
@@ -235,7 +237,7 @@ namespace FinanceTracker.Graphics.Pages
             DashboardMonthlyYearComboBox.SelectedIndex = 0;
             DashboardMonthlyMonthComboBox.SelectedIndex = currentMonth - 1;
 
-            // Typ grafu
+            // Typy grafů
             DashboardMonthlyGraphTypeComboBox.Items.Add(GRAPH_TYPE_CARTESIAN);
             DashboardMonthlyGraphTypeComboBox.Items.Add(GRAPH_TYPE_PIE);
             DashboardMonthlyGraphTypeComboBox.SelectedIndex = 1;            
@@ -273,15 +275,13 @@ namespace FinanceTracker.Graphics.Pages
                 {
                     string? yearString = reader["Year"].ToString();
                     if (int.TryParse(yearString, out int year))
-                    {
                         years.Add(year);
-                    }
                 }
             }
             return years;
         }
 
-        // Načtení uživatelských dat z databáze pro zobrazení grafu
+        // Načtení uživatelských dat z databáze pro zobrazení grafu podle zvolené záložky
         public List<(string Category, double Total)> LoadFinanceDataByCategory(string username, int year, int month, string selectedTabItem)
         {
             try
@@ -293,7 +293,8 @@ namespace FinanceTracker.Graphics.Pages
                 {
                     sql = @"SELECT category, SUM(price) as TotalPrice 
                      FROM UserFinances 
-                     WHERE username = @username AND strftime('%Y', date) = @year AND strftime('%m', date) = @month";
+                     WHERE username = @username AND strftime('%Y', date) = @year AND strftime('%m', date) = @month
+                     GROUP BY category";
                 }
                 else if (selectedTabItem.Equals(TAB_ITEM_QUART_OVERVIEW))
                 {
@@ -338,7 +339,7 @@ namespace FinanceTracker.Graphics.Pages
             return [];
         }
 
-        // Zobrazení grafu po změně zvoleného měsíce
+        // Zobrazení grafu po změně hodnot z comboboxů dle zvolené záložky
         private void DashboardShowGraphButton_Click(object sender, RoutedEventArgs e)
         {
             TabItem? selectedTab = DashboardTabControl.SelectedItem as TabItem;
