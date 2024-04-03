@@ -52,7 +52,6 @@ namespace FinanceTracker.Graphics.Pages
                 if (userCryptoCurrency.FindCryptoFromList(cryptoCurrencies))
                 { 
                     UserCryptoDataGrid.Items.Add(userCryptoCurrency);
-                    // TODO: obarvit je dle difference
                 }
             }
         }
@@ -179,7 +178,7 @@ namespace FinanceTracker.Graphics.Pages
             catch (Exception ex)
             {
                 Util.ShowErrorMessageBox("Nastala chyba při vkládání dat");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nastala chyba při vkládání dat, {ex.Message}");
+                Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nastala chyba při vkládání dat, {ex.Message}");
             }
         }
 
@@ -194,10 +193,7 @@ namespace FinanceTracker.Graphics.Pages
 
         private void CryptoButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (UserCryptoDataGrid.SelectedItem == null)
-            {
-                return;
-            }
+            if (UserCryptoDataGrid.SelectedItem == null) return;
             UserCryptoCurrency userSelectedCrypto = (UserCryptoCurrency)UserCryptoDataGrid.SelectedItem;
             RemoveCryptoFromDatabase(userSelectedCrypto);
             UserCryptoDataGrid.Items.Remove(userSelectedCrypto);    
@@ -222,7 +218,7 @@ namespace FinanceTracker.Graphics.Pages
             catch (Exception ex)
             {
                 Util.ShowErrorMessageBox("Nepodařilo se smazat kryptoměnu z databáze");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat kryptoměnu z databáze, {ex.Message}");
+                Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nepodařilo se smazat kryptoměnu z databáze, {ex.Message}");
             }
         }
 
@@ -248,10 +244,10 @@ namespace FinanceTracker.Graphics.Pages
                             {
                                 UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
                                 results.Add(userCryptoCurrency);
-                                Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserCryptos: {userCryptoCurrency}");
+                                Logger.WriteLog(nameof(CryptocurrenciesPage), $"Načtené hodnoty z UserCryptos: {userCryptoCurrency}");
                             } else 
                             {
-                                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserCryptos: {cryptoName}, {amount}, {dateOfBuy}, {price}");
+                                Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nepodařilo se načíst hodnoty z UserCryptos: {cryptoName}, {amount}, {dateOfBuy}, {price}");
                             }
                         }
                         return results;
@@ -261,7 +257,7 @@ namespace FinanceTracker.Graphics.Pages
             catch (Exception ex)
             {
                 Util.ShowErrorMessageBox("Nepodařilo se načíst kryptoměnu z databáze");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst kryptoměnu z databáze, {ex.Message}");
+                Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nepodařilo se načíst kryptoměnu z databáze, {ex.Message}");
             }
             return [];
         }

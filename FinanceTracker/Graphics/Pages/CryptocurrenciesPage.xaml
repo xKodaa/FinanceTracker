@@ -10,8 +10,8 @@
       Title="CryptocurrenciesPage">
 
     <Grid>
-        <TabControl Margin="1,0,-1,0">
-            <TabItem Header="Obecné" Margin="-2,-2,-2,0">
+        <TabControl>
+            <TabItem Header="Obecné">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -22,23 +22,23 @@
                     <Button x:Name="CryptoRefreshButton" Style="{StaticResource WindowsButtonStyle}" Content="Obnovit" Width="120" HorizontalAlignment="Left" Grid.Row="0" Margin="5,5,0,5" Click="CryptoRefreshButton_Click"/>
                     <Label Style="{StaticResource WindowsLabelStyle}" Content="Filter" Margin="0,10,210,0" VerticalAlignment="Top" Grid.Row="0" HorizontalAlignment="Right" Width="40"/>
 
-                    <DataGrid x:Name="CryptoDataGrid" Grid.Row="1" Margin="5" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow">
+                    <DataGrid x:Name="CryptoDataGrid" Grid.Row="1" Margin="5" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="#" Binding="{Binding RankDecimal}" />
-                            <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" />
-                            <DataGridTextColumn Header="Název" Binding="{Binding Name}" />
-                            <DataGridTextColumn Header="Cena (USD)" Binding="{Binding PriceUsdDecimal}" />
-                            <DataGridTextColumn Header="Změna (%) 24h" Binding="{Binding ChangePercent24HrDecimal}"/>
-                            <DataGridTextColumn Header="Maximální nabídka" Binding="{Binding MaxSupplyDecimal}" />
-                            <DataGridTextColumn Header="Tržní kapitalizace (USD)" Binding="{Binding MarketCapUsdDecimal}" />
-                            <DataGridTextColumn Header="Objem (24h USD)" Binding="{Binding VolumeUsd24HrDecimal}" />
+                            <DataGridTextColumn Header="#" Binding="{Binding RankDecimal}" Width="Auto"/>
+                            <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto"/>
+                            <DataGridTextColumn Header="Název" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Cena (USD)" Binding="{Binding PriceUsdDecimal}" Width="*"/>
+                            <DataGridTextColumn Header="Změna (%) 24h" Binding="{Binding ChangePercent24HrDecimal}" Width="*"/>
+                            <DataGridTextColumn Header="Maximální nabídka" Binding="{Binding MaxSupplyDecimal}" Width="*"/>
+                            <DataGridTextColumn Header="Tržní kapitalizace (USD)" Binding="{Binding MarketCapUsdDecimal}" Width="*"/>
+                            <DataGridTextColumn Header="Objem (24h USD)" Binding="{Binding VolumeUsd24HrDecimal}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Osobní" Margin="-2,-2,-2,0">
+            <TabItem Header="Osobní">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -62,21 +62,21 @@
                     <Label Content="Množství:" Grid.Row="2" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
-                    <Label Content="Nákupní cena tokenů:" Grid.Row="3" Grid.Column="0" Margin="10"/>
+                    <Label Content="Nákupní cena tokenů (USD):" Grid.Row="3" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="PurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>
                     <Button x:Name="CryptoButtonDelete" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Smazat" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Click="CryptoButtonDelete_Click"/>
 
-                    <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow">
+                    <DataGrid x:Name="UserCryptoDataGrid" Grid.Row="5" Grid.ColumnSpan="2" Margin="10" AutoGenerateColumns="False" LoadingRow="OnCryptoDataGridLoadingRow" IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Kryptoměna" Binding="{Binding Symbol}"/>
-                            <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy, StringFormat=dd.MM.yyyy}"/>
-                            <DataGridTextColumn Header="Množství" Binding="{Binding Amount}"/>
-                            <DataGridTextColumn Header="Celková nákupní cena (USD)" Binding="{Binding PricePerAmountRounded}"/>
-                            <DataGridTextColumn Header="Nákupní cena 1ks (USD)" Binding="{Binding PricePerKsRounded}"/>
-                            <DataGridTextColumn Header="Aktuální cena 1ks (USD)" Binding="{Binding ActualCryptoPriceRounded}"/>
-                            <DataGridTextColumn Header="Aktuální rozdíl vůči nákupní ceně (%)" Binding="{Binding DifferenceRounded}"/>
+                            <DataGridTextColumn Header="Kryptoměna" Binding="{Binding Symbol}" Width="Auto"/>
+                            <DataGridTextColumn Header="Datum nákupu" Binding="{Binding DateOfBuy, StringFormat=dd.MM.yyyy}" Width="*"/>
+                            <DataGridTextColumn Header="Množství" Binding="{Binding Amount}" Width="Auto"/>
+                            <DataGridTextColumn Header="Celková nákupní cena (USD)" Binding="{Binding PricePerAmountRounded}" Width="*"/>
+                            <DataGridTextColumn Header="Nákupní cena 1ks (USD)" Binding="{Binding PricePerKsRounded}" Width="*"/>
+                            <DataGridTextColumn Header="Aktuální cena 1ks (USD)" Binding="{Binding ActualCryptoPriceRounded}" Width="*"/>
+                            <DataGridTextColumn Header="Aktuální rozdíl vůči nákupní ceně (%)" Binding="{Binding DifferenceRounded}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

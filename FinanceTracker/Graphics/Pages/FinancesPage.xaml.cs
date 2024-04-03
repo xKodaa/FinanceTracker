@@ -39,7 +39,9 @@ namespace FinanceTracker.Graphics.Pages
             InitializeComponent();
             InitCategoryComboBox();
             ClearPage();
+            LoadUserExpenses();
         }
+
 
         // Naplnění comboboxů hodnotami z konfiguračního souboru
         private void InitCategoryComboBox()
@@ -156,6 +158,77 @@ namespace FinanceTracker.Graphics.Pages
         {
             FinancesCategoryComboBox.SelectedIndex = 0;
             FinancesSpentTextBox.Clear();
+        }
+
+        private void LoadUserExpenses()
+        {
+            try
+            {
+                string sql = $"SELECT * FROM UserFinances WHERE username=@username";
+                using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+                {
+                    string username = Connector.LoggedUser.Username;
+                    command.Parameters.AddWithValue("@username", username);
+
+                    using var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        string category = reader.GetString(1);
+                        DateTime date = reader.GetDateTime(2);
+                        decimal price = reader.GetDecimal(3);
+                        if (category != null && price != 0)
+                        {
+                            UserExpenses userExpenses = new UserExpenses(price, category, date);
+                            FinancesDataGrid.Items.Add(userExpenses);
+                            Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserFinances: {userExpenses}");
+                        }
+                        else
+                        {
+                            Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserFinances pro uživatele ${username}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Util.ShowErrorMessageBox("Nepodařilo se smazat kryptoměnu z databáze");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat kryptoměnu z databáze, {ex.Message}");
+            }
+        }
+
+        private void FinancesButtonDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (FinancesDataGrid.SelectedItem == null) return;
+
+            UserExpenses userExpenses = (UserExpenses)FinancesDataGrid.SelectedItem;
+            DeleteUserExpenseFromDatabase(userExpenses);
+            FinancesDataGrid.Items.Remove(userExpenses);
+        }
+
+        private void DeleteUserExpenseFromDatabase(UserExpenses userExpenses)
+        {
+            try
+            {
+                string sql = $"DELETE FROM UserFinances WHERE username=@username AND category=@category AND price=@price AND date=@date";
+
+                using SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection);
+                string username = Connector.LoggedUser.Username;
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@category", userExpenses.Category);
+                command.Parameters.AddWithValue("@price", userExpenses.Price);
+                command.Parameters.AddWithValue("@date", userExpenses.Date);
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Util.ShowErrorMessageBox("Nepodařilo se smazat záznam");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat záznam finance z databáze, {ex.Message}");
+            }
+        }
+
+        private void FinancesDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+
         }
     }
 }
