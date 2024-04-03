@@ -3,13 +3,13 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:FinanceTracker.Graphics.Pages" 
-      xmlns:local1="clr-namespace:FinanceTracker.Model"
+      xmlns:local="clr-namespace:FinanceTracker.Graphics.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="CryptocurrenciesPage">
 
     <Grid>
+
         <TabControl>
             <TabItem Header="Obecné">
                 <Grid Background="#FFE5E5E5">
@@ -57,13 +57,13 @@
                     <ComboBox Style="{StaticResource PagesComboBoxStyle}" x:Name="AllCryptoComboBox" Grid.Row="0" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Label Content="Datum nákupu:" Grid.Row="1" Grid.Column="0" Margin="10"/>
-                    <DatePicker Style="{StaticResource PagesDatePickerStyle}" x:Name="PurchaseDatePicker" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
+                    <DatePicker Style="{StaticResource PagesDatePickerStyle}" x:Name="CryptoPurchaseDatePicker" Grid.Row="1" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Label Content="Množství:" Grid.Row="2" Grid.Column="0" Margin="10"/>
-                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="QuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
+                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="CryptoQuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Label Content="Nákupní cena tokenů (USD):" Grid.Row="3" Grid.Column="0" Margin="10"/>
-                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="PurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
+                    <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="CryptoPurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>
                     <Button x:Name="CryptoButtonDelete" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Smazat" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Top" Click="CryptoButtonDelete_Click"/>

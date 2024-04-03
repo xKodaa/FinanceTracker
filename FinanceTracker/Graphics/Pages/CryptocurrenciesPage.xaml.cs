@@ -121,25 +121,20 @@ namespace FinanceTracker.Graphics.Pages
         {
             CryptoCurrency userCrypto = (CryptoCurrency) AllCryptoComboBox.SelectedItem;
             string cryptoName = userCrypto.Symbol; 
-            string dateString = PurchaseDatePicker.Text;
+            string dateString = CryptoPurchaseDatePicker.Text;
             if (!DateTime.TryParse(dateString, out DateTime dateOfBuy))
             {
-                MessageBox.Show("Neplatný datum");
+                Util.ShowErrorMessageBox("Neplatný datum");
                 return;
             }
-            if (!decimal.TryParse(QuantityTextBox.Text, out decimal amount))
+            if (!decimal.TryParse(CryptoQuantityTextBox.Text, out decimal amount))
             {
-                MessageBox.Show("Neplatné množství");
+                Util.ShowErrorMessageBox("Neplatné množství");
                 return;
             }
-            if (!decimal.TryParse(PurchasePriceTextBox.Text, out decimal price))
+            if (!decimal.TryParse(CryptoPurchasePriceTextBox.Text, out decimal price))
             {
-                MessageBox.Show("Neplatná cena");
-                return;
-            }
-            if (cryptoName == null)
-            {
-                MessageBox.Show("Vyplňte prosím všechny údaje");
+                Util.ShowErrorMessageBox("Neplatná cena");
                 return;
             }
 
@@ -172,6 +167,7 @@ namespace FinanceTracker.Graphics.Pages
                     else 
                     {
                         AddUserCryptoCurrency(userCryptoCurrency);
+                        ClearPage();
                     }
                 }
             }
@@ -180,6 +176,13 @@ namespace FinanceTracker.Graphics.Pages
                 Util.ShowErrorMessageBox("Nastala chyba při vkládání dat");
                 Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nastala chyba při vkládání dat, {ex.Message}");
             }
+        }
+
+        private void ClearPage()
+        {
+            CryptoPurchaseDatePicker.Text = "";
+            CryptoQuantityTextBox.Text = "";
+            CryptoPurchasePriceTextBox.Text = "";
         }
 
         // Přidání uživatelské kryptoměny do ComboBoxu a do DataGridu
