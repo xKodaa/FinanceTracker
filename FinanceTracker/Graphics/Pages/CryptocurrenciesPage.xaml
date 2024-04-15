@@ -63,7 +63,7 @@
                     <Label Content="Množství:" Grid.Row="2" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="CryptoQuantityTextBox" Grid.Row="2" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
-                    <Label Content="Nákupní cena tokenů (USD):" Grid.Row="3" Grid.Column="0" Margin="10"/>
+                    <Label Content="Nákupní cena (USD):" Grid.Row="3" Grid.Column="0" Margin="10"/>
                     <TextBox Style="{StaticResource WindowsTextBoxStyle}" x:Name="CryptoPurchasePriceTextBox" Grid.Row="3" Grid.Column="1" Margin="10,10,10,10" Width="NaN" HorizontalAlignment="Stretch"/>
 
                     <Button x:Name="CryptoButtonAdd" Style="{StaticResource WindowsButtonStyle}" Grid.Row="4" Grid.Column="1" Content="Přidat" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Click="CryptoButtonAdd_Click" Width="250"/>

@@ -11,7 +11,7 @@ namespace FinanceTracker.Utility
 {
     public class Util
     {
-        private static SQLiteConnection? connection;
+        private static readonly SQLiteConnection? connection;
         private static AppConfig AppConfig { get; set; }
         private static readonly string AppConfigPath;
         private static DatabaseConnector Connector;

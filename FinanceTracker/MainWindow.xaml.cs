@@ -3,6 +3,7 @@ using System.Windows;
 using FinanceTracker.Utility;
 using FinanceTracker.Model.Config;
 using System.Windows.Media.Imaging;
+using System.Drawing;
 
 namespace FinanceTracker
 {
@@ -13,10 +14,19 @@ namespace FinanceTracker
         {
             InitializeComponent();
             SetIcon();
+            ResizeWindow();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Launcher launcher = new(this);
             launcher.Launch();
             UpdateMainTitle();
+        }
+
+        // Nastaví velikost okna na 95% obrazovky
+        private void ResizeWindow()
+        {
+            double padding = 0.95;
+            this.Width = SystemParameters.PrimaryScreenWidth * padding;
+            this.Height = SystemParameters.PrimaryScreenHeight * padding;
         }
 
         private void SetIcon()

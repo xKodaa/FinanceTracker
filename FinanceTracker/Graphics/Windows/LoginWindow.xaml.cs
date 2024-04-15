@@ -55,7 +55,7 @@ namespace FinanceTracker.Graphics.Windows
         private void RegisterHyperlink_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
-            RegisterWindow registerWindow = new RegisterWindow(MainWindow);
+            RegisterWindow registerWindow = new(MainWindow);
             Close();
             if (registerWindow.ShowDialog() == true)
             {
