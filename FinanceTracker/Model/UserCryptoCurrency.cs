@@ -73,10 +73,24 @@ namespace FinanceTracker.Model
         private void CalculateDifference(CryptoCurrency crypto)
         {
             decimal cryptoBuyPrice = this.PricePerKs;
-            decimal cryptoActualPrice = crypto.PriceUsdDecimal;
-            decimal percentualDifference = ((cryptoActualPrice - cryptoBuyPrice) / cryptoBuyPrice) * 100;
-            this.Difference = percentualDifference;
-            this.ActualCryptoPrice = cryptoActualPrice;
+
+            if (cryptoBuyPrice > 0)
+            {
+                decimal cryptoActualPrice = crypto.PriceUsdDecimal;
+
+                decimal percentualDifference = ((cryptoActualPrice - cryptoBuyPrice) / cryptoBuyPrice) * 100;
+                percentualDifference = Math.Max(-99.99m, percentualDifference); // Limitování na -99.99% pokud je pokles extrémní
+                this.Difference = percentualDifference;
+                this.ActualCryptoPrice = cryptoActualPrice;
+
+            }
+            else
+            {
+                this.Difference = 0;
+            }
+
+            //decimal percentualDifference = Math.Round(((cryptoActualPrice - cryptoBuyPrice) / cryptoBuyPrice) * 100, 2);
+            //this.Difference = percentualDifference;
         }
 
         public override string ToString()

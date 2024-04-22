@@ -265,16 +265,14 @@ namespace FinanceTracker.Graphics.Pages
             try
             {
                 string sql = $"DELETE FROM UserCryptos WHERE username=@username AND cryptoName=@cryptoName AND amount=@amount AND dateOfBuy=@dateOfBuy AND price=@price";
-                using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
-                {
-                    string username = connector.LoggedUser.Username;
-                    command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@cryptoName", userSelectedCrypto.Symbol);
-                    command.Parameters.AddWithValue("@amount", userSelectedCrypto.Amount);
-                    command.Parameters.AddWithValue("@dateOfBuy", userSelectedCrypto.DateOfBuy);
-                    command.Parameters.AddWithValue("@price", userSelectedCrypto.PricePerAmount);
-                    command.ExecuteNonQuery();
-                }
+                using SQLiteCommand command = new(sql, connector.Connection);
+                string username = connector.LoggedUser.Username;
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@cryptoName", userSelectedCrypto.Symbol);
+                command.Parameters.AddWithValue("@amount", userSelectedCrypto.Amount);
+                command.Parameters.AddWithValue("@dateOfBuy", userSelectedCrypto.DateOfBuy);
+                command.Parameters.AddWithValue("@price", userSelectedCrypto.PricePerAmount);
+                command.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
@@ -289,32 +287,29 @@ namespace FinanceTracker.Graphics.Pages
             try
             {
                 string sql = $"SELECT cryptoName, amount, dateOfBuy, price FROM UserCryptos WHERE username=@username";
-                using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
+                using SQLiteCommand command = new(sql, connector.Connection);
+                string username = connector.LoggedUser.Username;
+                command.Parameters.AddWithValue("@username", username);
+                List<UserCryptoCurrency> results = [];
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    string username = connector.LoggedUser.Username;
-                    command.Parameters.AddWithValue("@username", username);
-                    List<UserCryptoCurrency> results = [];
-                    using (var reader = command.ExecuteReader())
+                    string cryptoName = reader.GetString(0);
+                    decimal amount = reader.GetDecimal(1);
+                    DateTime dateOfBuy = reader.GetDateTime(2);
+                    decimal price = reader.GetDecimal(3);
+                    if (cryptoName != null && amount != 0 && price != 0)
                     {
-                        while (reader.Read())
-                        {
-                            string cryptoName = reader.GetString(0);
-                            decimal amount = reader.GetDecimal(1);
-                            DateTime dateOfBuy = reader.GetDateTime(2);
-                            decimal price = reader.GetDecimal(3);
-                            if (cryptoName != null && amount != 0 && price != 0)
-                            {
-                                UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
-                                results.Add(userCryptoCurrency);
-                                Logger.WriteLog(nameof(CryptocurrenciesPage), $"Načtené hodnoty z UserCryptos: {userCryptoCurrency}");
-                            } else 
-                            {
-                                Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nepodařilo se načíst hodnoty z UserCryptos: {cryptoName}, {amount}, {dateOfBuy}, {price}");
-                            }
-                        }
-                        return results;
+                        UserCryptoCurrency userCryptoCurrency = new(cryptoName, amount, price, dateOfBuy);
+                        results.Add(userCryptoCurrency);
+                        Logger.WriteLog(nameof(CryptocurrenciesPage), $"Načtené hodnoty z UserCryptos: {userCryptoCurrency}");
+                    }
+                    else
+                    {
+                        Logger.WriteErrorLog(nameof(CryptocurrenciesPage), $"Nepodařilo se načíst hodnoty z UserCryptos: {cryptoName}, {amount}, {dateOfBuy}, {price}");
                     }
                 }
+                return results;
             }
             catch (Exception ex)
             {

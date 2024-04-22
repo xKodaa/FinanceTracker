@@ -29,7 +29,7 @@
                             <DataGridTextColumn Header="Symbol" Binding="{Binding Symbol}" Width="Auto"/>
                             <DataGridTextColumn Header="Název" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Cena (USD)" Binding="{Binding PriceUsdDecimal}" Width="*"/>
-                            <DataGridTextColumn Header="Změna (%) 24h" Binding="{Binding ChangePercent24HrDecimal}" Width="*"/>
+                            <DataGridTextColumn Header="Změna za 24h" Binding="{Binding ChangePercent24HrDecimal, StringFormat='{}{0:N2}%'}" Width="*"/>
                             <DataGridTextColumn Header="Maximální nabídka" Binding="{Binding MaxSupplyDecimal}" Width="*"/>
                             <DataGridTextColumn Header="Tržní kapitalizace (USD)" Binding="{Binding MarketCapUsdDecimal}" Width="*"/>
                             <DataGridTextColumn Header="Objem (24h USD)" Binding="{Binding VolumeUsd24HrDecimal}" Width="*"/>
@@ -77,7 +77,7 @@
                             <DataGridTextColumn Header="Celková nákupní cena (USD)" Binding="{Binding PricePerAmountRounded}" Width="*"/>
                             <DataGridTextColumn Header="Nákupní cena 1ks (USD)" Binding="{Binding PricePerKsRounded}" Width="*"/>
                             <DataGridTextColumn Header="Aktuální cena 1ks (USD)" Binding="{Binding ActualCryptoPriceRounded}" Width="*"/>
-                            <DataGridTextColumn Header="Aktuální rozdíl vůči nákupní ceně (%)" Binding="{Binding DifferenceRounded}" Width="*"/>
+                            <DataGridTextColumn Header="Aktuální rozdíl vůči nákupní ceně" Binding="{Binding DifferenceRounded, StringFormat='{}{0:N2}%'}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
