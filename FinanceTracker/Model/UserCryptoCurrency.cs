@@ -54,6 +54,7 @@ namespace FinanceTracker.Model
             PricePerKs = price / amount;
         }
 
+        // Vyhledá uživatelskou kryptoměnu v seznamu načtených kryptoměn a spočítá rozdíl vůči aktuální ceně
         public bool FindCryptoFromList(List<CryptoCurrency> cryptoCurrencies)
         {
             CryptoCurrency? crypto = cryptoCurrencies.Find(crypto => crypto.Symbol == this.Symbol);
@@ -70,6 +71,7 @@ namespace FinanceTracker.Model
             return false;
         }
 
+        // Spočítá rozdíl vůči aktuální ceně kryptoměny, při extrémním poklesu vrátí -99.99%
         private void CalculateDifference(CryptoCurrency crypto)
         {
             decimal cryptoBuyPrice = this.PricePerKs;
@@ -77,7 +79,7 @@ namespace FinanceTracker.Model
             if (cryptoBuyPrice > 0)
             {
                 decimal cryptoActualPrice = crypto.PriceUsdDecimal;
-                decimal percentualDifference = ((cryptoActualPrice - cryptoBuyPrice) / cryptoBuyPrice) * 100;
+                decimal percentualDifference = Math.Max(-99.99m,((cryptoActualPrice - cryptoBuyPrice) / cryptoBuyPrice) * 100);
                 this.Difference = percentualDifference;
                 this.ActualCryptoPrice = cryptoActualPrice;
             }
