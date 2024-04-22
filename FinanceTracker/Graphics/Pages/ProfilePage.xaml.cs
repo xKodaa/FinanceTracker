@@ -38,34 +38,32 @@ namespace FinanceTracker.Graphics.Pages
         // Nastavení počtu kryptoměn uživatele
         private void SetUserCryptoCount()
         {
-            string sql = "SELECT COUNT(cryptoName) FROM UserCryptos WHERE username=@username";
-            using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+            string sql = "SELECT COUNT(DISTINCT cryptoName) FROM UserCryptos WHERE username=@username";
+            using SQLiteCommand command = new(sql, Connector.Connection);
+            command.Parameters.AddWithValue("@username", LoggedUser.Username);
+            object result = command.ExecuteScalar();
+            try
             {
-                command.Parameters.AddWithValue("@username", LoggedUser.Username);
-                object result = command.ExecuteScalar();
-                try
+                int count = Convert.ToInt32(result);
+                if (count < 0)
                 {
-                    int count = Convert.ToInt32(result);
-                    if (count < 0)
+                    Logger.WriteErrorLog(this, $"Uživateli '{LoggedUser.Username}' se načetl špatně počet kryptoměn");
+                }
+                else
+                {
+                    if (count == 0)
                     {
-                        Logger.WriteErrorLog(this, $"Uživateli '{LoggedUser.Username}' se načetl špatně počet kryptoměn");
+                        CryptoCountLabel.Text = "Žádné záznamy";
                     }
                     else
                     {
-                        if (count == 0)
-                        {
-                            CryptoCountLabel.Text = "Žádné záznamy";
-                        }
-                        else 
-                        {
-                            CryptoCountLabel.Text = count.ToString();
-                        }
+                        CryptoCountLabel.Text = count.ToString();
                     }
                 }
-                catch (Exception e)
-                {
-                    Logger.WriteErrorLog(this, $"Chyba při načítání počtu uživatelských kryptoměn: {e}");
-                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteErrorLog(this, $"Chyba při načítání počtu uživatelských kryptoměn: {e}");
             }
         }
 

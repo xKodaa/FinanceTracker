@@ -209,12 +209,15 @@ namespace FinanceTracker.Graphics.Pages
             {
                 string sql = $"DELETE FROM UserFinances";
 
-                using SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection);
+                using SQLiteCommand command = new (sql, Connector.Connection);
                 int rowsAffected = command.ExecuteNonQuery();
-                FinancesDataGrid.Items.Clear();
-
-                if (!(rowsAffected > 0))
+                if (rowsAffected > 0)
                 {
+                    Util.ShowInfoMessageBox("Všechny záznamy byly úspěšně smazány.");
+                    FinancesDataGrid.Items.Clear();
+                }
+                else
+                { 
                     Util.ShowInfoMessageBox("Není co mazat.");
                 }
             }
