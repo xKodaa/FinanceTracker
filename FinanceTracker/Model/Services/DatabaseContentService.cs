@@ -19,26 +19,24 @@ namespace FinanceTracker.Model.Services
         }
 
         // Kontrola obsahu uživatelské sqlite databáze
-        private void CheckDatabaseContent()
+        public void CheckDatabaseContent()
         {
             Logger.WriteLog(this, "Kontrola obsahu databáze...");
             foreach (var table in TablesToCheck)
             {
                 // SQL dotaz pro zjištění, zda tabulka existuje
                 string sql = $"SELECT name FROM sqlite_master WHERE type='table' AND name=@tableName;";
-                using (var command = new SQLiteCommand(sql, connection))
+                using var command = new SQLiteCommand(sql, connection);
+                command.Parameters.AddWithValue("@tableName", table);
+                var result = command.ExecuteScalar();
+                if (result == null)
                 {
-                    command.Parameters.AddWithValue("@tableName", table);
-                    var result = command.ExecuteScalar();
-                    if (result == null)
-                    {
-                        Logger.WriteErrorLog(this, $"Tabulka '{table}' neexistuje.");
-                        CreateNonExistingTable(table);
-                    }
-                    else
-                    {
-                        Logger.WriteLog(this, $"Tabulka '{table}' existuje. Není potřeba vytvářet");
-                    }
+                    Logger.WriteErrorLog(this, $"Tabulka '{table}' neexistuje.");
+                    CreateNonExistingTable(table);
+                }
+                else
+                {
+                    Logger.WriteLog(this, $"Tabulka '{table}' existuje. Není potřeba vytvářet");
                 }
             }
         }
@@ -56,7 +54,7 @@ namespace FinanceTracker.Model.Services
                     sql = "CREATE TABLE UserCryptos (username TEXT, cryptoName TEXT, amount INTEGER, dateOfBuy DATETIME, price INT, FOREIGN KEY(username) REFERENCES Users(username))";
                     break;
                 case "UserFinances":
-                    sql = "CREATE TABLE UserFinances (username TEXT, category TEXT, date DATETIME, price INT, FOREIGN KEY(username) REFERENCES Users(username))";
+                    sql = "CREATE TABLE UserFinances (username TEXT, category TEXT, date DATETIME, price NUMERIC, FOREIGN KEY(username) REFERENCES Users(username))";
                     break;
                 default:
                     sql = "";

@@ -5,19 +5,18 @@ namespace FinanceTracker.Model.Config
 {
     public class Launcher
     {
-        private DatabaseConnector DatabaseConnector { get; set; }
         private MainWindow MainWindow { get; set; }
-
 
         public Launcher(MainWindow mainWindow)
         {
             MainWindow = mainWindow;
-            DatabaseConnector = DatabaseConnector.Instance;
         }
 
+        // Vytvoření databázového obsahu a následné spuštění aplikace
         public void Launch()
         {
-            new DatabaseContentService();
+            DatabaseContentService databaseContentService = new();
+            databaseContentService.CheckDatabaseContent();
             HandleLoginWindow();
         }
 

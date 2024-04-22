@@ -26,16 +26,14 @@ namespace FinanceTracker.Model.Services
             }
             string hashedPassword = Util.HashInput(password);
             string sql = "INSERT INTO Users Values(@username, @password, @name, @surname, @lastLogin)";
-            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@username", username);
-                command.Parameters.AddWithValue("@password", hashedPassword);
-                command.Parameters.AddWithValue("@name", name);
-                command.Parameters.AddWithValue("@surname", surname);
-                command.Parameters.AddWithValue("@lastLogin", DateTime.Now);
-                command.ExecuteNonQuery();
-                return true;
-            }
+            using SQLiteCommand command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@username", username);
+            command.Parameters.AddWithValue("@password", hashedPassword);
+            command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@surname", surname);
+            command.Parameters.AddWithValue("@lastLogin", DateTime.Now);
+            command.ExecuteNonQuery();
+            return true;
         }
     }
 }

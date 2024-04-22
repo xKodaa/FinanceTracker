@@ -23,7 +23,6 @@ namespace FinanceTracker.Model.Services
         // Získání informací o dostupních kryptoměnách z API
         public async Task<List<CryptoCurrency>> RetrieveCryptoInfoAsync()
         {
-            List<CryptoCurrency> cryptoCurrencies = new();
             try
             {
                 HttpResponseMessage response = await client.GetAsync("/v2/assets");

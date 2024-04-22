@@ -65,16 +65,19 @@ namespace FinanceTracker.Utility
         // Editace konfiguračního souboru
         public static void EditAppConfig(string key, object value)
         {
-            if (AppConfig == null)
+            AppConfig ??= ReadAppConfig();
+            if (value == null)
             {
-                AppConfig = ReadAppConfig();
+                ShowErrorMessageBox("Hodnota nemůže být null");
+                Logger.WriteErrorLog(nameof(Util), $"Chyba při editaci app_config.json souboru: key={key}, value=null");
+                return;
             }
             try
             {
                 switch (key)
                 {
                     case "ConnectionString":
-                        AppConfig.ConnectionString = value.ToString();
+                        AppConfig.ConnectionString = (string)value;
                         break;
                     case "CryptoRefreshRate":
                         if (int.TryParse(value.ToString(), out int rate))
@@ -106,36 +109,31 @@ namespace FinanceTracker.Utility
         }   
 
         // SHA256 hashování řetěžce
-        public static String HashInput(string input) 
+        public static String HashInput(string input)
         {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
+            byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
 
-                StringBuilder builder = new();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
+            StringBuilder builder = new();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
             }
+            return builder.ToString();
         }
 
         // Vyčtení, zda se uživatel již nenachází v databázi -> pro zabránění duplicitních uživatelských jmen
         public static bool UserExists(string username)
         {
             string sql = "SELECT COUNT(*) FROM Users WHERE username LIKE @username";
-            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@username", username);
-                object result = command.ExecuteScalar();
+            using SQLiteCommand command = new SQLiteCommand(sql, connection);
+            command.Parameters.AddWithValue("@username", username);
+            object result = command.ExecuteScalar();
 
-                if (result != null)
+            if (result != null)
+            {
+                if (int.TryParse(result.ToString(), out int count))
                 {
-                    if (int.TryParse(result.ToString(), out int count))
-                    {
-                        return count > 0;
-                    }
+                    return count > 0;
                 }
             }
             return false;
@@ -210,17 +208,15 @@ namespace FinanceTracker.Utility
             using (SQLiteCommand command = new SQLiteCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@username", username);
-                using (SQLiteDataReader reader = command.ExecuteReader())
+                using SQLiteDataReader reader = command.ExecuteReader();
+                if (reader.Read())
                 {
-                    if (reader.Read())
+                    return new User(username)
                     {
-                        return new User(username)
-                        {
-                            Name = reader["name"].ToString(),
-                            Surname = reader["surname"].ToString(),
-                            LastLogin = DateTime.Parse(reader["lastLogin"].ToString())
-                        };
-                    }
+                        Name = reader["name"].ToString(),
+                        Surname = reader["surname"].ToString(),
+                        LastLogin = DateTime.Parse(reader["lastLogin"].ToString())
+                    };
                 }
             }
             return new User(username);

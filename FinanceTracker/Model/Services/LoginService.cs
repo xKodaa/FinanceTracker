@@ -27,7 +27,7 @@ namespace FinanceTracker.Model.Services
             }
             string hashedPassword = Util.HashInput(password);
             string sql = "SELECT password FROM Users WHERE username LIKE @username";
-            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
+            using (SQLiteCommand command = new(sql, connection))
             {
                 command.Parameters.AddWithValue("@username", username);
                 object result = command.ExecuteScalar();

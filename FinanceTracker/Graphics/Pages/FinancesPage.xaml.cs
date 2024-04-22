@@ -63,10 +63,12 @@ namespace FinanceTracker.Graphics.Pages
                         Util.ShowErrorMessageBox("Nelze zadat budoucí datum");
                         return;
                     }
-                    UserExpenses userExpenses = new UserExpenses(amount, category, date);
-                    SaveExpenseIntoDatabase(userExpenses);
-                    FinancesDataGrid.Items.Add(userExpenses);
-                    ClearPage();
+                    UserExpenses userExpenses = new(amount, category, date);
+                    if (SaveExpenseIntoDatabase(userExpenses)) 
+                    {
+                        FinancesDataGrid.Items.Add(userExpenses);
+                        ClearPage();
+                    }
                 }
                 else
                 {
@@ -82,20 +84,28 @@ namespace FinanceTracker.Graphics.Pages
         }
 
         // Uložení výdaje do databáze
-        private void SaveExpenseIntoDatabase(UserExpenses userExpenses)
+        private bool SaveExpenseIntoDatabase(UserExpenses userExpenses)
         {
             try
             {
                 string sql = "INSERT INTO UserFinances VALUES (@username, @category, @date, @price)";
-                using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+                using SQLiteCommand command = new(sql, Connector.Connection);
+                User user = Connector.LoggedUser;
+                string dateString = userExpenses.Date.ToString("yyyy-MM-dd");
+                command.Parameters.AddWithValue("@username", user.Username);
+                command.Parameters.AddWithValue("@category", userExpenses.Category);
+                command.Parameters.AddWithValue("@date", dateString);
+                command.Parameters.AddWithValue("@price", userExpenses.Price);
+                int rowsAffected = command.ExecuteNonQuery();
+                if (rowsAffected > 0)
                 {
-                    User user = Connector.LoggedUser;
-                    string dateString = userExpenses.Date.ToString("yyyy-MM-dd");
-                    command.Parameters.AddWithValue("@username", user.Username);
-                    command.Parameters.AddWithValue("@category", userExpenses.Category);
-                    command.Parameters.AddWithValue("@date", dateString);
-                    command.Parameters.AddWithValue("@price", userExpenses.Price);
-                    command.ExecuteNonQuery();
+                    Util.ShowInfoMessageBox("Výdaj byl úspěšně uložen.");
+                    return true;
+                }
+                else
+                {
+                    Util.ShowErrorMessageBox("Nepodařilo se uložit výdaj do databáze");
+                    Logger.WriteErrorLog(nameof(FinancesPage), "Nepodařilo se uložit výdaj do databáze");
                 }
             }
             catch (Exception ex) 
@@ -103,6 +113,7 @@ namespace FinanceTracker.Graphics.Pages
                 Util.ShowErrorMessageBox("Nepodařilo se uložit výdaj do databáze");
                 Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se uložit výdaj do databáze, {ex.Message}");
             }
+            return false;
         }
 
         // Převod na stránku s kryptoměnami
@@ -114,7 +125,7 @@ namespace FinanceTracker.Graphics.Pages
         // Přidá novou kategorii do ComboBoxu a do konfiguračního souboru a v comboboxu ji vybere
         private void FinancesBtnAddCategory_Click(object sender, RoutedEventArgs e)
         {
-            AddCategoryDialog addCategoryDialog = new AddCategoryDialog(MainWindow);
+            AddCategoryDialog addCategoryDialog = new(MainWindow);
             if (addCategoryDialog.ShowDialog() == true)
             {
                 string? categoryName = addCategoryDialog.CategoryName;
@@ -152,27 +163,25 @@ namespace FinanceTracker.Graphics.Pages
             try
             {
                 string sql = $"SELECT * FROM UserFinances WHERE username=@username";
-                using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
-                {
-                    string username = Connector.LoggedUser.Username;
-                    command.Parameters.AddWithValue("@username", username);
+                using SQLiteCommand command = new(sql, Connector.Connection);
+                string username = Connector.LoggedUser.Username;
+                command.Parameters.AddWithValue("@username", username);
 
-                    using var reader = command.ExecuteReader();
-                    while (reader.Read())
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string category = reader.GetString(1);
+                    DateTime date = reader.GetDateTime(2);
+                    decimal price = reader.GetDecimal(3);
+                    if (category != null && price != 0)
                     {
-                        string category = reader.GetString(1);
-                        DateTime date = reader.GetDateTime(2);
-                        decimal price = reader.GetDecimal(3);
-                        if (category != null && price != 0)
-                        {
-                            UserExpenses userExpenses = new UserExpenses(price, category, date);
-                            FinancesDataGrid.Items.Add(userExpenses);
-                            Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserFinances: {userExpenses}");
-                        }
-                        else
-                        {
-                            Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserFinances pro uživatele ${username}");
-                        }
+                        UserExpenses userExpenses = new UserExpenses(price, category, date);
+                        FinancesDataGrid.Items.Add(userExpenses);
+                        Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserFinances: {userExpenses}");
+                    }
+                    else
+                    {
+                        Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserFinances pro uživatele ${username}");
                     }
                 }
             }
@@ -189,8 +198,8 @@ namespace FinanceTracker.Graphics.Pages
             if (FinancesDataGrid.SelectedItem == null) return;
 
             UserExpenses userExpenses = (UserExpenses)FinancesDataGrid.SelectedItem;
-            DeleteUserExpenseFromDatabase(userExpenses);
-            FinancesDataGrid.Items.Remove(userExpenses);
+            if (DeleteUserExpenseFromDatabase(userExpenses))
+                FinancesDataGrid.Items.Remove(userExpenses);
         }
 
         // Smaže všechny uživatelem vložené záznamy
@@ -216,23 +225,23 @@ namespace FinanceTracker.Graphics.Pages
             }
         }
 
-        private void DeleteUserExpenseFromDatabase(UserExpenses userExpenses)
+        private bool DeleteUserExpenseFromDatabase(UserExpenses userExpenses)
         {
             try
             {
                 string sql = $"DELETE FROM UserFinances WHERE username=@username AND category=@category AND price=@price AND date=@date";
 
-                using SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection);
+                using SQLiteCommand command = new(sql, Connector.Connection);
                 string username = Connector.LoggedUser.Username;
                 command.Parameters.AddWithValue("@username", username);
                 command.Parameters.AddWithValue("@category", userExpenses.Category);
                 command.Parameters.AddWithValue("@price", userExpenses.Price);
                 command.Parameters.AddWithValue("@date", userExpenses.Date.ToString("yyyy-MM-dd"));
                 int rowsAffected = command.ExecuteNonQuery();
-
                 if (rowsAffected > 0)
                 {
                     Util.ShowInfoMessageBox("Záznam byl úspěšně smazán.");
+                    return true;
                 }
                 else
                 {
@@ -244,6 +253,7 @@ namespace FinanceTracker.Graphics.Pages
                 Util.ShowErrorMessageBox("Nepodařilo se smazat záznam");
                 Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat záznam finance z databáze, {ex.Message}");
             }
+            return false;
         }
     }
 }

@@ -17,10 +17,7 @@ namespace FinanceTracker.Model.Config
         {
             get
             {
-                if (databaseConnector == null)
-                {
-                    databaseConnector = new DatabaseConnector();
-                }
+                databaseConnector ??= new DatabaseConnector();
                 return databaseConnector;
             }
         }
