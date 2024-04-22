@@ -30,12 +30,17 @@ namespace FinanceTracker.Graphics.Pages
         private DispatcherTimer mainTimer;
         private DispatcherTimer updateLabelTimer;
         private DateTime nextTickTime;
+        private readonly int refreshRate;
+        private string labelContent;
 
         public CryptocurrenciesPage(MainWindow mainWindow)
         {
             InitializeComponent();
             mainTimer = new();
             updateLabelTimer = new();
+            AppConfig appConfig = Util.ReadAppConfig();
+            refreshRate = appConfig.CryptoRefreshRate;
+            labelContent = $"Příští aktualizace za: {refreshRate}s";
             RunTimers();
             cryptoCurrencies = [];
             connector = DatabaseConnector.Instance;
@@ -45,9 +50,8 @@ namespace FinanceTracker.Graphics.Pages
         // Spustí časovače
         private void RunTimers()
         {
-            AppConfig appConfig = Util.ReadAppConfig();
-            mainTimer.Interval = TimeSpan.FromSeconds(appConfig.CryptoRefreshRate);
-            LabelCountdown.Content = $"Příští aktualizace za: {appConfig.CryptoRefreshRate}s";
+            mainTimer.Interval = TimeSpan.FromSeconds(refreshRate);
+            LabelCountdown.Content = $"Příští aktualizace za: {refreshRate}s";
             mainTimer.Tick += MainTimer_Tick;
             mainTimer.Start();
             nextTickTime = DateTime.Now.Add(mainTimer.Interval);
@@ -74,6 +78,20 @@ namespace FinanceTracker.Graphics.Pages
             nextTickTime = DateTime.Now.Add(mainTimer.Interval + TimeSpan.FromSeconds(1));
         }
 
+        // Aktualizuje interval hlavního časovače => po kliknutí na tlačítko Obnovit 
+        private void RefreshMainTimer()
+        {
+            mainTimer.Stop();
+            mainTimer.Interval = TimeSpan.FromSeconds(refreshRate);
+            mainTimer.Start();
+            nextTickTime = DateTime.Now.Add(mainTimer.Interval);
+            
+            Dispatcher.Invoke(() =>
+            {
+                LabelCountdown.Content = $"Příští aktualizace za: {refreshRate}s";
+            });
+        }
+
         private void InitCryptoComponents()
         {
             // Všechny kryptoměny
@@ -86,6 +104,7 @@ namespace FinanceTracker.Graphics.Pages
 
             // Uživatelské kryptoměny
             List<UserCryptoCurrency> userCryptoCurrencies = LoadUserCryptosFromDatabase();
+            UserCryptoDataGrid.Items.Clear();
             foreach (UserCryptoCurrency userCryptoCurrency in userCryptoCurrencies)
             {
                 if (userCryptoCurrency.FindCryptoFromList(cryptoCurrencies))
@@ -127,8 +146,7 @@ namespace FinanceTracker.Graphics.Pages
         private void OnCryptoDataGridLoadingRow(object sender, DataGridRowEventArgs e)
         {
             // Všechny kryptoměny v tabulce
-            CryptoCurrency? currency = e.Row.DataContext as CryptoCurrency;
-            if (currency != null)
+            if (e.Row.DataContext is CryptoCurrency currency)
             {
                 decimal changePercentage = currency.ChangePercent24HrDecimal;
                 if (changePercentage > 0)
@@ -143,8 +161,7 @@ namespace FinanceTracker.Graphics.Pages
             }
 
             // Uživatelské kryptoměny v tabulce
-            UserCryptoCurrency? userCurrency = e.Row.DataContext as UserCryptoCurrency;
-            if (userCurrency != null) 
+            if (e.Row.DataContext is UserCryptoCurrency userCurrency)
             {
                 decimal difference = userCurrency.Difference;
                 if (difference > 0)
@@ -187,30 +204,28 @@ namespace FinanceTracker.Graphics.Pages
             }
 
             // Přidání userCryptoCurrency do databáze
-            UserCryptoCurrency userCryptoCurrency = new UserCryptoCurrency(cryptoName, amount, price, dateOfBuy);
+            UserCryptoCurrency userCryptoCurrency = new(cryptoName, amount, price, dateOfBuy);
             try
             {
                 string sql = "INSERT INTO UserCryptos (username, cryptoName, amount, dateOfBuy, price) VALUES (@username, @cryptoName, @amount, @dateOfBuy, @price)";
-                using (SQLiteCommand command = new SQLiteCommand(sql, connector.Connection))
+                using SQLiteCommand command = new(sql, connector.Connection);
+                string username = connector.LoggedUser.Username;
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@cryptoName", cryptoName);
+                command.Parameters.AddWithValue("@amount", amount);
+                command.Parameters.AddWithValue("@dateOfBuy", dateOfBuy);
+                command.Parameters.AddWithValue("@price", price);
+
+                int result = command.ExecuteNonQuery();
+
+                if (!(result > 0))
                 {
-                    string username = connector.LoggedUser.Username;
-                    command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@cryptoName", cryptoName);
-                    command.Parameters.AddWithValue("@amount", amount);
-                    command.Parameters.AddWithValue("@dateOfBuy", dateOfBuy);
-                    command.Parameters.AddWithValue("@price", price);
-
-                    int result = command.ExecuteNonQuery();
-
-                    if (!(result > 0))
-                    {
-                        Util.ShowErrorMessageBox("Uložení dat se nezdařilo.");
-                    }
-                    else 
-                    {
-                        AddUserCryptoCurrency(userCryptoCurrency);
-                        ClearPage();
-                    }
+                    Util.ShowErrorMessageBox("Uložení dat se nezdařilo.");
+                }
+                else
+                {
+                    AddUserCryptoCurrency(userCryptoCurrency);
+                    ClearPage();
                 }
             }
             catch (Exception ex)
@@ -312,6 +327,7 @@ namespace FinanceTracker.Graphics.Pages
         private void CryptoRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             LoadCryptoCurrencies();
+            RefreshMainTimer();
         }
     }
 }
