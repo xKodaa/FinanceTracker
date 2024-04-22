@@ -47,6 +47,7 @@ namespace FinanceTracker.Graphics.Pages
         private readonly string TAB_ITEM_MONTHLY_OVERVIEW = "Měsíční přehled";
         private readonly string TAB_ITEM_QUART_OVERVIEW = "Kvartální přehled";
         private readonly string TAB_ITEM_YEARLY_OVERVIEW = "Roční přehled";
+        private bool justInitialized;
 
         public DashboardPage(MainWindow mainWindow)
         {
@@ -65,6 +66,7 @@ namespace FinanceTracker.Graphics.Pages
             FinancesPerCategory = [];
             Formatter = value => value.ToString("N");
             DateTime now = DateTime.Now;
+            justInitialized = true;
             if (userHasSomeData)
                 RefreshGraph(now.Year, now.Month, GRAPH_TYPE_PIE, TAB_ITEM_MONTHLY_OVERVIEW);  // Zobrazení grafu pro aktuální měsíc
         }
@@ -73,8 +75,9 @@ namespace FinanceTracker.Graphics.Pages
         private void RefreshGraph(int year, int month, string selectedGraphType, string selectedTabItem)
         {
             FinancesPerCategory = LoadFinanceDataByCategory(LoggedUser.Username, year, month, selectedTabItem);
-            if (FinancesPerCategory.Count == 0)
-                Util.ShowInfoMessageBox("Za toto období nemáte evidované žádné záznamy.");
+            if (FinancesPerCategory.Count == 0 && !justInitialized)
+                Util.ShowInfoMessageBox("Za vybrané období nemáte evidované žádné záznamy.");
+            justInitialized = false;
             DisplayFinanceData(selectedGraphType, selectedTabItem);
             MainWindow.DataContext = this;
         }
