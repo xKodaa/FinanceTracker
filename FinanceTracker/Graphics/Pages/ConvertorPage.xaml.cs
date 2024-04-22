@@ -63,6 +63,12 @@ namespace FinanceTracker.Graphics.Pages
             {
                 Currency source = (Currency)SourceCurrencyComboBox.SelectedItem;
                 Currency target = (Currency)TargetCurrencyComboBox.SelectedItem;
+                if (source.Code == target.Code)
+                {
+                    Util.ShowErrorMessageBox("Vyberte různé měny");
+                    Logger.WriteErrorLog(this, "Uživatel vybral stejné měny v převodníku");
+                    return;
+                }
                 string result = await CurrencyApiService.ConvertCurrencyAsync(source.Code, target.Code, amount);
                 if (result == "") 
                 {
