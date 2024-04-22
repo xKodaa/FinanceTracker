@@ -214,6 +214,7 @@ namespace FinanceTracker.Graphics.Pages
             if (years.Count == 0)
             { 
                 Util.ShowInfoMessageBox("Zatím nemáte evidované žádné záznamy.\nPřejděte prosím na sekci 'Finance'");
+                MonthlyPieChart.Visibility = Visibility.Hidden; 
                 return false;
             }
 
@@ -266,7 +267,7 @@ namespace FinanceTracker.Graphics.Pages
             List<int> years = [];
 
             string sql = @"SELECT DISTINCT strftime('%Y', date) AS Year FROM UserFinances WHERE username = @username ORDER BY Year DESC";
-            using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+            using (SQLiteCommand command = new(sql, Connector.Connection))
             {
                 command.Parameters.AddWithValue("@username", LoggedUser.Username);
 
@@ -313,7 +314,7 @@ namespace FinanceTracker.Graphics.Pages
                      GROUP BY category";
                 }
 
-                using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+                using (SQLiteCommand command = new(sql, Connector.Connection))
                 {
                     command.Parameters.AddWithValue("@username", username);
                     command.Parameters.AddWithValue("@year", year.ToString());
@@ -342,9 +343,7 @@ namespace FinanceTracker.Graphics.Pages
         // Zobrazení grafu po změně hodnot z comboboxů dle zvolené záložky
         private void DashboardShowGraphButton_Click(object sender, RoutedEventArgs e)
         {
-            TabItem? selectedTab = DashboardTabControl.SelectedItem as TabItem;
-
-            if (selectedTab == null) return;
+            if (DashboardTabControl.SelectedItem is not TabItem selectedTab) return;
             string? tabHeader = selectedTab.Header.ToString();
             if (tabHeader == null) return;
 

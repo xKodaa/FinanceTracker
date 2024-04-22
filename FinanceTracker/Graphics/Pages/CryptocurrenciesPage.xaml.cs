@@ -203,6 +203,18 @@ namespace FinanceTracker.Graphics.Pages
                 return;
             }
 
+            if (amount <= 0)
+            {
+                Util.ShowErrorMessageBox("Množství musí být větší než 0");
+                return;
+            }
+
+            if (price <= 0)
+            {
+                Util.ShowErrorMessageBox("Cena musí být větší než 0");
+                return;
+            }
+
             // Přidání userCryptoCurrency do databáze
             UserCryptoCurrency userCryptoCurrency = new(cryptoName, amount, price, dateOfBuy);
             try
