@@ -21,7 +21,7 @@ namespace FinanceTracker.Model.Services
         }
 
         // Konverze měn z API
-        public async Task<string> ConvertCurrencyAsync(string fromCurrency, string toCurrency, int amount)
+        public async Task<string> ConvertCurrencyAsync(string fromCurrency, string toCurrency, decimal amount)
         {
             try
             {

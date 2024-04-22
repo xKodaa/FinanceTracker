@@ -29,18 +29,30 @@ namespace FinanceTracker.Graphics.Pages
         }
 
 
-        // Naplnění comboboxů hodnotami z konfiguračního souboru
+        // Naplnění comboboxů kategorií hodnotami z databáze
         private void InitCategoryComboBox()
         {
-            if (AppConfig == null || AppConfig.FinanceCategories == null)
+            string sql = "SELECT category FROM UserCategories WHERE username=@username GROUP BY category ORDER BY category";
+            using SQLiteCommand command = new(sql, Connector.Connection);
+            command.Parameters.AddWithValue("@username", Connector.LoggedUser.Username);
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (!reader.HasRows)
             {
-                Util.ShowErrorMessageBox("Nepovedlo se načít nákupní kategorie z konfiguračního souboru");
-                Logger.WriteErrorLog(nameof(FinancesPage), "FinanceCategories nenačteny");
-                Environment.Exit(0);
+                Util.ShowErrorMessageBox("Nemáte evidované žádné kategorie");
+                Logger.WriteErrorLog(nameof(FinancesPage), "FinanceCategories nenačteny z databáze");
             }
-            AppConfig.FinanceCategories.ForEach(category => FinancesCategoryComboBox.Items.Add(category));
-            FinancesCategoryComboBox.SelectedIndex = 0;
+
+            FinancesCategoryComboBox.Items.Clear();
+            while (reader.Read())
+            {
+                FinancesCategoryComboBox.Items.Add(reader["category"].ToString());
+            }
+
+            if (FinancesCategoryComboBox.Items.Count > 0)
+                FinancesCategoryComboBox.SelectedIndex = 0;
         }
+
 
         // Handler na tlačítko "Potvrdit"
         private void FinancesBtnSubmit_Click(object sender, RoutedEventArgs e)
@@ -129,29 +141,104 @@ namespace FinanceTracker.Graphics.Pages
             if (addCategoryDialog.ShowDialog() == true)
             {
                 string? categoryName = addCategoryDialog.CategoryName;
-                if (categoryName != null && !AppConfig.FinanceCategories.Contains(categoryName))
+                if (categoryName != null)
                 {
-                    AppConfig.FinanceCategories.Add(categoryName);
-                    Util.EditAppConfig("FinanceCategories", AppConfig.FinanceCategories);
-                    FinancesCategoryComboBox.Items.Add(categoryName);
-                    FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
+                    bool added = AddCategoryIntoDatabase(categoryName);
+                    if (added)
+                    {
+                        FinancesCategoryComboBox.Items.Add(categoryName);
+                        FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
+                    }
+                    else 
+                    {
+                        Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
+                        Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se přidat kategorii {categoryName} do databáze");
+                    }
                 }
             }
         }
 
+        // Přidání kategorie do databáze
+        private bool AddCategoryIntoDatabase(string categoryName) 
+        {
+            if (!CategoryExistsInDatabase(categoryName)) 
+            {
+                string username = Connector.LoggedUser.Username;
+                string sql = "INSERT INTO UserCategories (username, category) VALUES (@username, @category)";
+                using SQLiteCommand cmd = new(sql, Connector.Connection);
+                cmd.Parameters.AddWithValue("@username", username);
+                cmd.Parameters.AddWithValue("@category", categoryName);
+                int added = cmd.ExecuteNonQuery();
+                if (added > 0) 
+                {
+                    Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně přidána");
+                    return true;
+                }
+            }
+            else 
+            {
+                Util.ShowErrorMessageBox("Kategorie již existuje, nelze ji přidat");
+            }
+            Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
+            return false;
+        }
+
+
         // Odebere aktuálně vybraný item z ComboBoxu a odebere ho i z konfiguračního souboru
         private void FinancesBtnRemoveCategory_Click(object sender, RoutedEventArgs e)
         {
-            object item = FinancesCategoryComboBox.SelectedItem;
+            string item = (string) FinancesCategoryComboBox.SelectedItem;
             int index = FinancesCategoryComboBox.SelectedIndex;
-            if (item != null && AppConfig.FinanceCategories != null)
+            if (item != null)
             {
-                FinancesCategoryComboBox.Items.RemoveAt(index);
-                FinancesCategoryComboBox.SelectedIndex = 0;
-                AppConfig.FinanceCategories.Remove(item.ToString());
-                Util.EditAppConfig("FinanceCategories", AppConfig.FinanceCategories);
+                if (DeleteCategoryFromDatabase(item)) 
+                {
+                    FinancesCategoryComboBox.Items.RemoveAt(index);
+                    FinancesCategoryComboBox.SelectedIndex = 0;
+                }
             }
         }
+
+        // Odebrání kategorie z databáze
+        private bool DeleteCategoryFromDatabase(string categoryName)
+        {
+            if (CategoryExistsInDatabase(categoryName))
+            {
+                string username = Connector.LoggedUser.Username; 
+                string sql = "DELETE FROM UserCategories WHERE username = @username AND category = @category";
+
+                using SQLiteCommand command = new(sql, Connector.Connection);
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@category", categoryName);
+                int rowsAffected = command.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně odebrána");
+                    return true;
+                }
+            }
+            else 
+            {
+                Util.ShowErrorMessageBox("Kategorie neexistuje, nelze ji odebrat");
+            }
+            Util.ShowErrorMessageBox("Nepodařilo se odebrat kategorii");
+            return false;
+        }
+
+        // Kontrola existence kategorie v databázi pro daného uživatele
+        private bool CategoryExistsInDatabase(string categoryName)
+        {
+            string username = Connector.LoggedUser.Username;
+            string sqlExists = "SELECT COUNT(*) FROM UserCategories WHERE username = @username AND category = @category";
+
+            using SQLiteCommand cmd = new(sqlExists, Connector.Connection);
+            cmd.Parameters.AddWithValue("@username", username);
+            cmd.Parameters.AddWithValue("@category", categoryName);
+            int exists = Convert.ToInt32(cmd.ExecuteScalar());
+            return exists > 0;
+        }
+
         private void ClearPage()
         {
             FinancesCategoryComboBox.SelectedIndex = 0;

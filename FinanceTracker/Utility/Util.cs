@@ -47,7 +47,6 @@ namespace FinanceTracker.Utility
                     {
                         AppConfig.ConnectionString = config.ConnectionString;
                         AppConfig.CryptoRefreshRate = config.CryptoRefreshRate;
-                        AppConfig.FinanceCategories = config.FinanceCategories;
                     }
                     Logger.WriteLog(nameof(Util), AppConfig.ToString());
                     return AppConfig;
@@ -91,10 +90,10 @@ namespace FinanceTracker.Utility
                             return;
                         }
                         break;
-                    case "FinanceCategories":
-                        List<string> categories = (List<string>)value;
-                        AppConfig.FinanceCategories = categories;
-                        break;
+                    default:
+                        ShowErrorMessageBox("Neplatný klíč");
+                        Logger.WriteErrorLog(nameof(Util), $"Chyba při editaci app_config.json souboru: key={key}, value={value}");
+                        return;
 
                 }   
                 string json = JsonConvert.SerializeObject(AppConfig, Formatting.Indented);

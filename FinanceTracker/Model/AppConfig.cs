@@ -5,23 +5,21 @@
     {
         public string ConnectionString { get; set; }
         public int CryptoRefreshRate { get; set; }
-        public List<string> FinanceCategories { get; set; }
 
         public AppConfig() 
         {
             ConnectionString = String.Empty;
             CryptoRefreshRate = 0;
-            FinanceCategories = [];
         }
 
         public bool IsInitialized() 
         {
-            return ConnectionString != null && CryptoRefreshRate != 0 && FinanceCategories != null;  
+            return ConnectionString != null && CryptoRefreshRate != 0;  
         }
 
         public override string ToString()
         {
-            return $"ConnectionString = {ConnectionString}, CryptoRefreshRate = {CryptoRefreshRate}, FinanceCategories...";
+            return $"ConnectionString = {ConnectionString}, CryptoRefreshRate = {CryptoRefreshRate}";
         }
     }
 }

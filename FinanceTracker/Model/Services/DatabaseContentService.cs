@@ -14,7 +14,7 @@ namespace FinanceTracker.Model.Services
         {
             connector = DatabaseConnector.Instance;
             connection = connector.Connection;
-            TablesToCheck = ["Users", "UserCryptos", "UserFinances"];
+            TablesToCheck = ["Users", "UserCryptos", "UserFinances", "UserCategories"];
             CheckDatabaseContent();
         }
 
@@ -55,6 +55,9 @@ namespace FinanceTracker.Model.Services
                     break;
                 case "UserFinances":
                     sql = "CREATE TABLE UserFinances (username TEXT, category TEXT, date DATETIME, price NUMERIC, FOREIGN KEY(username) REFERENCES Users(username))";
+                    break;
+                case "UserCategories":
+                    sql = "CREATE TABLE UserCategories (username TEXT, category TEXT, FOREIGN KEY(username) REFERENCES Users(username))";
                     break;
                 default:
                     sql = "";

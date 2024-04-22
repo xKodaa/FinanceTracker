@@ -59,7 +59,7 @@ namespace FinanceTracker.Graphics.Pages
                 return;
             }
             string value = AmountTextBox.Text;
-            if (int.TryParse(value.ToString(), out int amount))
+            if (decimal.TryParse(value.ToString(), out decimal amount))
             {
                 Currency source = (Currency)SourceCurrencyComboBox.SelectedItem;
                 Currency target = (Currency)TargetCurrencyComboBox.SelectedItem;
