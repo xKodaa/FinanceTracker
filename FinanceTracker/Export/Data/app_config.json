@@ -1,17 +1,4 @@
 {
   "ConnectionString": "Data source=./Data/finance_tracker.sqlite",
-  "CryptoRefreshRate": 20,
-  "FinanceCategories": [
-    "Potraviny",
-    "Bydlení",
-    "Zdravotní péče",
-    "Doprava",
-    "Vzdělání",
-    "Zábava a volný čas",
-    "Oblečení a osobní péče",
-    "Děti a péče o rodinu",
-    "Restaurace a stravování venku",
-    "Spoření a investice",
-    "pičoviny"
-  ]
+  "CryptoRefreshRate": 20
 }
