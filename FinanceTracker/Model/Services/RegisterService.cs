@@ -8,13 +8,13 @@ namespace FinanceTracker.Model.Services
     {
         private readonly DatabaseConnector connector;
         private readonly SQLiteConnection connection;
-        private readonly string[] categories = { "Potraviny", "Bydlení", "Zdravotní péče", "Doprava", "Vzdělání", "Zábava a volný čas",
-        "Oblečení a osobní péče", "Děti a péče o rodinu", "Restaurace a stravování venku", "Spoření a investice" };
+        private readonly DatabaseContentService databaseContentService;
 
         public RegisterService()
         {
             connector = DatabaseConnector.Instance;
             connection = connector.Connection;
+            databaseContentService = new();
         }
 
         // Zajišťuje uživatelskou registraci do databáze
@@ -34,24 +34,17 @@ namespace FinanceTracker.Model.Services
             command.Parameters.AddWithValue("@name", name);
             command.Parameters.AddWithValue("@surname", surname);
             command.Parameters.AddWithValue("@lastLogin", DateTime.Now);
-            command.ExecuteNonQuery();
-            InitUsersCategories(username);
-            return true;
-        }
+            int success = command.ExecuteNonQuery();
 
-        private void InitUsersCategories(string username)
-        {
-            string sql = "INSERT INTO UserCategories (username, category) VALUES (@username, @category)";
-
-            using SQLiteCommand command = new(sql, connection);
-
-            foreach (var category in categories)
+            if (success == 0)
             {
-                command.Parameters.AddWithValue("@username", username);
-                command.Parameters.AddWithValue("@category", category);
-                command.ExecuteNonQuery();  
-                command.Parameters.Clear(); 
+                Logger.WriteErrorLog(this, $"Registrace uživatele '{username}' selhala");
+                Util.ShowErrorMessageBox("Registrace selhala, zkuste to prosím znovu");
+                return false;
             }
+            Logger.WriteLog(this, $"Uživatel '{username}' byl úspěšně zaregistrován");
+            databaseContentService.InitUsersCategories(username);
+            return true;
         }
     }
 }

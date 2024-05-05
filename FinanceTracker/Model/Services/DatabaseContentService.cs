@@ -8,13 +8,14 @@ namespace FinanceTracker.Model.Services
     {
         private readonly DatabaseConnector connector;
         private readonly SQLiteConnection connection;
-        private readonly List<string> TablesToCheck;
+        private readonly List<string> TablesToCheck = ["Users", "UserCryptos", "UserFinances", "UserCategories"];
+        private readonly string[] Categories = [ "Potraviny", "Bydlení", "Zdravotní péče", "Doprava", "Vzdělání", "Zábava a volný čas",
+        "Oblečení a osobní péče", "Děti a péče o rodinu", "Restaurace a stravování venku", "Spoření a investice" ];
 
         public DatabaseContentService()
         {
             connector = DatabaseConnector.Instance;
             connection = connector.Connection;
-            TablesToCheck = ["Users", "UserCryptos", "UserFinances", "UserCategories"];
             CheckDatabaseContent();
         }
 
@@ -44,30 +45,36 @@ namespace FinanceTracker.Model.Services
         // Vytvoření tabulky, pokud neexistuje
         private void CreateNonExistingTable(string table)
         {
-            string sql;
-            switch (table)
+            string sql = table switch
             {
-                case "Users":
-                    sql = "CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, name TEXT, surname TEXT, lastLogin DATETIME)";
-                    break;
-                case "UserCryptos":
-                    sql = "CREATE TABLE UserCryptos (username TEXT, cryptoName TEXT, amount INTEGER, dateOfBuy DATETIME, price INT, FOREIGN KEY(username) REFERENCES Users(username))";
-                    break;
-                case "UserFinances":
-                    sql = "CREATE TABLE UserFinances (username TEXT, category TEXT, date DATETIME, price NUMERIC, FOREIGN KEY(username) REFERENCES Users(username))";
-                    break;
-                case "UserCategories":
-                    sql = "CREATE TABLE UserCategories (username TEXT, category TEXT, FOREIGN KEY(username) REFERENCES Users(username))";
-                    break;
-                default:
-                    sql = "";
-                    break;
-            }
+                "Users" => "CREATE TABLE Users (username TEXT PRIMARY KEY, password TEXT, name TEXT, surname TEXT, lastLogin DATETIME)",
+                "UserCryptos" => "CREATE TABLE UserCryptos (username TEXT, cryptoName TEXT, amount INTEGER, dateOfBuy DATETIME, price INT, FOREIGN KEY(username) REFERENCES Users(username))",
+                "UserFinances" => "CREATE TABLE UserFinances (username TEXT, category TEXT, date DATETIME, price NUMERIC, FOREIGN KEY(username) REFERENCES Users(username))",
+                "UserCategories" => "CREATE TABLE UserCategories (username TEXT, category TEXT, FOREIGN KEY(username) REFERENCES Users(username))",
+                _ => "",
+            };
+            using var command = new SQLiteCommand(sql, connection);
+            command.ExecuteNonQuery();
+            Util.ShowInfoMessageBox($"Tabulka {table} byla vytvořena.");
+        }
 
-            using (var command = new SQLiteCommand(sql, connection))
+        public void InitUsersCategories(string username)
+        {
+            string sql = "INSERT INTO UserCategories (username, category) VALUES (@username, @category)";
+
+            using SQLiteCommand command = new(sql, connection);
+
+            foreach (var category in Categories)
             {
-                command.ExecuteNonQuery();
-                Util.ShowInfoMessageBox($"Tabulka {table} byla vytvořena.");
+                command.Parameters.AddWithValue("@username", username);
+                command.Parameters.AddWithValue("@category", category);
+                int success = command.ExecuteNonQuery();
+                if (success == 0)
+                {
+                    Logger.WriteErrorLog(this, $"Nepodařilo se vytvořit kategorii '{category}' pro uživatele '{username}'");
+                    Util.ShowErrorMessageBox($"Nepodařilo se vytvořit kategorii '{category}'");
+                }
+                command.Parameters.Clear();
             }
         }
     }

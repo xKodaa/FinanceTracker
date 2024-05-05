@@ -20,7 +20,7 @@ namespace FinanceTracker.Graphics.Windows
         // Zpracování uživatelských hodnot po kliknutí na "přihlásit se"
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginService loginService = new LoginService();
+            LoginService loginService = new();
             string username = LoginUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, LoginPasswordBox.SecurePassword).Password;
 
