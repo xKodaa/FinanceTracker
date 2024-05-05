@@ -65,7 +65,6 @@ namespace FinanceTracker.Model
             }
             else 
             {
-                Util.ShowErrorMessageBox("Uživatelská kryptoměna nebyla nalezena v načtených kryptoměnách");
                 Logger.WriteErrorLog(nameof(UserCryptoCurrency), $"Uživatelská kryptoměna nebyla nalezena v načtených kryptoměnách: {this}");
             }
             return false;

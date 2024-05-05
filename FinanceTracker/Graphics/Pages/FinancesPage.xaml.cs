@@ -72,7 +72,7 @@ namespace FinanceTracker.Graphics.Pages
                 {
                     if (!Util.NonFutureDateTime(date))
                     {
-                        Util.ShowErrorMessageBox("Nelze zadat budoucí datum");
+                        Util.ShowErrorMessageBox($"Nelze zadat budoucí datum\nAktuální datum: {DateTime.Now:dd.MM.yyyy}");
                         return;
                     }
                     UserExpenses userExpenses = new(amount, category, date);
@@ -140,20 +140,18 @@ namespace FinanceTracker.Graphics.Pages
             AddCategoryDialog addCategoryDialog = new(MainWindow);
             if (addCategoryDialog.ShowDialog() == true)
             {
-                string? categoryName = addCategoryDialog.CategoryName;
-                if (categoryName != null)
+                string categoryName = addCategoryDialog.CategoryName;
+            
+                bool added = AddCategoryIntoDatabase(categoryName);
+                if (added)
                 {
-                    bool added = AddCategoryIntoDatabase(categoryName);
-                    if (added)
-                    {
-                        FinancesCategoryComboBox.Items.Add(categoryName);
-                        FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
-                    }
-                    else 
-                    {
-                        Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
-                        Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se přidat kategorii {categoryName} do databáze");
-                    }
+                    FinancesCategoryComboBox.Items.Add(categoryName);
+                    FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
+                }
+                else 
+                {
+                    Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
+                    Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se přidat kategorii {categoryName} do databáze");
                 }
             }
         }

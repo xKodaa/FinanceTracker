@@ -199,7 +199,7 @@ namespace FinanceTracker.Graphics.Pages
 
             if (!Util.NonFutureDateTime(dateOfBuy))
             {
-                Util.ShowErrorMessageBox("Nelze zadat budoucí datum");
+                Util.ShowErrorMessageBox($"Nelze zadat budoucí datum\nAktuální datum: {DateTime.Now:dd.MM.yyyy}");
                 return;
             }
 
