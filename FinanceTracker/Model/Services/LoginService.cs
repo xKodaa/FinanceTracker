@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Repository;
 using FinanceTracker.Utility;
 using System.Data.SQLite;
 
@@ -18,7 +19,7 @@ namespace FinanceTracker.Model.Services
         // Zajišťuje uživatelské přihlášení do databáze
         public bool Login(string username, string password, out bool userExists)
         {
-            if (!Util.UserExists(username))
+            if (!new UserRepository().UserExists(username))
             {
                 Util.ShowErrorMessageBox("Toto uživatelské jméno neexistuje");
                 Logger.WriteErrorLog(this, $"Uživatel použil při přihlášení neznámé uživatelské jméno '{username}'");

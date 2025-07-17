@@ -6,8 +6,9 @@
         public string? Name { get; set; }
         public string? Surname { get; set; }
         public DateTime? LastLogin { get; set; }
+        public Currency? Currency { get; set; }
 
-        
+
         public User(string username)
         {
             Username = username;
@@ -17,7 +18,7 @@
         {
             if (Name != null && Surname != null)
             {
-                return $"{Name} {Surname} ({Username}) - Naposledy přihlášen: {LastLogin}";
+                return $"{Name} {Surname} ({Username}) - Naposledy přihlášen: {LastLogin}, preferovaná měna: {Currency}";
             }   
             return Username;
         }

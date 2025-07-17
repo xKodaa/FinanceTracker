@@ -11,17 +11,13 @@ namespace FinanceTracker.Utility
 {
     public class Util
     {
-        private static readonly SQLiteConnection? connection;
         private static AppConfig AppConfig { get; set; }
         private static readonly string AppConfigPath;
-        private static DatabaseConnector Connector;
 
         static Util() 
         {
             AppConfigPath = "Data/app_config.json";
             AppConfig = ReadAppConfig();
-            Connector = DatabaseConnector.Instance;
-            connection = Connector.Connection;
         }
 
         // Přečtení konfiguračního souboru
@@ -120,22 +116,10 @@ namespace FinanceTracker.Utility
             return builder.ToString();
         }
 
-        // Vyčtení, zda se uživatel již nenachází v databázi -> pro zabránění duplicitních uživatelských jmen
-        public static bool UserExists(string username)
+        // Kontrola, zda je datum v minulosti
+        public static bool NonFutureDateTime(DateTime dateTime)
         {
-            string sql = "SELECT COUNT(*) FROM Users WHERE username LIKE @username";
-            using SQLiteCommand command = new SQLiteCommand(sql, connection);
-            command.Parameters.AddWithValue("@username", username);
-            object result = command.ExecuteScalar();
-
-            if (result != null)
-            {
-                if (int.TryParse(result.ToString(), out int count))
-                {
-                    return count > 0;
-                }
-            }
-            return false;
+            return dateTime <= DateTime.Now;
         }
 
         /* UTILITY pro zjednodušené volání různých typů message boxů */
@@ -180,46 +164,6 @@ namespace FinanceTracker.Utility
             return true;
         }
 
-        // Kontrola, zda je datum v minulosti
-        public static bool NonFutureDateTime(DateTime dateTime)
-        {
-            return dateTime <= DateTime.Now;
-        }
-
-        // Nastavení uživatele singleton connectoru
-        public static void SetUser(User user)
-        {
-            Connector = DatabaseConnector.Instance;
-            Connector.LoggedUser = user;
-            Logger.WriteLog(nameof(Util), $"Uživatel byl úspěšně nastaven '{user}'");
-        }
-
-        public static User GetUser()
-        {
-            return Connector.LoggedUser;
-        }
-
-        // Načtení uživatele z databáze
-        public static User LoadUser()
-        {
-            string username = GetUser().Username;
-            string sql = "SELECT name, surname, lastLogin FROM Users WHERE username LIKE @username";
-            using (SQLiteCommand command = new SQLiteCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@username", username);
-                using SQLiteDataReader reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    return new User(username)
-                    {
-                        Name = reader["name"].ToString(),
-                        Surname = reader["surname"].ToString(),
-                        LastLogin = DateTime.Parse(reader["lastLogin"].ToString())
-                    };
-                }
-            }
-            return new User(username);
-        }
 
         // Získání kvartálů pro aktuální rok
         public static List<Quart> GetQuarts()

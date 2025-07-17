@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Repository;
 using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System.Net;
@@ -42,10 +43,10 @@ namespace FinanceTracker.Graphics.Windows
                 }
                 else
                 {
-                    Util.SetUser(new User(username));
-                    User user = Util.LoadUser();
+                    UserInfoService.SetUser(new User(username));
+                    User user = new UserRepository().LoadUser();
                     Logger.WriteLog(this, $"Uživatel přihlášen: '{user}'");
-                    Util.SetUser(user);
+                    UserInfoService.SetUser(user);
                     DialogResult = true;
                 }
             }

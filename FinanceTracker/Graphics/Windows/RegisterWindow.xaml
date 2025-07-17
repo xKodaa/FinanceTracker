@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FinanceTracker.Graphics.Windows"
         mc:Ignorable="d"
-        Title="Registrace" Height="350" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
+        Title="Registrace" Height="380" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Closing="CloseApp">
 
     <Grid Style="{StaticResource GradientBackgroundStyle}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -34,11 +35,14 @@
         <PasswordBox x:Name="RegisterPasswordBox" Grid.Row="4" Style="{StaticResource WindowsPasswordBoxStyle}"/>
         <TextBox x:Name="RegisterPasswordTBox" Grid.Row="4" Style="{StaticResource WindowsTextBoxStyle}" Visibility="Collapsed"/>
 
-        <CheckBox Content="Zobrazit heslo" Grid.Row="5" Style="{StaticResource WindowsCheckBoxStyle}" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
+        <Label Content="Měna:" Grid.Row="5" Style="{StaticResource WindowsLabelStyle}"/>
+        <ComboBox x:Name="RegisterCurrencyComboBox" Grid.Row="5" Style="{StaticResource PagesComboBoxStyle}"/>
+        
+        <CheckBox Content="Zobrazit heslo" Grid.Row="6" Style="{StaticResource WindowsCheckBoxStyle}" Checked="ShowPassword_Checked" Unchecked="ShowPassword_Unchecked"/>
 
-        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="6" Style="{StaticResource WindowsButtonStyle}" Click="RegisterButton_Click"/>
+        <Button x:Name="RegisterButton" Content="Registrovat se" Grid.Row="7" Style="{StaticResource WindowsButtonStyle}" Click="RegisterButton_Click"/>
 
-        <TextBlock Grid.Row="7" Style="{StaticResource WindowsTextBlockStyle}">
+        <TextBlock Grid.Row="8" Style="{StaticResource WindowsTextBlockStyle}">
             Již máte účet? <Hyperlink Click="LoginHyperlink_Click">Přihlásit se</Hyperlink>
         </TextBlock>
     </Grid>

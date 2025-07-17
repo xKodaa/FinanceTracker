@@ -1,30 +1,14 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using LiveCharts;
-using LiveCharts.Definitions.Charts;
 using LiveCharts.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Data.Entity.Core.Mapping;
 using System.Data.SQLite;
-using System.Formats.Tar;
 using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace FinanceTracker.Graphics.Pages
 {
@@ -54,7 +38,7 @@ namespace FinanceTracker.Graphics.Pages
             InitializeComponent();
             MainWindow = mainWindow;
             Connector = DatabaseConnector.Instance;
-            LoggedUser = Util.GetUser();
+            LoggedUser = UserInfoService.GetUser();
             bool userHasSomeData = InitializeComboBoxes();
             MonthlyPieSeriesCollection = [];
             MonthlyCartSeriesCollection = [];
@@ -67,7 +51,7 @@ namespace FinanceTracker.Graphics.Pages
             Formatter = value => value.ToString("N");
             DateTime now = DateTime.Now;
             justInitialized = true;
-            if (userHasSomeData)
+            if (userHasSomeData) 
                 RefreshGraph(now.Year, now.Month, GRAPH_TYPE_PIE, TAB_ITEM_MONTHLY_OVERVIEW);  // Zobrazení grafu pro aktuální měsíc
         }
 
@@ -101,6 +85,7 @@ namespace FinanceTracker.Graphics.Pages
                     LoadPieSeries(MonthlyPieSeriesCollection);
                     ShowPieGraph(selectedTabItem, MonthlyPieSeriesCollection);
                 }
+                TotalMonthlyAmountLabel.Content = $"Celková částka za měsíc: {FinancesPerCategory.Sum(x => x.Total):N2} Kč";
             }
             else if (selectedTabItem.Equals(TAB_ITEM_QUART_OVERVIEW))
             {
@@ -116,6 +101,7 @@ namespace FinanceTracker.Graphics.Pages
                     LoadPieSeries(QuartPieSeriesCollection);
                     ShowPieGraph(selectedTabItem, QuartPieSeriesCollection);
                 }
+                TotalQuartAmountLabel.Content = $"Celková částka za kvartál: {FinancesPerCategory.Sum(x => x.Total):N2} Kč";
             }
             else if (selectedTabItem.Equals(TAB_ITEM_YEARLY_OVERVIEW))
             {
@@ -131,6 +117,7 @@ namespace FinanceTracker.Graphics.Pages
                     LoadPieSeries(YearlyPieSeriesCollection);
                     ShowPieGraph(selectedTabItem, YearlyPieSeriesCollection);
                 }
+                TotalYearlyAmountLabel.Content = $"Celková částka za rok: {FinancesPerCategory.Sum(x => x.Total):N2} Kč";
             }
         }
 

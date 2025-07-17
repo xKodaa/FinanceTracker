@@ -1,4 +1,5 @@
 ﻿using FinanceTracker.Model;
+using FinanceTracker.Model.Repository;
 using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using System.Net;
@@ -17,6 +18,17 @@ namespace FinanceTracker.Graphics.Windows
             MainWindow = mainWindow;
             this.Icon = mainWindow.Icon;
             InitializeComponent();
+            InitializeCurrencyComboBox();
+        }
+
+        private void InitializeCurrencyComboBox()
+        {
+
+            CurrencyRepository currencyService = new();
+            List<Currency> currencies = currencyService.GetAllCurrencies();
+
+            RegisterCurrencyComboBox.ItemsSource = currencies;
+            RegisterCurrencyComboBox.SelectedIndex = 0; // defaultně první měna
         }
 
         // Zpracování uživatelských hodnot po kliknutí na "registrovat se"
@@ -27,6 +39,7 @@ namespace FinanceTracker.Graphics.Windows
             string surname = LastNameBox.Text;
             string username = RegisterUsernameBox.Text;
             string password = new NetworkCredential(string.Empty, RegisterPasswordBox.SecurePassword).Password;
+            Currency selectedCurrency = RegisterCurrencyComboBox.SelectedItem as Currency;
 
             if (!Util.ValidLoginOrRegistrationInputs(name, surname, username, password))
             {
@@ -34,7 +47,7 @@ namespace FinanceTracker.Graphics.Windows
             }
             else
             {
-                if (registerService.Register(name, surname, username, password))
+                if (registerService.Register(name, surname, username, password, selectedCurrency))
                 {
                     Logger.WriteLog(this, $"Uživatel '{username}' zaregistrován");
                     User user = new(username)
@@ -43,7 +56,7 @@ namespace FinanceTracker.Graphics.Windows
                         Surname = surname,
                         LastLogin = DateTime.Now
                     };
-                    Util.SetUser(user);
+                    UserInfoService.SetUser(user);
                     DialogResult = true;
                 }
                 else

@@ -61,9 +61,15 @@ namespace FinanceTracker.Model.Services
                 List<Currency> currencies = [];
                 if (currencyDict != null)
                 {
+                    int index = 1;
                     foreach (var kvp in currencyDict)
                     {
-                        currencies.Add(new Currency(kvp.Key, kvp.Value));
+                        currencies.Add(new Currency
+                        {
+                            Id = index++,
+                            Code = kvp.Key,
+                            Name = kvp.Value
+                        });
                     }
                 }
                 return currencies;

@@ -1,9 +1,10 @@
 ﻿using FinanceTracker.Graphics.Pages;
-using System.Windows;
-using FinanceTracker.Utility;
 using FinanceTracker.Model.Config;
-using System.Windows.Media.Imaging;
+using FinanceTracker.Model.Services;
+using FinanceTracker.Utility;
 using System.Drawing;
+using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace FinanceTracker
 {
@@ -38,7 +39,7 @@ namespace FinanceTracker
         // Přidá k názvu aplikace username uživatele
         private void UpdateMainTitle()
         {
-            Title = $"Finance Tracker | {Util.GetUser().Username}";
+            Title = $"Finance Tracker | {UserInfoService.GetUser().Username}";
         }
 
         /* Menu item handlers */

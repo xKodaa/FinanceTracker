@@ -1,6 +1,9 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Repository;
+using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
+using System.Data.Entity.Core.Mapping;
 using System.Data.SQLite;
 using System.Windows.Controls;
 
@@ -10,10 +13,14 @@ namespace FinanceTracker.Graphics.Pages
     {
         private User LoggedUser { get; set; }
         private DatabaseConnector Connector { get; set; }
+        private UserExpensesRepository userExpenseRepository;
+        private UserRepository userRepository;
 
         public ProfilePage(MainWindow mainWindow)
         {
-            LoggedUser = Util.LoadUser();
+            userRepository = new();
+            userExpenseRepository = new();
+            LoggedUser = userRepository.LoadUser();
             Connector = DatabaseConnector.Instance;
             InitializeComponent();
             LoadUserData();
@@ -33,18 +40,15 @@ namespace FinanceTracker.Graphics.Pages
             NameLabel.Text = LoggedUser.Name;
             SurnameLabel.Text = LoggedUser.Surname;
             LastLoginLabel.Text = LoggedUser.LastLogin?.ToString("dd.MM.yyyy");
+            PreferedCurrency.Text = $"{LoggedUser.Currency.Name} ({LoggedUser.Currency.Code})";
         }
 
         // Nastavení počtu kryptoměn uživatele
         private void SetUserCryptoCount()
         {
-            string sql = "SELECT COUNT(DISTINCT cryptoName) FROM UserCryptos WHERE username=@username";
-            using SQLiteCommand command = new(sql, Connector.Connection);
-            command.Parameters.AddWithValue("@username", LoggedUser.Username);
-            object result = command.ExecuteScalar();
             try
             {
-                int count = Convert.ToInt32(result);
+                int count = new UserCryptoRepository().GetUsersNumberOfCryptos(LoggedUser.Username);
                 if (count < 0)
                 {
                     Logger.WriteErrorLog(this, $"Uživateli '{LoggedUser.Username}' se načetl špatně počet kryptoměn");
@@ -70,21 +74,15 @@ namespace FinanceTracker.Graphics.Pages
         // Nastavení data posledního záznamu financí uživatele
         private void SetUserFinancesDate()
         {
-            string sql = "SELECT MAX(date) FROM UserFinances WHERE username=@username";
-            using (SQLiteCommand command = new SQLiteCommand(sql, Connector.Connection))
+            try
             {
-                command.Parameters.AddWithValue("@username", LoggedUser.Username);
-                object result = command.ExecuteScalar();
-                try 
-                {
-                    DateTime date = Convert.ToDateTime(result);
-                    LastFinanceRecordLabel.Text = date.ToString("dd.MM.yyyy");
-                } 
-                catch (Exception e)
-                {
-                    LastFinanceRecordLabel.Text = "Žádné záznamy";
-                    Logger.WriteErrorLog(this, $"Chyba při načítání posledního záznamu financí: {e}");
-                }
+                DateTime date = userExpenseRepository.GetLastUserExpenseDate(LoggedUser.Username);
+                LastFinanceRecordLabel.Text = date.ToString("dd.MM.yyyy");
+            }
+            catch (Exception e)
+            {
+                LastFinanceRecordLabel.Text = "Žádné záznamy";
+                Logger.WriteErrorLog(this, $"Chyba při načítání posledního záznamu financí: {e}");
             }
         }
     }

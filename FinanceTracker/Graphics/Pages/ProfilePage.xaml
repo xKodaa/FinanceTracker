@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -39,5 +40,8 @@
 
         <TextBlock Text="Naposledy evidované finance:" FontWeight="Bold" Grid.Row="5" Grid.Column="0" Margin="10"/>
         <TextBlock x:Name="LastFinanceRecordLabel" Grid.Row="5" Grid.Column="1" Margin="10"/>
+
+        <TextBlock Text="Preferovaná měna:" FontWeight="Bold" Grid.Row="6" Grid.Column="0" Margin="10"/>
+        <TextBlock x:Name="PreferedCurrency" Grid.Row="6" Grid.Column="1" Margin="10"/>
     </Grid>
 </Page>
