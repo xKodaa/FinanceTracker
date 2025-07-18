@@ -18,6 +18,7 @@ namespace FinanceTracker.Graphics.Pages
         private readonly DatabaseConnector Connector;
         private UserExpensesRepository userExpensesRepository;
         private readonly UserExpenseCategoryRepository userExpenseCategoryRepository;
+        private CurrencyRepository currencyRepository;
 
         public FinancesPage(MainWindow mainWindow)
         {
@@ -26,11 +27,26 @@ namespace FinanceTracker.Graphics.Pages
             Frame = MainWindow.MainContentFrame;
             userExpensesRepository = new();
             userExpenseCategoryRepository = new();
+            currencyRepository = new();
             AppConfig = Util.ReadAppConfig();
             InitializeComponent();
+            InitializeCurrencyCombobox();
             InitCategoryComboBox();
             ClearPage();
             LoadUserExpenses();
+        }
+
+        private void InitializeCurrencyCombobox()
+        {
+            var currencies = currencyRepository.GetAllCurrencies();
+            FinancesCurrencyComboBox.ItemsSource = currencies;
+            FinancesCurrencyComboBox.DisplayMemberPath = "Code"; // ← zobrazí jen kód měny
+
+            Currency userPreferredCurrency = currencyRepository.GetUserPreferredCurrency(Connector.LoggedUser.Username);
+            if (userPreferredCurrency != null)
+            {
+                FinancesCurrencyComboBox.SelectedItem = currencies.FirstOrDefault(c => c.Id == userPreferredCurrency.Id);
+            }
         }
 
 
@@ -79,6 +95,7 @@ namespace FinanceTracker.Graphics.Pages
             {
                 string category = (string)FinancesCategoryComboBox.SelectedItem;
                 string dateString = FinancesDatePicker.Text;
+                Currency currency = (Currency)FinancesCurrencyComboBox.SelectedItem;
                 if (DateTime.TryParse(dateString, out DateTime date))
                 {
                     if (!Util.NonFutureDateTime(date))
@@ -86,7 +103,7 @@ namespace FinanceTracker.Graphics.Pages
                         Util.ShowErrorMessageBox($"Nelze zadat budoucí datum\nAktuální datum: {DateTime.Now:dd.MM.yyyy}");
                         return;
                     }
-                    UserExpenses userExpenses = new(amount, category, date);
+                    UserExpenses userExpenses = new(amount, category, date, currency);
                     if (SaveExpenseIntoDatabase(userExpenses))
                     {
                         FinancesDataGrid.Items.Add(userExpenses);

@@ -15,7 +15,14 @@
 
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"  Width="280">
                     <Label Content="Utracená částka:" Style="{StaticResource WindowsLabelStyle}"/>
-                    <TextBox x:Name="FinancesSpentTextBox" Style="{StaticResource WindowsTextBoxStyle}" HorizontalAlignment="Left"/>
+                    <Grid HorizontalAlignment="Left" Width="280">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="95"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="FinancesSpentTextBox" Style="{StaticResource WindowsTextBoxStyle}" Grid.Column="0" Margin="15,0,0,0" Width="170"/>
+                        <ComboBox x:Name="FinancesCurrencyComboBox" Style="{StaticResource PagesComboBoxStyle}" Grid.Column="1" Margin="15,0"  HorizontalAlignment="Right" Width="65"/>
+                    </Grid>
 
                     <Grid HorizontalAlignment="Left" Width="280">
                         <Grid.ColumnDefinitions>

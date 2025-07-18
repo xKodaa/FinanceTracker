@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.Model.Config;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,31 @@ namespace FinanceTracker.Model.Repository
 
             using SQLiteDataReader reader = command.ExecuteReader();
 
+            if (reader.Read())
+            {
+                return new Currency
+                {
+                    Id = Convert.ToInt32(reader["id"]),
+                    Code = reader["code"].ToString(),
+                    Name = reader["name"].ToString()
+                };
+            }
+
+            return null;
+        }
+
+        public Currency? GetUserPreferredCurrency(string username)
+        {
+            string sql = @"
+                SELECT c.id, c.code, c.name
+                FROM users u
+                LEFT JOIN currencies c ON u.currency_id = c.id
+                WHERE u.username = @username";
+
+            using SQLiteCommand command = new(sql, Connection);
+            command.Parameters.AddWithValue("@username", username);
+
+            using SQLiteDataReader reader = command.ExecuteReader();
             if (reader.Read())
             {
                 return new Currency

@@ -53,7 +53,7 @@ namespace FinanceTracker.Model.Repository
                 DateTime date = reader.GetDateTime(1);
                 decimal price = reader.GetDecimal(2);
 
-                expenses.Add(new UserExpenses(price, category, date));
+                expenses.Add(new UserExpenses(price, category, date, null));
             }
 
             return expenses;
