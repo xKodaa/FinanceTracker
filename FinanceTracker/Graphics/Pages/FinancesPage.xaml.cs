@@ -1,6 +1,7 @@
 ﻿using FinanceTracker.Graphics.Dialogs;
 using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Repository;
 using FinanceTracker.Utility;
 using System.Data.SQLite;
 using System.Windows;
@@ -15,12 +16,16 @@ namespace FinanceTracker.Graphics.Pages
         private MainWindow MainWindow { get; set; }
         private AppConfig AppConfig { get; set; }
         private readonly DatabaseConnector Connector;
+        private UserExpensesRepository userExpensesRepository;
+        private readonly UserExpenseCategoryRepository userExpenseCategoryRepository;
 
         public FinancesPage(MainWindow mainWindow)
         {
             Connector = DatabaseConnector.Instance;
             MainWindow = mainWindow;
             Frame = MainWindow.MainContentFrame;
+            userExpensesRepository = new();
+            userExpenseCategoryRepository = new();
             AppConfig = Util.ReadAppConfig();
             InitializeComponent();
             InitCategoryComboBox();
@@ -32,25 +37,31 @@ namespace FinanceTracker.Graphics.Pages
         // Naplnění comboboxů kategorií hodnotami z databáze
         private void InitCategoryComboBox()
         {
-            string sql = "SELECT category FROM UserCategories WHERE username=@username GROUP BY category ORDER BY category";
-            using SQLiteCommand command = new(sql, Connector.Connection);
-            command.Parameters.AddWithValue("@username", Connector.LoggedUser.Username);
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            if (!reader.HasRows)
-            {
-                Util.ShowErrorMessageBox("Nemáte evidované žádné kategorie");
-                Logger.WriteErrorLog(nameof(FinancesPage), "FinanceCategories nenačteny z databáze");
-            }
-
             FinancesCategoryComboBox.Items.Clear();
-            while (reader.Read())
+            try
             {
-                FinancesCategoryComboBox.Items.Add(reader["category"].ToString());
-            }
+                string username = Connector.LoggedUser.Username;
+                var categories = userExpenseCategoryRepository.GetCategoriesForUser(username);
 
-            if (FinancesCategoryComboBox.Items.Count > 0)
+                if (categories.Count == 0)
+                {
+                    Util.ShowErrorMessageBox("Nemáte evidované žádné kategorie");
+                    Logger.WriteErrorLog(nameof(FinancesPage), "FinanceCategories nenačteny z databáze");
+                    return;
+                }
+
+                foreach (var category in categories)
+                {
+                    FinancesCategoryComboBox.Items.Add(category);
+                }
+
                 FinancesCategoryComboBox.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                Util.ShowErrorMessageBox("Nepodařilo se načíst kategorie");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Chyba při načítání kategorií: {ex.Message}");
+            }
         }
 
 
@@ -76,7 +87,7 @@ namespace FinanceTracker.Graphics.Pages
                         return;
                     }
                     UserExpenses userExpenses = new(amount, category, date);
-                    if (SaveExpenseIntoDatabase(userExpenses)) 
+                    if (SaveExpenseIntoDatabase(userExpenses))
                     {
                         FinancesDataGrid.Items.Add(userExpenses);
                         ClearPage();
@@ -88,7 +99,7 @@ namespace FinanceTracker.Graphics.Pages
                     Logger.WriteErrorLog(nameof(FinancesPage), "Uživatel zadal datum v nesprávném formátu");
                 }
             }
-            else 
+            else
             {
                 Util.ShowErrorMessageBox("Zadejte prosím číslo");
                 Logger.WriteErrorLog(nameof(FinancesPage), "Uživatel do částky nezadal číslo");
@@ -98,32 +109,17 @@ namespace FinanceTracker.Graphics.Pages
         // Uložení výdaje do databáze
         private bool SaveExpenseIntoDatabase(UserExpenses userExpenses)
         {
-            try
+            User user = Connector.LoggedUser;
+            int rowsAffected = userExpensesRepository.SaveUserExpensesForUser(userExpenses, user.Username);
+            if (rowsAffected > 0)
             {
-                string sql = "INSERT INTO UserFinances VALUES (@username, @category, @date, @price)";
-                using SQLiteCommand command = new(sql, Connector.Connection);
-                User user = Connector.LoggedUser;
-                string dateString = userExpenses.Date.ToString("yyyy-MM-dd");
-                command.Parameters.AddWithValue("@username", user.Username);
-                command.Parameters.AddWithValue("@category", userExpenses.Category);
-                command.Parameters.AddWithValue("@date", dateString);
-                command.Parameters.AddWithValue("@price", userExpenses.Price);
-                int rowsAffected = command.ExecuteNonQuery();
-                if (rowsAffected > 0)
-                {
-                    Util.ShowInfoMessageBox("Výdaj byl úspěšně uložen.");
-                    return true;
-                }
-                else
-                {
-                    Util.ShowErrorMessageBox("Nepodařilo se uložit výdaj do databáze");
-                    Logger.WriteErrorLog(nameof(FinancesPage), "Nepodařilo se uložit výdaj do databáze");
-                }
+                Util.ShowInfoMessageBox("Výdaj byl úspěšně uložen.");
+                return true;
             }
-            catch (Exception ex) 
+            else
             {
                 Util.ShowErrorMessageBox("Nepodařilo se uložit výdaj do databáze");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se uložit výdaj do databáze, {ex.Message}");
+                Logger.WriteErrorLog(nameof(FinancesPage), "Nepodařilo se uložit výdaj do databáze");
             }
             return false;
         }
@@ -141,14 +137,14 @@ namespace FinanceTracker.Graphics.Pages
             if (addCategoryDialog.ShowDialog() == true)
             {
                 string categoryName = addCategoryDialog.CategoryName;
-            
+
                 bool added = AddCategoryIntoDatabase(categoryName);
                 if (added)
                 {
                     FinancesCategoryComboBox.Items.Add(categoryName);
                     FinancesCategoryComboBox.SelectedIndex = FinancesCategoryComboBox.Items.Count - 1;
                 }
-                else 
+                else
                 {
                     Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
                     Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se přidat kategorii {categoryName} do databáze");
@@ -157,27 +153,16 @@ namespace FinanceTracker.Graphics.Pages
         }
 
         // Přidání kategorie do databáze
-        private bool AddCategoryIntoDatabase(string categoryName) 
+        private bool AddCategoryIntoDatabase(string categoryName)
         {
-            if (!CategoryExistsInDatabase(categoryName)) 
+            string username = Connector.LoggedUser.Username;
+            if (userExpenseCategoryRepository.AddCategory(username, categoryName))
             {
-                string username = Connector.LoggedUser.Username;
-                string sql = "INSERT INTO UserCategories (username, category) VALUES (@username, @category)";
-                using SQLiteCommand cmd = new(sql, Connector.Connection);
-                cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@category", categoryName);
-                int added = cmd.ExecuteNonQuery();
-                if (added > 0) 
-                {
-                    Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně přidána");
-                    return true;
-                }
+                Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně přidána");
+                return true;
             }
-            else 
-            {
-                Util.ShowErrorMessageBox("Kategorie již existuje, nelze ji přidat");
-            }
-            Util.ShowErrorMessageBox("Nepodařilo se přidat kategorii");
+
+            Util.ShowErrorMessageBox("Kategorie již existuje nebo se ji nepodařilo přidat");
             return false;
         }
 
@@ -185,11 +170,11 @@ namespace FinanceTracker.Graphics.Pages
         // Odebere aktuálně vybraný item z ComboBoxu a odebere ho i z konfiguračního souboru
         private void FinancesBtnRemoveCategory_Click(object sender, RoutedEventArgs e)
         {
-            string item = (string) FinancesCategoryComboBox.SelectedItem;
+            string item = (string)FinancesCategoryComboBox.SelectedItem;
             int index = FinancesCategoryComboBox.SelectedIndex;
             if (item != null)
             {
-                if (DeleteCategoryFromDatabase(item)) 
+                if (DeleteCategoryFromDatabase(item))
                 {
                     FinancesCategoryComboBox.Items.RemoveAt(index);
                     FinancesCategoryComboBox.SelectedIndex = 0;
@@ -200,41 +185,15 @@ namespace FinanceTracker.Graphics.Pages
         // Odebrání kategorie z databáze
         private bool DeleteCategoryFromDatabase(string categoryName)
         {
-            if (CategoryExistsInDatabase(categoryName))
-            {
-                string username = Connector.LoggedUser.Username; 
-                string sql = "DELETE FROM UserCategories WHERE username = @username AND category = @category";
-
-                using SQLiteCommand command = new(sql, Connector.Connection);
-                command.Parameters.AddWithValue("@username", username);
-                command.Parameters.AddWithValue("@category", categoryName);
-                int rowsAffected = command.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
-                {
-                    Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně odebrána");
-                    return true;
-                }
-            }
-            else 
-            {
-                Util.ShowErrorMessageBox("Kategorie neexistuje, nelze ji odebrat");
-            }
-            Util.ShowErrorMessageBox("Nepodařilo se odebrat kategorii");
-            return false;
-        }
-
-        // Kontrola existence kategorie v databázi pro daného uživatele
-        private bool CategoryExistsInDatabase(string categoryName)
-        {
             string username = Connector.LoggedUser.Username;
-            string sqlExists = "SELECT COUNT(*) FROM UserCategories WHERE username = @username AND category = @category";
+            if (userExpenseCategoryRepository.DeleteCategory(username, categoryName))
+            {
+                Util.ShowInfoMessageBox($"Kategorie {categoryName} byla úspěšně odebrána");
+                return true;
+            }
 
-            using SQLiteCommand cmd = new(sqlExists, Connector.Connection);
-            cmd.Parameters.AddWithValue("@username", username);
-            cmd.Parameters.AddWithValue("@category", categoryName);
-            int exists = Convert.ToInt32(cmd.ExecuteScalar());
-            return exists > 0;
+            Util.ShowErrorMessageBox("Kategorie neexistuje nebo se ji nepodařilo odebrat");
+            return false;
         }
 
         private void ClearPage()
@@ -247,33 +206,19 @@ namespace FinanceTracker.Graphics.Pages
         {
             try
             {
-                string sql = $"SELECT * FROM UserFinances WHERE username=@username";
-                using SQLiteCommand command = new(sql, Connector.Connection);
                 string username = Connector.LoggedUser.Username;
-                command.Parameters.AddWithValue("@username", username);
+                var expenses = userExpensesRepository.GetUserExpenses(username);
 
-                using var reader = command.ExecuteReader();
-                while (reader.Read())
+                foreach (var expense in expenses)
                 {
-                    string category = reader.GetString(1);
-                    DateTime date = reader.GetDateTime(2);
-                    decimal price = reader.GetDecimal(3);
-                    if (category != null && price != 0)
-                    {
-                        UserExpenses userExpenses = new UserExpenses(price, category, date);
-                        FinancesDataGrid.Items.Add(userExpenses);
-                        Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z UserFinances: {userExpenses}");
-                    }
-                    else
-                    {
-                        Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se načíst hodnoty z UserFinances pro uživatele ${username}");
-                    }
+                    FinancesDataGrid.Items.Add(expense);
+                    Logger.WriteLog(nameof(FinancesPage), $"Načtené hodnoty z user_expenses: {expense}");
                 }
             }
             catch (Exception ex)
             {
-                Util.ShowErrorMessageBox("Nepodařilo se smazat kryptoměnu z databáze");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat kryptoměnu z databáze, {ex.Message}");
+                Util.ShowErrorMessageBox("Nepodařilo se načíst výdaje z databáze");
+                Logger.WriteErrorLog(nameof(FinancesPage), $"Chyba při načítání výdajů: {ex.Message}");
             }
         }
 
@@ -282,66 +227,25 @@ namespace FinanceTracker.Graphics.Pages
         {
             if (FinancesDataGrid.SelectedItem == null) return;
 
+            string username = Connector.LoggedUser.Username;
             UserExpenses userExpenses = (UserExpenses)FinancesDataGrid.SelectedItem;
-            if (DeleteUserExpenseFromDatabase(userExpenses))
+            if (userExpensesRepository.DeleteExpense(username, userExpenses))
                 FinancesDataGrid.Items.Remove(userExpenses);
         }
 
         // Smaže všechny uživatelem vložené záznamy
         private void FinancesButtonDeleteAll_Click(object sender, RoutedEventArgs e)
         {
-            try
+            string username = Connector.LoggedUser.Username;
+            if (userExpensesRepository.DeleteAllExpenses(username))
             {
-                string sql = $"DELETE FROM UserFinances";
-
-                using SQLiteCommand command = new (sql, Connector.Connection);
-                int rowsAffected = command.ExecuteNonQuery();
-                if (rowsAffected > 0)
-                {
-                    Util.ShowInfoMessageBox("Všechny záznamy byly úspěšně smazány.");
-                    FinancesDataGrid.Items.Clear();
-                }
-                else
-                { 
-                    Util.ShowInfoMessageBox("Není co mazat.");
-                }
+                Util.ShowInfoMessageBox("Všechny záznamy byly úspěšně smazány.");
+                FinancesDataGrid.Items.Clear();
             }
-            catch (Exception ex)
+            else
             {
-                Util.ShowErrorMessageBox("Nepodařilo se smazat všechny záznamy");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat všechny záznamy finnancí z databáze, {ex.Message}");
+                Util.ShowInfoMessageBox("Nebyly nalezeny žádné záznamy k odstranění.");
             }
-        }
-
-        private bool DeleteUserExpenseFromDatabase(UserExpenses userExpenses)
-        {
-            try
-            {
-                string sql = $"DELETE FROM UserFinances WHERE username=@username AND category=@category AND price=@price AND date=@date";
-
-                using SQLiteCommand command = new(sql, Connector.Connection);
-                string username = Connector.LoggedUser.Username;
-                command.Parameters.AddWithValue("@username", username);
-                command.Parameters.AddWithValue("@category", userExpenses.Category);
-                command.Parameters.AddWithValue("@price", userExpenses.Price);
-                command.Parameters.AddWithValue("@date", userExpenses.Date.ToString("yyyy-MM-dd"));
-                int rowsAffected = command.ExecuteNonQuery();
-                if (rowsAffected > 0)
-                {
-                    Util.ShowInfoMessageBox("Záznam byl úspěšně smazán.");
-                    return true;
-                }
-                else
-                {
-                    Util.ShowInfoMessageBox("Žádný záznam nebyl smazán. Zkontrolujte, zda záznam existuje.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Util.ShowErrorMessageBox("Nepodařilo se smazat záznam");
-                Logger.WriteErrorLog(nameof(FinancesPage), $"Nepodařilo se smazat záznam finance z databáze, {ex.Message}");
-            }
-            return false;
         }
     }
 }

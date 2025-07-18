@@ -1,5 +1,6 @@
 ﻿using FinanceTracker.Model;
 using FinanceTracker.Model.Config;
+using FinanceTracker.Model.Repository;
 using FinanceTracker.Model.Services;
 using FinanceTracker.Utility;
 using LiveCharts;
@@ -32,10 +33,12 @@ namespace FinanceTracker.Graphics.Pages
         private readonly string TAB_ITEM_QUART_OVERVIEW = "Kvartální přehled";
         private readonly string TAB_ITEM_YEARLY_OVERVIEW = "Roční přehled";
         private bool justInitialized;
+        private static UserExpensesRepository userExpensesRepository;
 
         public DashboardPage(MainWindow mainWindow)
         {
             InitializeComponent();
+            userExpensesRepository = new();
             MainWindow = mainWindow;
             Connector = DatabaseConnector.Instance;
             LoggedUser = UserInfoService.GetUser();
@@ -200,7 +203,8 @@ namespace FinanceTracker.Graphics.Pages
         private bool InitializeComboBoxes()
         {
             // Roky
-            List<int> years = LoadFinanceYearsForUser();
+            string username = LoggedUser.Username;
+            List<int> years = userExpensesRepository.GetAvailableYearsForUser(username);
             if (years.Count == 0)
             { 
                 Util.ShowInfoMessageBox("Zatím nemáte evidované žádné záznamy.\nPřejděte prosím na sekci 'Finance'");
@@ -251,83 +255,26 @@ namespace FinanceTracker.Graphics.Pages
             return true;
         }
 
-        // Načtení všech let, ve kterých má uživatel záznamy
-        private List<int> LoadFinanceYearsForUser()
-        {
-            List<int> years = [];
-
-            string sql = @"SELECT DISTINCT strftime('%Y', date) AS Year FROM UserFinances WHERE username = @username ORDER BY Year DESC";
-            using (SQLiteCommand command = new(sql, Connector.Connection))
-            {
-                command.Parameters.AddWithValue("@username", LoggedUser.Username);
-
-                using SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    string? yearString = reader["Year"].ToString();
-                    if (int.TryParse(yearString, out int year))
-                        years.Add(year);
-                }
-            }
-            return years;
-        }
-
         // Načtení uživatelských dat z databáze pro zobrazení grafu podle zvolené záložky
         public List<(string Category, double Total)> LoadFinanceDataByCategory(string username, int year, int month, string selectedTabItem)
         {
+            string mode = selectedTabItem switch
+            {
+                var s when s == TAB_ITEM_MONTHLY_OVERVIEW => "monthly",
+                var s when s == TAB_ITEM_QUART_OVERVIEW => "quarterly",
+                var s when s == TAB_ITEM_YEARLY_OVERVIEW => "yearly",
+                _ => "monthly"
+            };
+
             try
             {
-                List<(string Category, double Total)> data = [];
-                string sql = "";
-
-                if (selectedTabItem.Equals(TAB_ITEM_MONTHLY_OVERVIEW))
-                {
-                    sql = @"SELECT category, SUM(price) as TotalPrice 
-                     FROM UserFinances 
-                     WHERE username = @username AND strftime('%Y', date) = @year AND strftime('%m', date) = @month
-                     GROUP BY category";
-                }
-                else if (selectedTabItem.Equals(TAB_ITEM_QUART_OVERVIEW))
-                {
-                    int quarterEndMonth = month + 2;
-                    sql = $@"SELECT category, SUM(price) as TotalPrice 
-                     FROM UserFinances 
-                     WHERE username = @username AND strftime('%Y', date) = @year 
-                     AND (strftime('%m', date) >= '{month:D2}' AND strftime('%m', date) <= '{quarterEndMonth:D2}')
-                     GROUP BY category";
-                }
-                else if (selectedTabItem.Equals(TAB_ITEM_YEARLY_OVERVIEW))
-                {
-                    sql = @"SELECT category, SUM(price) as TotalPrice 
-                     FROM UserFinances 
-                     WHERE username = @username AND strftime('%Y', date) = @year
-                     GROUP BY category";
-                }
-
-                using (SQLiteCommand command = new(sql, Connector.Connection))
-                {
-                    command.Parameters.AddWithValue("@username", username);
-                    command.Parameters.AddWithValue("@year", year.ToString());
-                    if (selectedTabItem.Equals(TAB_ITEM_MONTHLY_OVERVIEW))
-                    {
-                        command.Parameters.AddWithValue("@month", month.ToString("D2"));
-                    }
-                    using var reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        string? category = reader["category"].ToString();
-                        double? total = Convert.ToDouble(reader["TotalPrice"]);
-                        if (category != null && total != null)
-                            data.Add(((string Category, double Total))(Category: category, Total: total));
-                    }
-                }
-                return data;
+                return userExpensesRepository.GetUserExpensesByCategory(username, year, month, mode);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                Logger.WriteErrorLog(this, $"Chyba při načítání uživatelských financí: {ex}");
+                Logger.WriteErrorLog(this, $"Chyba při načítání financí: {ex.Message}");
+                return [];
             }
-            return [];
         }
 
         // Zobrazení grafu po změně hodnot z comboboxů dle zvolené záložky

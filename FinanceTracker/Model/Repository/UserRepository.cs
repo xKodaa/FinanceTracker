@@ -38,7 +38,7 @@ namespace FinanceTracker.Model.Repository
                 return false;
             }
             Logger.WriteLog(this, $"Uživatel '{username}' byl úspěšně zaregistrován");
-            new UserExpenseCategoryRepository().InitUsersCategories(username);
+            new UserExpenseCategoryRepository().CreateCategoryForUser(username);
             return true;
         }
 
